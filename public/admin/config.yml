@@ -13,7 +13,6 @@ collections:
     extension: mdx
     format: frontmatter
     fields:
-      - { label: "Notes", name: "notes", widget: "text", required: false, defualt: "test" }
       - { label: "Cover Image", name: "heroImage", widget: "image", required: true }
       - { label: "Category", name: "category", widget: "select", options: [ Tutorials, Demo, News, Docs, Test ], required: true }
       - { label: "Description", name: "description", widget: "string", required: true }
