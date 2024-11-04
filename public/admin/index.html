@@ -45,26 +45,17 @@
                 document.getElementById('deployStatus').innerText = `Error: ${error.message}`;
             }
         }
-
+/*
         window.onload = function() {
             fetchDeployStatus();
             document.getElementById("relAPI").onclick = async function() {
                 console.log('Reloading API');
                 await fetchDeployStatus();
             };
-
-            document.getElementById("loginNetlify").onclick = function() {
-                netlifyIdentity.open();
-            };
-
-            netlifyIdentity.on('login', user => {
-                console.log('User logged in:', user);
-                netlifyIdentity.close();
-            });
-        };
+        };*/
     </script>
     <style>
-        body, html {
+        /*body, html {
             font-family: Arial, sans-serif;
             background-size: cover;
             background-repeat: no-repeat;
@@ -76,7 +67,7 @@
             margin: 0;
             padding: 0;
             background-image: url('https://docs.mbktechstudio.com/Assets/Images/background.png');
-        }
+        }*/
         h1 {
             margin-bottom: 20px;
         }
@@ -112,21 +103,28 @@
         }
     </style>
 </head>
+<!--
 <body>
     <h1>Netlify Deployment Status</h1>
     <p id="deployStatus">Loading...</p>
     <button id="relAPI">Reload API</button>
-    <button id="loginNetlify">Login Admin Panel</button>
     This section contains a list of Netlify Deployment Statuses and their corresponding descriptions:
     <ul class="status-list">
-
-        <li>enqueued = Project Deployment Is triggered and deployment is Starting Up</li>
-        <li>building = Project is Building</li>
+        <li>new = Project Deployment Is triggered and new deployment is added</li>
+        <li>enqueued = Deployment Is Starting Up</li>
+        <li>building = Project Is Building</li>
         <li>error = Project Build Failed</li>
         <li>ready = Project Build Successfull and site is Published</li> 
     </ul>
 
-    <!--<script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
--->
+    <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
+</body>-->
+<body>
+
+
+    <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
+    <script>CMS.registerPreviewStyle("/admin/admin.css");</script>
+</body>
+</html>
 </body>
 </html>
