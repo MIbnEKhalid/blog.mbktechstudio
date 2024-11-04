@@ -1,12 +1,4 @@
-
-
-
-
-
-
-
-
-  <!--
+<!--
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.13/css/intlTelInput.css">
     <link rel="stylesheet" href="https://mbktechstudio.com/Assets/style.css"> 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/js-yaml/4.1.0/js-yaml.min.js"></script>
@@ -14,6 +6,7 @@
 --> 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -22,149 +15,152 @@
     <title>Admin Panel / Content Manager</title>
     <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
     <script>
-async function fetchDeployStatus() {
-    const siteId = process.env.NetlifySiteIDblogMBK || 'ef4c0a19-ca35-467d-852f-8652cd8d9ccf';
-    const accessToken = process.env.NetlifyAPIkeyTest || 'nfp_s832HAemYa2E1uay3rK1Cb8jRARgkNuo99b1';
+        async function fetchDeployStatus() {
+            const siteId = process.env.NetlifySiteIDblogMBK || 'ef4c0a19-ca35-467d-852f-8652cd8d9ccf';
+            const accessToken = process.env.NetlifyAPIkeyTest || 'nfp_s832HAemYa2E1uay3rK1Cb8jRARgkNuo99b1';
 
-    try {
-        const response = await fetch(`https://api.netlify.com/api/v1/sites/${siteId}/deploys`, {
-            method: 'GET',
-            headers: {
-                'Authorization': `Bearer ${accessToken}`,
+            try {
+                const response = await fetch(`https://api.netlify.com/api/v1/sites/${siteId}/deploys`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${accessToken}`,
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error('Network response was not ok ' + response.statusText);
+                }
+
+                const deploys = await response.json();
+                const latestDeploy = deploys[0];
+
+                if (latestDeploy) {
+                    const latestDeployState = latestDeploy.state || 'No deployment found';
+                    const deployTime = new Date(latestDeploy.created_at).toLocaleString();
+
+                    document.getElementById('deployStatus').innerText =
+                        `Deployment Status: ${latestDeployState}\nDeployed at: ${deployTime}`;
+
+                    // Fetch the latest commit from GitHub
+                    await fetchLatestCommitTime(); // Corrected function call
+                } else {
+                    document.getElementById('deployStatus').innerText = 'No deployment found';
+                }
+
+            } catch (error) {
+                document.getElementById('deployStatus').innerText = `Error: ${error.message}`;
             }
-        });
-
-        if (!response.ok) {
-            throw new Error('Network response was not ok ' + response.statusText);
         }
 
-        const deploys = await response.json();
-        const latestDeploy = deploys[0];
-        
-        if (latestDeploy) {
-    const latestDeployState = latestDeploy.state || 'No deployment found';
-    const deployTime = new Date(latestDeploy.created_at).toLocaleString();
-
-    document.getElementById('deployStatus').innerText = 
-        `Deployment Status: ${latestDeployState}\nDeployed at: ${deployTime}`;
-    
-    // Fetch the latest commit from GitHub
-    await fetchLatestCommitTime(); // Corrected function call
-} else {
-    document.getElementById('deployStatus').innerText = 'No deployment found';
-}
-
-    } catch (error) {
-        document.getElementById('deployStatus').innerText = `Error: ${error.message}`;
-    }
-}
 
 
+        async function fetchLatestCommitTime() {
+            const owner = 'MIbnEKhalid'; // Your GitHub username or organization name
+            const repo = 'Blog.MIbnEKhalid.github.io'; // Your repository name
+            const branch = 'main'; // The branch you want, e.g., 'main'
 
-async function fetchLatestCommitTime() {
-    const owner = 'MIbnEKhalid'; // Your GitHub username or organization name
-    const repo = 'Blog.MIbnEKhalid.github.io'; // Your repository name
-    const branch = 'main'; // The branch you want, e.g., 'main'
+            try {
+                const response = await fetch(`https://api.github.com/repos/${owner}/${repo}/commits?sha=${branch}`, {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/vnd.github.v3+json'
+                        // If you have a GitHub token, you can add an Authorization header
+                        // 'Authorization': `Bearer YOUR_GITHUB_TOKEN`
+                    }
+                });
 
-    try {
-        const response = await fetch(`https://api.github.com/repos/${owner}/${repo}/commits?sha=${branch}`, {
-            method: 'GET',
-            headers: {
-                'Accept': 'application/vnd.github.v3+json'
-                // If you have a GitHub token, you can add an Authorization header
-                // 'Authorization': `Bearer YOUR_GITHUB_TOKEN`
+                if (!response.ok) {
+                    throw new Error('Network response was not ok ' + response.statusText);
+                }
+
+                const commitData = await response.json();
+
+                // Get the latest commit
+                const latestCommit = commitData[0]; // Latest commit
+                const commitTime = new Date(latestCommit.commit.committer.date).toLocaleString();
+                const commitMessage = latestCommit.commit.message;
+
+                document.getElementById('commitTime').innerText = `Latest Commit Time: ${commitTime}`;
+                document.getElementById('commitMessage').innerText = `Commit Message: ${commitMessage}`;
+            } catch (error) {
+                document.getElementById('commitTime').innerText = `Error: ${error.message}`;
+                document.getElementById('commitMessage').innerText = '';
             }
-        });
-
-        if (!response.ok) {
-            throw new Error('Network response was not ok ' + response.statusText);
         }
 
-        const commitData = await response.json();
-        
-        // Get the latest commit
-        const latestCommit = commitData[0]; // Latest commit
-        const commitTime = new Date(latestCommit.commit.committer.date).toLocaleString();
-        const commitMessage = latestCommit.commit.message;
 
-        document.getElementById('commitTime').innerText = `Latest Commit Time: ${commitTime}`;
-        document.getElementById('commitMessage').innerText = `Commit Message: ${commitMessage}`;
-    } catch (error) {
-        document.getElementById('commitTime').innerText = `Error: ${error.message}`;
-        document.getElementById('commitMessage').innerText = '';
-    }
-}
+        // Call these functions to fetch and display data
+        window.onload = function () {
+            fetchDeployStatus();
+            fetchLatestCommitTime();
 
-
-// Call these functions to fetch and display data
-window.onload = function() {
-    fetchDeployStatus();
-    fetchLatestCommitTime();
-    
-    document.getElementById("relAPI").onclick = async function() {
-        console.log('Reloading APIs');
-        await fetchDeployStatus();
-        await fetchLatestCommitTime();
-    };
-};
+            document.getElementById("relAPI").onclick = async function () {
+                console.log('Reloading APIs');
+                await fetchDeployStatus();
+                await fetchLatestCommitTime();
+            };
+        };
     </script>
     <style>
-    /* Customize the admin login page */
-    #nc-root, .nc-gatewayPage {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        height: 50vh;
-     }
+        /* Customize the admin login page */
+        #nc-root,
+        .nc-gatewayPage {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 25vh;
+            margin-top: 15px;
+        }
 
-    .nc-gatewayPage h1, .nc-gatewayPage h2, .nc-gatewayPage p {
-        color: #377a77; /* Customize the header and text color */
-    }
+        .nc-gatewayPage h1,
+        .nc-gatewayPage h2,
+        .nc-gatewayPage p {
+            color: #377a77;
+            /* Customize the header and text color */
+        }
 
-    .nc-gatewayPage button {
-        background-color: #377a77;
-        color: #fff;
-        border-radius: 5px;
-        padding: 10px 20px;
-        font-weight: 600;
-        transition: all 0.3s ease;
-        border: 2px solid transparent;
-        cursor: pointer;
-    }
+        .nc-gatewayPage button {
+            background-color: #377a77;
+            color: #fff;
+            border-radius: 5px;
+            padding: 16px 2px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            cursor: pointer;
+        }
 
-    .nc-gatewayPage button:hover {
-        background-color: transparent;
-        color: #377a77;
-        border-color: #377a77;
-    }
+        .nc-gatewayPage button:hover {
+            background-color: transparent;
+            color: #377a77;
+            border-color: #377a77;
+        }
 
-    /* Input fields styling */
-    .nc-gatewayPage input {
-        border: 1px solid #ccc;
-        padding: 10px;
-        border-radius: 5px;
-        width: 100%;
-        max-width: 300px;
-        margin-bottom: 15px;
-    }
+        /* Input fields styling */
+        .nc-gatewayPage input {
+            border: 1px solid #ccc;
+            padding: 10px;
+            border-radius: 5px;
+            width: 100%;
+            max-width: 300px;
+            margin-bottom: 15px;
+        }
 
-    .nc-gatewayPage .nc-gatewayButton {
-        width: 100%;
-        max-width: 300px;
-    }
+        .nc-gatewayPage .nc-gatewayButton {
+            width: 100%;
+            max-width: 300px;
+        }
 
-    /* Center content and add some padding */
-    .nc-gatewayPage-content {
-        padding: 20px;
-        background: #ffffff;
-        border-radius: 10px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    }
-</style>
+        /* Center content and add some padding */
+        .nc-gatewayPage-content {
+            padding: 20px;
+            background: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
 
-    <style>
-   
-    body, html {
+        body,
+        html {
             font-family: Arial, sans-serif;
             background-size: cover;
             background-repeat: no-repeat;
@@ -175,15 +171,17 @@ window.onload = function() {
             flex-direction: column;
             margin: 0;
             padding: 0;
-            background-image: url('https://docs.mbktechstudio.com/Assets/Images/background.png');
         }
+
         h1 {
             margin-bottom: 20px;
         }
+
         #deployStatus {
             font-size: 1.2em;
             margin-bottom: 20px;
         }
+
         button {
             outline: none;
             padding: 10px 20px;
@@ -197,151 +195,144 @@ window.onload = function() {
             transition: all 0.4s ease;
             margin-bottom: 5px;
         }
+
         button:hover {
             border-color: #377a77;
             background-color: transparent;
             color: #377a77;
         }
+
         .status-list {
             list-style: none;
             padding: 0;
             margin-top: 20px;
         }
+
         .status-list li {
             margin: 5px 0;
-        }/* Style the admin login page container */
-body {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    background-image: url('https://docs.mbktechstudio.com/Assets/Images/background.png');
-    background-size: cover;
-    margin: 0;
-    font-family: Arial, sans-serif;
-}
+        }
 
-/* Customize login button */
-button, .nc-githubButton, .nc-googleButton {
- 
-    padding: 8px 16px; 
-    font-size: 25px;
-    font-weight: 600;
-    background: #377a77 !important;
-    color: #fff !important;
-    border: 2px solid transparent !important;;
-    cursor: pointer !important;;
-    transition: all 0.4s ease;
-}
+        /* Style the admin login page container */
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-size: cover;
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
 
-button:hover, .nc-githubButton:hover, .nc-googleButton:hover {
-    border-color: #377a77 !important;
-    background-color: transparent !important;
-    color: #377a77 !important;
-    font-weight: 600;
-    transition: all 0.3s ease;}
+        /* Customize login button */
+        button,
+        .nc-githubButton,
+        .nc-googleButton {        
+            padding: 18px 20px !important;
+            font-size: 18px !important;
+            font-weight: 600;
+            background: #377a77 !important;
+            color: #fff !important;
+            border: 2px solid transparent !important;
+            cursor: pointer !important;
+            transition: all 0.4s ease;
+        }
 
-/* Style input fields */
-input {
-    border: 1px solid #377a77;
-    border-radius: 4px;
-    padding: 8px;
-    margin-top: 10px;
-    width: 100%;
-}
+        button:hover,
+        .nc-githubButton:hover,
+        .nc-googleButton:hover {
+            border-color: #377a77 !important;
+            background-color: transparent !important;
+            color: #377a77 !important;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
 
-/* Center login form */
-.nc-loginPage {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 20px;
-    border-radius: 8px;
-    background-color: rgba(255, 255, 255, 0.85);
-    max-width: 400px;
-    width: 100%;
-}
+        /* Style input fields */
+        input {
+            border: 1px solid #377a77;
+            border-radius: 4px;
+            padding: 8px;
+            margin-top: 10px;
+            width: 100%;
+        }
 
+        /* Center login form */
+        .nc-loginPage {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            border-radius: 8px;
+            background-color: rgba(255, 255, 255, 0.85);
+            max-width: 400px;
+            width: 100%;
+        }
 
+        .deployInfo {
+            max-width: 600px;
+            padding: 20px;
+            background-color: #f7f9fa;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            margin: 10px 10px 10px 10px;
+            font-family: Arial, sans-serif;
+        }
 
+        .deployInfo h1 {
+            font-size: 1.8em;
+            margin-bottom: 15px;
+            color: #377a77;
+        }
 
+        #deployStatus {
+            font-size: 1.2em;
+            color: #333;
+            margin: 10px 0 20px;
+        }
 
+        /* Centering the Reload API button */
+        .relAPI {
+            outline: none;
+            padding: 10px 20px !important;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: 600;
+            background-color: #377a77;
+            color: #fff;
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            margin: 0 auto 20px;
+            /* Center with margin auto */
+            display: flex;
+            justify-content: center;
+        }
 
+       .relAPI:hover {
+            background-color: transparent;
+            color: #377a77;
+            border-color: #377a77;
+        }
 
+        .status-list {
+            list-style: none;
+            padding: 0;
+            margin-top: 20px;
+            text-align: left;
+        }
 
-
-
-
-
-
-
-
-.deployInfo {
-    max-width: 600px;
-    padding: 20px;
-    background-color: #f7f9fa;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    text-align: center;
-    margin: 20px auto;
-    font-family: Arial, sans-serif;
-}
-
-.deployInfo h1 {
-    font-size: 1.8em;
-    margin-bottom: 15px;
-    color: #377a77;
-}
-
-#deployStatus {
-    font-size: 1.2em;
-    color: #333;
-    margin: 10px 0 20px;
-}
-
-/* Centering the Reload API button */
-button#relAPI {
-    outline: none;
-    padding: 10px 20px;
-    border-radius: 5px;
-    font-size: 16px;
-    font-weight: 600;
-    background-color: #377a77;
-    color: #fff;
-    border: 2px solid transparent;
-    cursor: pointer;
-    transition: all 0.4s ease;
-    margin: 0 auto 20px; /* Center with margin auto */
-    display: flex;
-    justify-content: center;
-}
-
-button#relAPI:hover {
-    background-color: transparent;
-    color: #377a77;
-    border-color: #377a77;
-}
-
-.status-list {
-    list-style: none;
-    padding: 0;
-    margin-top: 20px;
-    text-align: left;
-}
-
-.status-list li {
-    font-size: 0.95em;
-    color: #555;
-    margin: 5px 0;
-    padding: 8px;
-    background-color: #e8f4f4;
-    border-radius: 4px;
-}
-
-
+        .status-list li {
+            font-size: 0.95em;
+            color: #555;
+            margin: 5px 0;
+            padding: 8px;
+            background-color: #e8f4f4;
+            border-radius: 4px;
+        }
     </style>
 </head>
- 
+
 <body>
 
     <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
@@ -349,21 +340,26 @@ button#relAPI:hover {
     <div class="deployInfo">
         <h1>Netlify Deployment Status</h1>
         <p id="deployStatus">Loading...</p>
-        <button id="relAPI">Reload API</button>
+      
+        <h1>GitHub Commit Status</h1>
+        <p id="commitTime">Loading latest commit time...</p>
+        <p id="commitMessage">Loading commit message...</p>  
+
+        <button class="relAPI" id="relAPI">Reload API</button>
+
         This section contains a list of Netlify Deployment Statuses and their corresponding descriptions:
         <ul class="status-list">
             <li>new = Project Deployment Is triggered and new deployment is added</li>
             <li>enqueued = Deployment Is Starting Up</li>
             <li>building = Project Is Building</li>
             <li>error = Project Build Failed</li>
-            <li>ready = Project Build Successfull and site is Published</li> 
+            <li>ready = Project Build Successfull and site is Published</li>
         </ul>
-        <h2>GitHub Commit Status</h2>
-    <p id="commitTime">Loading latest commit time...</p>
-    <p id="commitMessage">Loading commit message...</p> <!-- New paragraph for commit message -->
- </div>
+
+    </div>
 </body>
- 
+
 </html>
 </body>
-</html>
+
+</html> 
