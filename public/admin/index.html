@@ -23,7 +23,7 @@
     <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
     <script>
         async function fetchDeployStatus() {
-            const siteId = process.env.NetlifySiteIDblogMBK;
+            const siteId = process.env.NetlifySiteIDblogMBK ;
             const accessToken = process.env.NetlifyAPIkeyTest;
             
             try {
@@ -45,17 +45,20 @@
                 document.getElementById('deployStatus').innerText = `Error: ${error.message}`;
             }
         }
-/*
+
         window.onload = function() {
             fetchDeployStatus();
             document.getElementById("relAPI").onclick = async function() {
                 console.log('Reloading API');
                 await fetchDeployStatus();
             };
-        };*/
+        };
     </script>
     <style>
-        /*body, html {
+        .css-no93ty-StyledAuthenticationPage, .exus10f5{
+            height: 50vh;
+        }
+      :root,  body, html {
             font-family: Arial, sans-serif;
             background-size: cover;
             background-repeat: no-repeat;
@@ -67,7 +70,7 @@
             margin: 0;
             padding: 0;
             background-image: url('https://docs.mbktechstudio.com/Assets/Images/background.png');
-        }*/
+        }
         h1 {
             margin-bottom: 20px;
         }
@@ -103,8 +106,12 @@
         }
     </style>
 </head>
-<!--
+ 
 <body>
+
+    <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
+
+
     <h1>Netlify Deployment Status</h1>
     <p id="deployStatus">Loading...</p>
     <button id="relAPI">Reload API</button>
@@ -117,14 +124,8 @@
         <li>ready = Project Build Successfull and site is Published</li> 
     </ul>
 
-    <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
-</body>-->
-<body>
-
-
-    <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
-    <script>CMS.registerPreviewStyle("admin.css");</script>
 </body>
+ 
 </html>
 </body>
 </html>
