@@ -1,9 +1,3 @@
-<!--
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.13/css/intlTelInput.css">
-    <link rel="stylesheet" href="https://mbktechstudio.com/Assets/style.css"> 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/js-yaml/4.1.0/js-yaml.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css" />
---> 
 <!DOCTYPE html>
 <html lang="en">
 
@@ -86,32 +80,10 @@
             }
         }
 
-        function checkUserLogin() {
-            const user = netlifyIdentity.currentUser();
-            const deployInfoDiv = document.getElementById("deployInfo");
-
-            if (user) {
-                // User is logged in, hide deployInfo
-                if (deployInfoDiv) {
-                    deployInfoDiv.style.display = "none";
-                }
-            } else {
-                // User is not logged in, show deployInfo
-                if (deployInfoDiv) {
-                    deployInfoDiv.style.display = "block";
-                }
-            }
-        }
-
-        // Event listener for Netlify Identity login/logout events
-        netlifyIdentity.on("login", checkUserLogin);
-        netlifyIdentity.on("logout", checkUserLogin);
-
         // Call these functions to fetch and display data
         window.onload = function () {
             fetchDeployStatus();
             fetchLatestCommitTime();
-            checkUserLogin();
 
             document.getElementById("relAPI").onclick = async function () {
                 console.log('Reloading APIs');
@@ -119,7 +91,99 @@
                 await fetchLatestCommitTime();
             };
         };
-    </script>  
+    </script>
+    <style>
+        #nc-root,
+        .nc-gatewayPage {
+            align-items: center;
+            justify-content: center;
+            height: 25vh;
+            margin-top: 15px;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+        }
+
+        #deployStatus {
+            font-size: 1.2em;
+            margin-bottom: 20px;
+        }
+
+        .status-list {
+            list-style: none;
+            padding: 0;
+            margin-top: 20px;
+        }
+
+        .status-list li {
+            margin: 5px 0;
+        }
+
+        .deployInfo {
+            max-width: 90%;
+            padding: 20px;
+            background-color: #f7f9fa;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            margin: 20px auto;
+            font-family: Arial, sans-serif;
+
+        }
+
+        .deployInfo h1 {
+            font-size: 1.8em;
+            margin-bottom: 15px;
+            color: #377a77;
+        }
+
+        #deployStatus {
+            font-size: 1.2em;
+            color: #333;
+            margin: 10px 0 20px;
+        }
+
+        /* Centering the Reload API button */
+        .relAPI {
+            outline: none;
+            padding: 10px 20px !important;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: 600;
+            background-color: #377a77;
+            color: #fff;
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            margin: 0 auto 20px;
+            /* Center with margin auto */
+            display: flex;
+            justify-content: center;
+        }
+
+        .relAPI:hover {
+            background-color: transparent;
+            color: #377a77;
+            border-color: #377a77;
+        }
+
+        .status-list {
+            list-style: none;
+            padding: 0;
+            margin-top: 20px;
+            text-align: left;
+        }
+
+        .status-list li {
+            font-size: 0.95em;
+            color: #555;
+            margin: 5px 0;
+            padding: 8px;
+            background-color: #e8f4f4;
+            border-radius: 4px;
+        }
+    </style>
 </head>
 
 <body>
@@ -127,13 +191,15 @@
     <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
 
     <div class="deployInfo" id="deployInfo">
-        
+
+         <a onclick="nflexLoading()"><i></i>close</a>
+
         <h1>Netlify Deployment Status</h1>
         <p id="deployStatus">Loading...</p>
-      
+
         <h1>GitHub Commit Status</h1>
         <p id="commitTime">Loading latest commit time...</p>
-        <p id="commitMessage">Loading commit message...</p>  
+        <p id="commitMessage">Loading commit message...</p>
 
         <button class="relAPI" id="relAPI">Reload API</button>
 
@@ -148,28 +214,27 @@
 
     </div>
 
-
-
-    <div id="deployInfo1">  </div>
 </body>
 <script>
-    async function fetchAndDisplayHTML() {
-        try {
-            const response = await fetch('info.html');
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            const htmlContent = await response.text();
-            document.getElementById('deployInfo1').innerHTML = htmlContent;
-        } catch (error) {
-            console.error('There has been a problem with your fetch operation:', error);
-        }
+    function flexLoading() {
+        document.querySelectorAll('#nc-root, .nc-gatewayPage').forEach(element => {
+            element.style.display = 'flex';
+        });
+    }
+    function nflexLoading() {
+        document.querySelectorAll('#nc-root, .nc-gatewayPage').forEach(element => {
+            element.style.display = 'block';
+        });
     }
 
-    // Call the function to fetch and display the HTML content
-    fetchAndDisplayHTML();
+    document.addEventListener('DOMContentLoaded', function () {
+        
+        flexLoading();
+    });
+
 </script>
+
 </html>
 </body>
 
-</html> 
+</html>
