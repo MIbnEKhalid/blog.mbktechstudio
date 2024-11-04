@@ -52,8 +52,6 @@
             }
         }
 
-
-
         async function fetchLatestCommitTime() {
             const owner = 'MIbnEKhalid'; // Your GitHub username or organization name
             const repo = 'Blog.MIbnEKhalid.github.io'; // Your repository name
@@ -88,11 +86,32 @@
             }
         }
 
+        function checkUserLogin() {
+            const user = netlifyIdentity.currentUser();
+            const deployInfoDiv = document.getElementById("deployInfo");
+
+            if (user) {
+                // User is logged in, hide deployInfo
+                if (deployInfoDiv) {
+                    deployInfoDiv.style.display = "none";
+                }
+            } else {
+                // User is not logged in, show deployInfo
+                if (deployInfoDiv) {
+                    deployInfoDiv.style.display = "block";
+                }
+            }
+        }
+
+        // Event listener for Netlify Identity login/logout events
+        netlifyIdentity.on("login", checkUserLogin);
+        netlifyIdentity.on("logout", checkUserLogin);
 
         // Call these functions to fetch and display data
         window.onload = function () {
             fetchDeployStatus();
             fetchLatestCommitTime();
+            checkUserLogin();
 
             document.getElementById("relAPI").onclick = async function () {
                 console.log('Reloading APIs');
@@ -112,93 +131,7 @@
             margin-top: 15px;
         }
 
-
-        h1 {
-            margin-bottom: 20px;
-        }
-
-        #deployStatus {
-            font-size: 1.2em;
-            margin-bottom: 20px;
-        }
-
-     
-
-        .status-list {
-            list-style: none;
-            padding: 0;
-            margin-top: 20px;
-        }
-
-        .status-list li {
-            margin: 5px 0;
-        } 
-
-    
-
-        .deployInfo {
-            max-width: 90%;
-            padding: 20px;
-            background-color: #f7f9fa;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            text-align: center;
-            margin: 20px auto;
-            font-family: Arial, sans-serif;
-            
-        }
-
-        .deployInfo h1 {
-            font-size: 1.8em;
-            margin-bottom: 15px;
-            color: #377a77;
-        }
-
-        #deployStatus {
-            font-size: 1.2em;
-            color: #333;
-            margin: 10px 0 20px;
-        }
-
-        /* Centering the Reload API button */
-        .relAPI {
-            outline: none;
-            padding: 10px 20px !important;
-            border-radius: 5px;
-            font-size: 16px;
-            font-weight: 600;
-            background-color: #377a77;
-            color: #fff;
-            border: 2px solid transparent;
-            cursor: pointer;
-            transition: all 0.4s ease;
-            margin: 0 auto 20px;
-            /* Center with margin auto */
-            display: flex;
-            justify-content: center;
-        }
-
-       .relAPI:hover {
-            background-color: transparent;
-            color: #377a77;
-            border-color: #377a77;
-        }
-
-        .status-list {
-            list-style: none;
-            padding: 0;
-            margin-top: 20px;
-            text-align: left;
-        }
-
-        .status-list li {
-            font-size: 0.95em;
-            color: #555;
-            margin: 5px 0;
-            padding: 8px;
-            background-color: #e8f4f4;
-            border-radius: 4px;
-        }
+ 
     </style>
 </head>
 
@@ -206,28 +139,26 @@
 
     <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
 
-    <div class="deployInfo">
-        <h1>Netlify Deployment Status</h1>
-        <p id="deployStatus">Loading...</p>
-      
-        <h1>GitHub Commit Status</h1>
-        <p id="commitTime">Loading latest commit time...</p>
-        <p id="commitMessage">Loading commit message...</p>  
-
-        <button class="relAPI" id="relAPI">Reload API</button>
-
-        This section contains a list of Netlify Deployment Statuses and their corresponding descriptions:
-        <ul class="status-list">
-            <li>new = Project Deployment Is triggered and new deployment is added</li>
-            <li>enqueued = Deployment Is Starting Up</li>
-            <li>building = Project Is Building</li>
-            <li>error = Project Build Failed</li>
-            <li>ready = Project Build Successfull and site is Published</li>
-        </ul>
-
-    </div>
+    <div id="deployInfo"></div>
+    
 </body>
+<script>
+    async function fetchAndDisplayHTML() {
+        try {
+            const response = await fetch('info.html');
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            const htmlContent = await response.text();
+            document.getElementById('deployInfo').innerHTML = htmlContent;
+        } catch (error) {
+            console.error('There has been a problem with your fetch operation:', error);
+        }
+    }
 
+    // Call the function to fetch and display the HTML content
+    fetchAndDisplayHTML();
+</script>
 </html>
 </body>
 
