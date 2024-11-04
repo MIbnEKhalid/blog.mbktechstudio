@@ -145,7 +145,67 @@
           </script>
 </body>
 
-</html>-->
+</html>
+
+
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Netlify Deploy Status</title>
+    <script>
+        async function fetchDeployStatus() {
+            const siteId = 'ef4c0a19-ca35-467d-852f-8652cd8d9ccf';
+            const accessToken = 'nfp_s832HAemYa2E1uay3rK1Cb8jRARgkNuo99b1';
+            
+            try {
+                const response = await fetch(`https://api.netlify.com/api/v1/sites/${siteId}/deploys`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${accessToken}`,
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error('Network response was not ok ' + response.statusText);
+                }
+
+                const deploys = await response.json();
+                const latestDeployState = deploys[12]?.state || 'No deployment found'; // Get the state of the 10th deploy (index 9)
+                document.getElementById('deployStatus').innerText = `Deployment Status: ${latestDeployState}`;
+            } catch (error) {
+                document.getElementById('deployStatus').innerText = `Error: ${error.message}`;
+            }
+        }
+
+        // Call the function on page load
+        window.onload = fetchDeployStatus;
+    </script>
+</head>
+<body>
+    <h1>Netlify Deployment Status</h1>
+    <p id="deployStatus">Loading...</p>
+<main id="main-content" class="main-class">
+
+    <section class="about">
+             <head>
+                <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+            </head>
+            <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
+     </section>
+</main>
+</body>
+</html>
+
+
+
+-->
     <main id="main-content" class="main-class">
 
     <section class="about">
