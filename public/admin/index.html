@@ -1,164 +1,26 @@
-<!--<!DOCTYPE html>
-<html lang="en" dir="ltr">
 
-<head>
-    <meta charset="UTF-8" />
+
+
+
+
+
+
+
+  <!--
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.13/css/intlTelInput.css">
-    <title>Content Manager</title>
     <link rel="stylesheet" href="https://mbktechstudio.com/Assets/style.css"> 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css" />
-    <link rel="icon" type="image/x-icon" href="https://mbktechstudio.com/Assets/Images/dgicon.svg">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/js-yaml/4.1.0/js-yaml.min.js"></script>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-</head>
-<header>
-    <nav>
-        <div class="navbar">
-            <div class="logo">
-                <div class="image">
-                    <img src="https://unilib.mbktechstudio.com/Assets/Images/dg.svg" alt="" />
-                </div>
-                <div class="text">
-                    <a href="https://mbktechstudio.com/">MBK Tech Studio</a>
-                </div>
-            </div>
-            <ul class="menu" style="display: none;">
-                <li><a href="#assignments">Assignments</a></li>
-                <div class="cancel-btn">
-                    <i class="fas fa-times"></i>
-                </div>
-            </ul>
-            <div class="media-icons">
-                <a href="https://www.facebook.com/people/MBK-Tech-Studio/61559079077988/" target="_blank"><i class="fab fa-facebook-f"></i></a>
-                <a href="https://x.com/ibnekhalid28" target="_blank"><i class="fab fa-twitter"></i></a>
-                <a href="https://instagram.com/mbktech.studios" target="_blank"><i class="fab fa-instagram"></i></a>
-                <a href="https://github.com/MIbnEKhalid" target="_blank"><i class="fab fa-github"></i></a>
-                <a href="https://www.linkedin.com/in/muhammad-bin-khalid-89711b25b" target="_blank"><i class="fab fa-linkedin"></i></a>
-                <a href="https://youtube.com/@mibnekhalid" target="_blank"><i class="fab fa-youtube"></i></a>
-                <a href="https://discord.gg/MUAyAeckrM" target="_blank"><i class="fab fa-discord"></i></a>
-            </div>
-            <div class="menu-btn">
-                <i class="fas fa-bars"></i>
-            </div>
-        </div>
-    </nav>
-</header>
-  <style>
-    body,html,.about
-    { 
-        background-image: url('https://docs.mbktechstudio.com/Assets/Images/background.png');
-    }
-     .css-wj9m5t-LoginButton-button-default-gray-disabled {
-        outline: none;
-    padding: 6px 12px;
-    border-radius: 4px;
-    font-size: 15px;
-    font-weight: 600;
-    background: #377a77;
-    color: #fff;
-    border: 2px solid transparent;
-    cursor: pointer;
-    transition: all 0.4s ease;
-    }    
-    .css-wj9m5t-LoginButton-button-default-gray-disabled:hover {
-        border-color: #377a77;
-  background-color: transparent;
-  color: #377a77;
-    }
-  </style>
-<body>
-    <main id="main-content" class="main-class">
-
-    <section class="about">
-             <head>
-                <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
-            </head>
-            <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
-     </section>
-</main>
-    
-    <footer>
-        <div class="text">
-            <span>Developed By <a href="https://github.com/MIbnEKhalid">Muhammad Bin Khalid</a> | &#169; 2024 All Rights    Reserved | <a href="https://privacy.mbktechstudio.com/" target="_blank">Terms & Conditions</a> | <a href="mailto:support@mbktechstudio.com">support@mbktechstudio.com</a></span>
-        </div>
-    </footer>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.13/js/intlTelInput-jquery.min.js"></script>
-
-    <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        netlifyIdentity.on('init', user => {
-            if (user) {
-                onLoginSuccess();
-            }
-        });
-
-        function onLoginSuccess() {
-            const mainContent = document.getElementById('main-content');
-            document.body.innerHTML = '';
-            document.body.appendChild(mainContent);
-        }
-    });
-        // Sticky Navigation Menu JS Code
-        let nav = document.querySelector("nav");
-        let scrollBtn = document.querySelector(".scroll-button a");
-        console.log(scrollBtn);
-        let val;
-        window.onscroll = function() {
-                if (document.documentElement.scrollTop > 20) {
-                    nav.classList.add("sticky");
-                    scrollBtn.style.display = "block";
-                } else {
-                    nav.classList.remove("sticky");
-                    scrollBtn.style.display = "none";
-                }
-            }
-            // Side NavIgation Menu JS Code
-        let body = document.querySelector("body");
-        let navBar = document.querySelector(".navbar");
-        let menuBtn = document.querySelector(".menu-btn");
-        let cancelBtn = document.querySelector(".cancel-btn");
-        menuBtn.onclick = function() {
-            navBar.classList.add("active");
-            menuBtn.style.opacity = "0";
-            menuBtn.style.pointerEvents = "none";
-            // body.style.overflow = "hidden";
-            scrollBtn.style.pointerEvents = "none";
-        }
-        cancelBtn.onclick = function() {
-                navBar.classList.remove("active");
-                menuBtn.style.opacity = "1";
-                menuBtn.style.pointerEvents = "auto";
-                body.style.overflow = "auto";
-                scrollBtn.style.pointerEvents = "auto";
-            }
-            // Side Navigation Bar Close While We Click On Navigation Links
-        let navLinks = document.querySelectorAll(".menu li a");
-        for (var i = 0; i < navLinks.length; i++) {
-            navLinks[i].addEventListener("click", function() {
-                navBar.classList.remove("active");
-                menuBtn.style.opacity = "1";
-                menuBtn.style.pointerEvents = "auto";
-            });
-        }
-  
-          </script>
-</body>
-
-</html>
-
-
-
-
-
-
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css" />
+--> 
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Netlify Deploy Status</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css" />
+    <link rel="icon" type="image/x-icon" href="https://mbktechstudio.com/Assets/Images/dgicon.svg">
+    <title>Admin Panel / Content Manager</title>
+    <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
     <script>
         async function fetchDeployStatus() {
             const siteId = 'ef4c0a19-ca35-467d-852f-8652cd8d9ccf';
@@ -177,41 +39,94 @@
                 }
 
                 const deploys = await response.json();
-                const latestDeployState = deploys[12]?.state || 'No deployment found'; // Get the state of the 10th deploy (index 9)
+                const latestDeployState = deploys[0]?.state || 'No deployment found';
                 document.getElementById('deployStatus').innerText = `Deployment Status: ${latestDeployState}`;
             } catch (error) {
                 document.getElementById('deployStatus').innerText = `Error: ${error.message}`;
             }
         }
 
-        // Call the function on page load
-        window.onload = fetchDeployStatus;
+        window.onload = function() {
+            fetchDeployStatus();
+            document.getElementById("relAPI").onclick = async function() {
+                console.log('Reloading API');
+                await fetchDeployStatus();
+            };
+
+            document.getElementById("loginNetlify").onclick = function() {
+                netlifyIdentity.open();
+            };
+
+            netlifyIdentity.on('login', user => {
+                console.log('User logged in:', user);
+                netlifyIdentity.close();
+            });
+        };
     </script>
+    <style>
+        body, html {
+            font-family: Arial, sans-serif;
+            background-size: cover;
+            background-repeat: no-repeat;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            margin: 0;
+            padding: 0;
+            background-image: url('https://docs.mbktechstudio.com/Assets/Images/background.png');
+        }
+        h1 {
+            margin-bottom: 20px;
+        }
+        #deployStatus {
+            font-size: 1.2em;
+            margin-bottom: 20px;
+        }
+        button {
+            outline: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: 600;
+            background: #377a77;
+            color: #fff;
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            margin-bottom: 5px;
+        }
+        button:hover {
+            border-color: #377a77;
+            background-color: transparent;
+            color: #377a77;
+        }
+        .status-list {
+            list-style: none;
+            padding: 0;
+            margin-top: 20px;
+        }
+        .status-list li {
+            margin: 5px 0;
+        }
+    </style>
 </head>
 <body>
     <h1>Netlify Deployment Status</h1>
     <p id="deployStatus">Loading...</p>
-<main id="main-content" class="main-class">
+    <button id="relAPI">Reload API</button>
+    <button id="loginNetlify">Login Admin Panel</button>
+    This section contains a list of Netlify Deployment Statuses and their corresponding descriptions:
+    <ul class="status-list">
 
-    <section class="about">
-             <head>
-                <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
-            </head>
-            <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
-     </section>
-</main>
+        <li>enqueued = Project Deployment Is triggered and deployment is Starting Up</li>
+        <li>building = Project is Building</li>
+        <li>error = Project Build Failed</li>
+        <li>ready = Project Build Successfull and site is Published</li> 
+    </ul>
+
+    <!--<script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
+-->
 </body>
 </html>
-
-
-
--->
-    <main id="main-content" class="main-class">
-
-    <section class="about">
-             <head>
-                <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
-            </head>
-            <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
-     </section>
-</main>
