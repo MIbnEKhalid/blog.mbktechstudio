@@ -10,8 +10,8 @@
     <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
     <script>
         async function fetchDeployStatus() {
-            const siteId = process.env.NetlifySiteIDblogMBK || 'ef4c0a19-ca35-467d-852f-8652cd8d9ccf';
-            const accessToken = process.env.NetlifyAPIkeyTest || 'nfp_s832HAemYa2E1uay3rK1Cb8jRARgkNuo99b1';
+            const siteId = 'ef4c0a19-ca35-467d-852f-8652cd8d9ccf';
+            const accessToken = 'nfp_s832HAemYa2E1uay3rK1Cb8jRARgkNuo99b1';
 
             try {
                 const response = await fetch(`https://api.netlify.com/api/v1/sites/${siteId}/deploys`, {
@@ -36,7 +36,8 @@
                         `Deployment Status: ${latestDeployState}\nDeployed at: ${deployTime}`;
 
                     // Fetch the latest commit from GitHub
-                    await fetchLatestCommitTime(); // Corrected function call
+                    await fetchLatestCommitTime();
+                    await fetchLatestPushTime(); // Corrected function call
                 } else {
                     document.getElementById('deployStatus').innerText = 'No deployment found';
                 }
@@ -45,6 +46,33 @@
                 document.getElementById('deployStatus').innerText = `Error: ${error.message}`;
             }
         }
+
+        async function fetchLatestPushTime() {
+            const owner = 'MIbnEKhalid'; // Your GitHub username or organization name
+            const repo = 'Blog.MIbnEKhalid.github.io'; // Your repository name
+
+            try {
+                const response = await fetch(`https://api.github.com/repos/${owner}/${repo}`, {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/vnd.github.v3+json'
+                        // If you have a GitHub token, you can add an Authorization header
+                        // 'Authorization': `Bearer YOUR_GITHUB_TOKEN`
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error('Network response was not ok ' + response.statusText);
+                }
+
+                const repoData = await response.json();
+                const pushTime = new Date(repoData.pushed_at).toLocaleString();
+                document.getElementById('pushTime').innerText = `Latest Push Time: ${pushTime}`;
+            } catch (error) {
+                document.getElementById('pushTime').innerText = `Error: ${error.message}`;
+            }
+        }
+
 
         async function fetchLatestCommitTime() {
             const owner = 'MIbnEKhalid'; // Your GitHub username or organization name
@@ -83,14 +111,23 @@
         // Call these functions to fetch and display data
         window.onload = function () {
             fetchDeployStatus();
-            fetchLatestCommitTime();
+            fetchLatestPushTime();
 
             document.getElementById("relAPI").onclick = async function () {
                 console.log('Reloading APIs');
                 await fetchDeployStatus();
+                await fetchLatestPushTime();
                 await fetchLatestCommitTime();
             };
         };
+
+
+        document.addEventListener("DOMContentLoaded", function () {
+            fetchDeployStatus();
+            fetchLatestPushTime();
+            fetchLatestCommitTime();
+        });
+
     </script>
     <style>
         #nc-root,
@@ -197,7 +234,8 @@
         <h1>Netlify Deployment Status</h1>
         <p id="deployStatus">Loading...</p>
 
-        <h1>GitHub Commit Status</h1>
+        <h1>GitHub Repo Status</h1>
+        <p id="pushTime">Loading push commit time...</p>
         <p id="commitTime">Loading latest commit time...</p>
         <p id="commitMessage">Loading commit message...</p>
 
@@ -211,7 +249,7 @@
             <li>error = Project Build Failed</li>
             <li>ready = Project Build Successfull and site is Published</li>
         </ul>
-        <a class="relAPI" href="info/">Deploy Info</a>
+        <a class="relAPI" href="DeployInfo/">Deploy Info</a>
 
     </div>
 
