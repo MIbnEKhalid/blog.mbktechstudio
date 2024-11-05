@@ -66,13 +66,16 @@
                 }
 
                 const commitData = await response.json();
-
-                // Get the latest commit
+  // Get the latest commit
                 const latestCommit = commitData[0]; // Latest commit
                 const commitTime = new Date(latestCommit.commit.committer.date).toLocaleString();
                 const commitMessage = latestCommit.commit.message;
 
-                document.getElementById('commitTime').innerText = `Latest Commit Time: ${commitTime}`;
+                
+                const pushTime = new Date(commitData[0].commit.committer.date).toLocaleString();
+                console.log(pushTime);
+              
+                document.getElementById('commitTime').innerText = `Latest Push Time: ${pushTime}`;
                 document.getElementById('commitMessage').innerText = `Commit Message: ${commitMessage}`;
             } catch (error) {
                 document.getElementById('commitTime').innerText = `Error: ${error.message}`;
