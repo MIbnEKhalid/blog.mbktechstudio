@@ -120,12 +120,6 @@
             };
         };
 
-        document.addEventListener("DOMContentLoaded", function() {
-            const myVariable = '{{ process.env.NetlifyAPIkeyProd }}';
-            console.log(`Environment Variable: ${myVariable}`);
-            document.getElementById('envVariable').innerText = `Environment Variable: ${myVariable}`;
-        });
-
         document.addEventListener("DOMContentLoaded", function () {
             fetchDeployStatus();
             fetchLatestPushTime();
