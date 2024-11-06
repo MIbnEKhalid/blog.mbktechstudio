@@ -11,8 +11,8 @@
         async function fetchDeployStatus() {
             const siteId = 'ef4c0a19-ca35-467d-852f-8652cd8d9ccf';
             const accessToken = 'nfp_s832HAemYa2E1uay3rK1Cb8jRARgkNuo99b1';
-        const apiKey = process.env.NetlifyAPIkeyTest;
-        console.log("API Key from environment variable:", apiKey);
+      //  const apiKey = process.env.NetlifyAPIkeyTest;
+     //   console.log("API Key from environment variable:", apiKey);
             try {
                 const response = await fetch(`https://api.netlify.com/api/v1/sites/${siteId}/deploys`, {
                     method: 'GET',
