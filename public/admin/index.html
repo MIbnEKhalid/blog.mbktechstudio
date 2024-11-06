@@ -227,31 +227,45 @@
 
     <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
 
-    <div class="deployInfo" id="deployInfo">
+    <div class="deployInfo" id="deployInfo1">
 
          <a onclick="nflexLoading()"><i></i>close</a>
 
-        <h1>Netlify Deployment Status</h1>
-        <p id="deployStatus">Loading...</p>
+        <h1>Note For Admin Users</h1>
 
-        <h1>GitHub Repo Status</h1>
-        <p id="pushTime">Loading push commit time...</p>
-        <p id="commitTime">Loading latest commit time...</p>
-        <p id="commitMessage">Loading commit message...</p>
-
-        <button class="relAPI" id="relAPI">Reload API</button>
-
-        This section contains a list of Netlify Deployment Statuses and their corresponding descriptions:
         <ul class="status-list">
-            <li>new = Project Deployment Is triggered and new deployment is added</li>
-            <li>enqueued = Deployment Is Starting Up</li>
-            <li>building = Project Is Building</li>
-            <li>error = Project Build Failed</li>
-            <li>ready = Project Build Successfull and site is Published</li>
+            <li>Registration / SignUp Is Closed By Defualt</li>
+            <li>Login Is Possible Only Through External providers (Github, Google, GitLab & BitBucket)</li>
+            <li>Login Is Not Possible Through Email & Password</li>
         </ul>
-        <a class="relAPI" href="DeployInfo/">Deploy Info</a>
 
     </div>
+
+    <div class="deployInfo" id="deployInfo">
+
+        <a onclick="nflexLoading()"><i></i>close</a>
+
+       <h1>Netlify Deployment Status</h1>
+       <p id="deployStatus">Loading...</p>
+
+       <h1>GitHub Repo Status</h1>
+       <p id="pushTime">Loading push commit time...</p>
+       <p id="commitTime">Loading latest commit time...</p>
+       <p id="commitMessage">Loading commit message...</p>
+
+       <button class="relAPI" id="relAPI">Reload API</button>
+
+       This section contains a list of Netlify Deployment Statuses and their corresponding descriptions:
+       <ul class="status-list">
+           <li>new = Project Deployment Is triggered and new deployment is added</li>
+           <li>enqueued = Deployment Is Starting Up</li>
+           <li>building = Project Is Building</li>
+           <li>error = Project Build Failed</li>
+           <li>ready = Project Build Successfull and site is Published</li>
+       </ul>
+       <a class="relAPI" href="DeployInfo/">Deploy Info</a>
+
+   </div>
 
 </body>
 <script>
@@ -265,6 +279,7 @@
             element.style.display = 'block';
         });
         document.getElementById('deployInfo').style.display = 'none';
+        document.getElementById('deployInfo1').style.display = 'none';
     }
 
     document.addEventListener('DOMContentLoaded', function () {
