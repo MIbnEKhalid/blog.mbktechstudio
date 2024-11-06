@@ -12,7 +12,7 @@ const apiKey = import.meta.env.NetlifyAPIkeyProd
 	<body>
 		<h1>Welcome to Astro</h1>
 		<script>
-			const apiKeyD = `${apiKey}`
+			const apiKeyD = '{{apiKey}}'
 			console.log('API Key EnvVar:', apiKeyD)
 		</script>
 	</body>
