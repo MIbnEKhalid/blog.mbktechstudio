@@ -7,7 +7,7 @@ Website Source Code
 
 Documentation: [danielcgilibert/blog-template/README.md](https://github.com/danielcgilibert/blog-template/blob/main/README.md)
 
-See Project Configs: [GPL 3.0 LICENSE](public/admin/doc.Config.md)
+See Project Configs: [doc.Config.md](public/admin/doc.Config.md)
 
 ## 💻 Demo
 
