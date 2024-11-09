@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css" />
+    <link rel="icon" type="image/x-icon" href="https://mbktechstudio.com/Assets/Images/dgicon.svg">
+    <title>Admin Panel / Content Manager</title>
+    <style>
+        /* Background gradient */
+        body {
+            background: linear-gradient(135deg, #1e1e2f, #3a3a57);
+            color: #e5e5e5;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        /* Panel container with subtle shadow and rounded corners */
+        .deployInfo {
+            max-width: 90%;
+            width: 500px;
+            padding: 20px;
+            background: rgba(30, 30, 47, 0.85);
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+       
+
+        /* Headers with accent color and glow effect */
+        h1 {
+            font-size: 1.8em;
+            color: #4caf50;
+            text-shadow: 0px 0px 10px #4caf50;
+            margin-bottom: 15px;
+        }
+
+        #deployStatus, #pushTime, #commitTime, #commitMessage {
+            font-size: 1em;
+            margin: 15px 0;
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 10px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            transition: box-shadow 0.3s ease;
+        }
+
+        #deployStatus:hover, #pushTime:hover, #commitTime:hover, #commitMessage:hover {
+            box-shadow: 0 6px 12px rgba(76, 175, 80, 0.5);
+        }
+
+        /* Button styling with glowing hover effect */
+        .relAPI {
+            padding: 12px 24px;
+            font-size: 16px;
+            font-weight: 600;
+            color: #ffffff;
+            background: linear-gradient(45deg, #4caf50, #3e8e41);
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
+            transition: background 0.4s, box-shadow 0.4s;
+            text-decoration: none;
+            display: inline-block;
+            margin: 10px;
+        }
+
+        .relAPI:hover {
+            background: linear-gradient(45deg, #4caf50, #66bb6a);
+            box-shadow: 0 8px 20px rgba(76, 175, 80, 0.6);
+        }
+
+        /* List styling with icons */
+        .status-list {
+            list-style-type: none;
+            padding: 0;
+            margin-top: 20px;
+            text-align: left;
+            color: #cccccc;
+        }
+
+        .status-list li {
+            font-size: 0.9em;
+            margin: 5px 0;
+            padding: 8px;
+            background-color: rgba(50, 50, 75, 0.8);
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+        }
+
+        /* Custom icons for each state */
+        .new::before {
+            content: "⏳"; /* Yellow clock icon */
+            color: yellow;
+            margin-right: 8px;
+        }
+
+        .enqueued::before {
+            content: "🕑"; /* Yellow timer icon */
+            color: yellow;
+            margin-right: 8px;
+        }
+
+        .building::before {
+            content: "🔄"; /* Yellow spinning arrows icon */
+            color: yellow;
+            margin-right: 8px;
+        }
+
+        .error::before {
+            content: "❌"; /* Red cross icon */
+            color: red;
+            margin-right: 8px;
+        }
+
+        .ready::before {
+            content: "✔️"; /* Green checkmark icon */
+            color: green;
+            margin-right: 8px;
+        }
+    </style>
+    <script>
+        async function fetchDeployStatus() {
+            const siteId = 'ef4c0a19-ca35-467d-852f-8652cd8d9ccf';
+            const accessToken = 'nfp_s832HAemYa2E1uay3rK1Cb8jRARgkNuo99b1';
+
+            try {
+                const response = await fetch(`https://api.netlify.com/api/v1/sites/${siteId}/deploys`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${accessToken}`,
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error('Network response was not ok ' + response.statusText);
+                }
+
+                const deploys = await response.json();
+                const latestDeploy = deploys[0];
+
+                if (latestDeploy) {
+                    const latestDeployState = latestDeploy.state || 'No deployment found';
+                    const deployTime = new Date(latestDeploy.created_at).toLocaleString();
+
+                    document.getElementById('deployStatus').innerText =
+                        `Deployment Status: ${latestDeployState}\nDeployed at: ${deployTime}`;
+
+                
+                } else {
+                    document.getElementById('deployStatus').innerText = 'No deployment found';
+                }
+
+            } catch (error) {
+                document.getElementById('deployStatus').innerText = `Error: ${error.message}`;
+            }
+            console.log('Netlify API data fetched');
+        }
+
+        async function fetchLatestPushTime() {
+            const owner = 'MIbnEKhalid';
+            const repo = 'Blog.MIbnEKhalid.github.io';
+
+            try {
+                const response = await fetch(`https://api.github.com/repos/${owner}/${repo}`, {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/vnd.github.v3+json'
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error('Network response was not ok ' + response.statusText);
+                }
+
+                const repoData = await response.json();
+                const pushTime = new Date(repoData.pushed_at).toLocaleString();
+                document.getElementById('pushTime').innerText = `Latest Push Time: ${pushTime}`;
+            } catch (error) {
+                document.getElementById('pushTime').innerText = `Error: ${error.message}`;
+            }
+            console.log('GitHub Push Time');
+        }
+
+        async function fetchLatestCommitTime() {
+            const owner = 'MIbnEKhalid';
+            const repo = 'Blog.MIbnEKhalid.github.io';
+            const branch = 'main';
+
+            try {
+                const response = await fetch(`https://api.github.com/repos/${owner}/${repo}/commits?sha=${branch}`, {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/vnd.github.v3+json'
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error('Network response was not ok ' + response.statusText);
+                }
+
+                const commitData = await response.json();
+                const latestCommit = commitData[0];
+                const commitTime = new Date(latestCommit.commit.committer.date).toLocaleString();
+                const commitMessage = latestCommit.commit.message;
+
+                document.getElementById('commitTime').innerText = `Latest Commit Time: ${commitTime}`;
+                document.getElementById('commitMessage').innerText = `Commit Message: ${commitMessage}`;
+            } catch (error) {
+                document.getElementById('commitTime').innerText = `Error: ${error.message}`;
+                document.getElementById('commitMessage').innerText = '';
+            }
+            console.log('GitHub Commit Time');
+        }
+
+        window.onload = function () {
+            fetchDeployStatus();
+            fetchLatestPushTime();
+            fetchLatestCommitTime();
+            document.getElementById("relAPI").onclick = async function () {
+                 console.log('Reloading API data...');
+                await fetchDeployStatus();
+                await fetchLatestPushTime();
+                await fetchLatestCommitTime();
+                console.log('...'); 
+            };
+        };
+</script>
+</head>
+
+<body>
+    <div class="deployInfo" id="deployInfo">
+        <h1>Netlify Deployment Status</h1>
+        <p id="deployStatus">Loading...</p>
+        <h1>GitHub Repo Status</h1>
+        <p id="pushTime">Loading push commit time...</p>
+        <p id="commitTime">Loading latest commit time...</p>
+        <p id="commitMessage">Loading commit message...</p>
+
+        <button class="relAPI" id="relAPI">Reload API</button>
+
+        <ul class="status-list">
+            <li class="new">new = Project Deployment is triggered, and a new deployment is added</li>
+            <li class="enqueued">enqueued = Deployment is starting up</li>
+            <li class="building">building = Project is building</li>
+            <li class="error">error = Project build failed</li>
+            <li class="ready">ready = Project build successful, and site is published</li>
+        </ul> 
+        <a class="relAPI" href="../admin/">Admin Panel</a> 
+        <a class="relAPI" href="https://github.com/MIbnEKhalid/Blog.MIbnEKhalid.github.io">GitHub Repo</a>
+        <a class="relAPI" href="https://app.netlify.com/sites/blog-mbktechstudio/overview">Netlify Site</a>
+    </div>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
