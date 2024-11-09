@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css" />
-    <link rel="icon" type="image/x-icon" href="https://mbktechstudio.com/Assets/Images/dgicon.svg">
+    <link rel="icon" type="image/x-icon" href="https://raw.githubusercontent.com/MIbnEKhalid/Blog.MIbnEKhalid.github.io/main/src/components/icons/adminIconShield.svg">
     <title>Admin Panel / Content Manager</title>
     <style>
         /* Background gradient */
@@ -21,7 +21,9 @@
 
         /* Panel container with subtle shadow and rounded corners */
         .deployInfo {
-            max-width: 90%;
+            max-width: 85%;
+            margin-bottom: 20px;
+            margin-top: 20px;
             width: 500px;
             padding: 20px;
             background: rgba(30, 30, 47, 0.85);
@@ -30,9 +32,7 @@
             text-align: center;
             transition: transform 0.3s ease;
         }
-
        
-
         /* Headers with accent color and glow effect */
         h1 {
             font-size: 1.8em;
@@ -109,21 +109,25 @@
             margin-right: 8px;
         }
 
-        .building::before {
-            content: "🔄"; /* Yellow spinning arrows icon */
-            color: yellow;
+        .building  {
             margin-right: 8px;
+        }
+        .fas  {
+            color: #FFD700; /* yellow loading for building */
         }
 
         .error::before {
-            content: "❌"; /* Red cross icon */
             color: red;
+            margin-right: 8px;
+        }
+        
+        .failure::before {
+            color: rgb(252, 19, 19); 
             margin-right: 8px;
         }
 
         .ready::before {
-            content: "✔️"; /* Green checkmark icon */
-            color: green;
+             color: green;
             margin-right: 8px;
         }
     </style>
@@ -233,27 +237,29 @@
                 console.log('...'); 
             };
         };
-</script>
+    </script>
 </head>
 
 <body>
     <div class="deployInfo" id="deployInfo">
-        <h1>Netlify Deployment Status</h1>
-        <p id="deployStatus">Loading...</p>
+        <h1>Netlify Deployment Status</h1>      
+        <p id="deployStatus">Deployment Status: none<br>Deployed at: 00/00/0000, 0:00:00 PM</p>
         <h1>GitHub Repo Status</h1>
-        <p id="pushTime">Loading push commit time...</p>
-        <p id="commitTime">Loading latest commit time...</p>
-        <p id="commitMessage">Loading commit message...</p>
+        <p id="pushTime">Latest Push Time: 00/0/0000, 0:00:00 PM</p>
+        <p id="commitTime">Latest Commit Time: 00/0/0000, 0:00:00 PM</p>
+        <p id="commitMessage">Commit Message:</p>
 
-        <button class="relAPI" id="relAPI">Reload API</button>
 
         <ul class="status-list">
             <li class="new">new = Project Deployment is triggered, and a new deployment is added</li>
             <li class="enqueued">enqueued = Deployment is starting up</li>
-            <li class="building">building = Project is building</li>
-            <li class="error">error = Project build failed</li>
-            <li class="ready">ready = Project build successful, and site is published</li>
+            <li><i class=" building fas fa-spinner fa-spin"></i>  building = Project Is Building</li>
+            <li><i class="error fas fa-times-circle"></i> error = Project build failed</li>
+            <li><i class="ready fas fa-check-circle"></i>ready = Project build successful, and site is published</li>
+            <li><i class="failure fas fa-exclamation-circle"></i></i>"Network response was not ok" may occur if GitHub's API rate limit of 60 requests per hour for unauthenticated users is exceeded.            </li>
         </ul> 
+        <button class="relAPI" id="relAPI">Reload API</button>
+
         <a class="relAPI" href="../admin/">Admin Panel</a> 
         <a class="relAPI" href="https://github.com/MIbnEKhalid/Blog.MIbnEKhalid.github.io">GitHub Repo</a>
         <a class="relAPI" href="https://app.netlify.com/sites/blog-mbktechstudio/overview">Netlify Site</a>
