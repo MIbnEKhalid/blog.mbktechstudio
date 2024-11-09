@@ -137,88 +137,119 @@
             height: 25vh;
             margin-top: 15px;
         }
+        body{
+            background: linear-gradient(135deg, #1e1e2f, #3a3a57) !important;
+            color: #e5e5e5 !important;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+          
+        }
+
+        .deployInfo {  
+            max-width: 90%;
+            margin-bottom: 20px;
+            margin-top: 20px;
+            width: 500px;
+            padding: 20px;
+            background: rgba(30, 30, 47, 0.85);
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
+            text-align: center;
+            transition: transform 0.3s ease;
+            margin: 20px auto;
+         }
 
         h1 {
-            margin-bottom: 20px;
-        }
-
-        #deployStatus {
-            font-size: 1.2em;
-            margin-bottom: 20px;
-        }
-
-        .status-list {
-            list-style: none;
-            padding: 0;
-            margin-top: 20px;
-        }
-
-        .status-list li {
-            margin: 5px 0;
-        }
-
-        .deployInfo {
-            max-width: 90%;
-            padding: 20px;
-            background-color: #f7f9fa;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            text-align: center;
-            margin: 20px auto;
-            font-family: Arial, sans-serif;
-
-        }
-
-        .deployInfo h1 {
             font-size: 1.8em;
+            color: #4caf50 !important;
+            text-shadow: 0px 0px 10px #4caf50 !important;
             margin-bottom: 15px;
-            color: #377a77;
         }
 
-        #deployStatus {
-            font-size: 1.2em;
-            color: #333;
-            margin: 10px 0 20px;
+        #deployStatus, #pushTime, #commitTime, #commitMessage {
+            font-size: 1em;
+            margin: 15px 0;
+            background-color: rgba(255, 255, 255, 0.1) !important;;
+            padding: 10px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3) !important;
+            transition: box-shadow 0.3s ease ;
         }
 
-        /* Centering the Reload API button */
-        .relAPI {
-            outline: none;
-            padding: 10px 20px !important;
-            border-radius: 5px;
+        #deployStatus:hover, #pushTime:hover, #commitTime:hover, #commitMessage:hover {
+            box-shadow: 0 6px 12px rgba(76, 175, 80, 0.5) !important;;
+        }
+
+         .relAPI {
+            padding: 12px 24px;
             font-size: 16px;
             font-weight: 600;
-            background-color: #377a77;
-            color: #fff;
-            border: 2px solid transparent;
+            color: #ffffff;
+            background: linear-gradient(45deg, #4caf50, #3e8e41);
+            border: none;
+            border-radius: 8px;
             cursor: pointer;
-            transition: all 0.4s ease;
-            margin: 0 auto 20px;
-            /* Center with margin auto */
-            display: flex;
-            justify-content: center;
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
+            transition: background 0.4s, box-shadow 0.4s;
+            text-decoration: none;
+            display: inline-block;
+            margin: 10px;
         }
 
         .relAPI:hover {
-            background-color: transparent;
-            color: #377a77;
-            border-color: #377a77;
+            background: linear-gradient(45deg, #4caf50, #66bb6a);
+            box-shadow: 0 8px 20px rgba(76, 175, 80, 0.6);
         }
 
-        .status-list {
-            list-style: none;
+         .status-list {
+            list-style-type: none;
             padding: 0;
             margin-top: 20px;
             text-align: left;
+            color: #cccccc;
         }
 
         .status-list li {
-            font-size: 0.95em;
-            color: #555;
+            font-size: 0.9em;
             margin: 5px 0;
             padding: 8px;
-            background-color: #e8f4f4;
-            border-radius: 4px;
+            background-color: rgba(50, 50, 75, 0.8);
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+        }
+
+         .new::before {
+            content: "⏳";  
+            color: yellow;
+            margin-right: 8px;
+        }
+
+        .enqueued::before {
+            content: "🕑";  
+            color: yellow;
+            margin-right: 8px;
+        }
+
+        .building  {
+            margin-right: 8px;
+        }
+        .fas  {
+            color: #FFD700;  
+        }
+
+        .error::before {
+            color: red;
+            margin-right: 8px;
+        }
+        
+        .failure::before {
+            color: rgb(252, 19, 19); 
+            margin-right: 8px;
+        }
+
+        .ready::before {
+             color: green;
+            margin-right: 8px;
         }
     </style>
 </head>
@@ -240,34 +271,34 @@
         </ul>
 
     </div>
+ 
 
-    <div class="deployInfo" id="deployInfo">
+   
+   <div class="deployInfo" id="deployInfo">
+    <a onclick="nflexLoading()"><i></i>close</a>
 
-        <a onclick="nflexLoading()"><i></i>close</a>
+    <h1>Netlify Deployment Status</h1>      
+    <p id="deployStatus">Deployment Status: none<br>Deployed at: 00/00/0000, 0:00:00 PM</p>
+    <h1>GitHub Repo Status</h1>
+    <p id="pushTime">Latest Push Time: 00/0/0000, 0:00:00 PM</p>
+    <p id="commitTime">Latest Commit Time: 00/0/0000, 0:00:00 PM</p>
+    <p id="commitMessage">Commit Message:</p>
 
-       <h1>Netlify Deployment Status</h1>
-       <p id="deployStatus">Loading...</p>
 
-       <h1>GitHub Repo Status</h1>
-       <p id="pushTime">Loading push commit time...</p>
-       <p id="commitTime">Loading latest commit time...</p>
-       <p id="commitMessage">Loading commit message...</p>
+    <ul class="status-list">
+        <li class="new">new = Project Deployment is triggered, and a new deployment is added</li>
+        <li class="enqueued">enqueued = Deployment is starting up</li>
+        <li><i class=" building fas fa-spinner fa-spin"></i>  building = Project Is Building</li>
+        <li><i class="error fas fa-times-circle"></i> error = Project build failed</li>
+        <li><i class="ready fas fa-check-circle"></i>ready = Project build successful, and site is published</li>
+        <li><i class="failure fas fa-exclamation-circle"></i></i>"Network response was not ok" may occur if GitHub's API rate limit of 60 requests per hour for unauthenticated users is exceeded.            </li>
+    </ul> 
+    <button class="relAPI" id="relAPI">Reload API</button>
 
-       <button class="relAPI" id="relAPI">Reload API</button>
-
-       This section contains a list of Netlify Deployment Statuses and their corresponding descriptions:
-       <ul class="status-list">
-           <li>new = Project Deployment Is triggered and new deployment is added</li>
-           <li>enqueued = Deployment Is Starting Up</li>
-           <li>building = Project Is Building</li>
-           <li>error = Project Build Failed</li>
-           <li>ready = Project Build Successfull and site is Published</li>
-       </ul>
-       <a class="relAPI" href="../DeployInfo/">Deploy Info</a>
-       <a class="relAPI" href="https://github.com/MIbnEKhalid/Blog.MIbnEKhalid.github.io">Github Repo</a>
-       <a class="relAPI" href="https://app.netlify.com/sites/blog-mbktechstudio/overview">Netlify Site</a>
-
-   </div>
+    <a class="relAPI" href="../admin/">Admin Panel</a> 
+    <a class="relAPI" href="https://github.com/MIbnEKhalid/Blog.MIbnEKhalid.github.io">GitHub Repo</a>
+    <a class="relAPI" href="https://app.netlify.com/sites/blog-mbktechstudio/overview">Netlify Site</a>
+</div>
 
 </body>
 <script>
