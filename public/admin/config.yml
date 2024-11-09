@@ -16,7 +16,7 @@ collections:
     format: frontmatter
     fields:
       - { label: "Cover Image", name: "heroImage", widget: "image", required: true }
-      - { label: "Category", name: "category", widget: "select", options: [ Tutorials, Demo, News, Docs, Test ], required: true }
+      - { label: "Category", name: "category", widget: "select", options: [ Tutorials, Demo, News, Docs, Policy, Test ], required: true }
       - { label: "Description", name: "description", widget: "string", required: true }
       - { label: "Publication Date", name: "pubDate", widget: "datetime", required: true }
       - { label: "Draft", name: "draft", widget: "boolean", default: false }
