@@ -1,33 +1,13 @@
-<div align="center">
+# MBK Tech Studio Blogs
 
-<img src="public/project.png" alt="Screenshot" />
+https://blogs.mbktechstudio.com/
 
-<hr/>
+Website Source Code
+[danielcgilibert/blog-template](https://github.com/danielcgilibert/blog-template)
 
-<h3 align="center">
- ⭐ Leave a star if you like this project! ⭐️
-</h3>
+Documentation: [danielcgilibert/blog-template/README.md](https://github.com/danielcgilibert/blog-template/blob/main/README.md)
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fdanielcgilibert%2Fblog-template)
-[![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/MIbnEKhalid/Blog.MIbnEKhalid.github.io)
-
-</div>
-
-## 📌 Table Of Contents
-
-1. [Demo](#-Demo)
-2. [CMS](#-Tina-CMS)
-3. [Features](#-Features)
-4. [Roadmap](#-Roadmap)
-5. [Stack](#-Stack)
-6. [Running locally](#-Running-Locally)
-7. [Configure](#-Configure)
-8. [Categories](#-Adding-a-category)
-9. [Posts](#-Adding-a-post)
-10. [Draft](#-Activating-draft-mode)
-11. [FrontMatter](#-Frontmatter)
-12. [CLI](#-Commands)
-13. [Contributors](#-Contributors)
+See Project Configs: [doc.Config.md](public/admin/doc.Config.md)
 
 ## 💻 Demo
 
@@ -36,95 +16,9 @@ Check out the [Demo](https://blog-template-gray.vercel.app/), hosted on Vercel
 
 https://github.com/danielcgilibert/blog-template/assets/44746462/56b8399e-cc5b-45a8-b9d2-d69833ecadb1
 
-## 🦙 Tina CMS
+### NOTE:
 
-By default, this template comes pre-configured with Tina CMS.
-
-Now you can create your posts directly from the CMS without the need to do it manually.
-
-If you decide to use Tina, it's not necessary to add any properties to the Markdown files, Tina does it automatically.
-
-Example:
-
-https://github.com/danielcgilibert/blog-template/assets/44746462/51ae324c-d383-40be-9b16-db159d1af15d
-
-The documentation for Tina CMS can be found [here](https://tina.io/docs/)
-
-> Tina is completely optional, and you can remove it, and it will still function in the same way.
-
-## 💪 Features:
-
-<p align="center">
-  <a href="https://pagespeed.web.dev/analysis/https-blog-template-gray-vercel-app/7ovjfewos9?form_factor=mobile">
-    <img width="510" alt="openblog Lighthouse Score" src="public/openblog-lighthouse-score.svg">
-  <a>
-</p>
-    
-- ✅ Minimal styling
-- ✅ Mobile responsive
-- ✅ 100/100 Lighthouse performance
-- ✅ SEO-friendly with canonical URLs and OpenGraph data
-- ✅ Sitemap support
-- ✅ RSS Feed support
-- ✅ Markdown & MDX support
-- ✅ Syntax highlighting
-- ✅ Image optimization
-- ✅ Table of contents
-- ✅ Dark mode
-- ✅ Reading Time
-- ✅ [Pagefind](https://pagefind.app/) static search library integration
-- ✅ Related posts
-- ✅ Share posts (Linkedin, twitter)
-- ✅ Draft mode
-- ✅ Copy code block
-- ✅ CMS in the repository (Tina CMS)
-- ✅ Pagination
-- ✅ ViewTransition (new)
-- ✅ Disqus comments (new)
-
-## 🛣️ Roadmap
-
-- ❌ Add post author
-- ❌ Add customization with colors
-- ❌ Add filters for reading time, date...
-- ❌ More sharing options
-- ❌ Internationalization (i18n)
-
-## ⚙️ Stack
-
-- [**ASTRO** + **Typescript**](https://astro.build/) - Astro is the all-in-one web framework designed for speed.
-- [**Tailwind CSS** + **Tailwind-Merge** + **clsx**](https://tailwindcss.com/) - Tailwind CSS is a utility-first CSS framework.
-- [**Tabler Icons**](https://tabler-icons.io/i/) - A open source SVG icons.
-- [**Eslint**](https://eslint.org/) - ESLint is an open source project that helps you find and fix problems.
-- [**Prettier**](https://prettier.io/) - Code formatter.
-- [**Search Library**](https://pagefind.app/) - Static search library integration.
-- [**Motion**](https://motion.dev/) - Motion One is the smallest fully-featured animation library for the web.
-- [**Tina CMS**](https://tina.io/) - CMS.
-
-## 👨🏻‍💻 Running Locally
-
-**Recommended extensions for VSCode:**
-
-- [Tailwind CSS IntelliSense](https://marketplace.visualstudio.com/items?itemName=bradlc.vscode-tailwindcss).
-- [Astro](https://marketplace.visualstudio.com/items?itemName=astro-build.astro-vscode).
-
-1. Clone or [fork](https://github.com/danielcgilibert/blog-template/fork) the repository:
-
-```bash
-git@github.com:danielcgilibert/blog-template.git
-```
-
-2. Install dependencies:
-
-```bash
-pnpm install
-```
-
-3. Run the development server:
-
-```bash
-pnpm dev
-```
+Only The Source Code Of This Website Is Covered Under The [GPL 3.0 LICENSE](LICENSE). The Project Blog Posts, Some Images, , And Other Content Are NOT Covered Under This License And Remain The Intellectual Property Of The Author.
 
 ## 📐 Configure
 
@@ -152,63 +46,53 @@ export  const  CATEGORIES  =  [
 
 > 🚨 Zod checks whether the category is not correctly written or does not exist in the properties of the markdown document. **It will throw an error when building the application.** 🚨
 
-## 📄 Adding a post
+### List Of Main Domains
 
-Adding a post is as simple as adding a .md or .mdx file to the blog folder at the path **src/content/blog**. The filename will be used to create the slug/URL of the page.
+|                      | Domains                                        | Purpose                                                                                                |
+| -------------------- | ---------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| **Main Domain**      | [mbktechstudio.com](https://mbktechstudio.com) | Main Domain Used For all purposes for personal and official                                            |
+| **Secondary Domain** | [mbktech.xyz](https://mbktech.xyz)             | Backup domain, rarely used.                                                                            |
+| **Portfolio Domain** | [ibnekhalid.me](https://ibnekhalid.me)         | The primary website for my personal portfolio, domain was provided as part of the GitHub Student Pack. |
 
-For example, if you have a file named **jsx-and-react.md**, it will be transformed into: **http://yourdomain.com/post/jsx-and-react/**
+### List Of mbktechstudio.com sub domains
 
-## 📝 Activating draft mode
+| **Repository Name**        | **Repo Link**                                                                                              | **Website Link**                                                                       | **Purpose**                                                                      |
+| -------------------------- | ---------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
+| **Main Website**           | [MIbnEKhalid.github.io](https://github.com/MIbnEKhalid/MIbnEKhalid.github.io)                              | [mbktechstudio.com](https://mbktechstudio.com)                                         | Main Page of MBK Tech Studio                                                     |
+| **Maintenance Website**    | [MIbnEKhalid.github.io/Maintenance](https://github.com/MIbnEKhalid/MIbnEKhalid.github.io/tree/Maintenance) | [mbktechstudio.com](https://mbktechstudio.com)                                         | Maintenance page deploy when websiye under Maintenance                           |
+|                            |                                                                                                            | [maintenance.mbktechstudio.com](https://maintenance.mbktechstudio.com)                 |                                                                                  |
+|                            |                                                                                                            | [maintenance-mbktechstudio.netlify.app](https://maintenance-mbktechstudio.netlify.app) |                                                                                  |
+| **Domain Website**         | [MIbnEKhalid.github.io/domain](https://github.com/MIbnEKhalid/MIbnEKhalid.github.io/tree/domain)           | [domain.mbktechstudio.com](https://domain.mbktechstudio.com)                           | Website that showcase all subdomains)                                            |
+|                            |                                                                                                            | [domains.mbktechstudio.com](https://domains.mbktechstudio.com)                         |                                                                                  |
+|                            |                                                                                                            | [domain-mbktechstudio.netlify.app](https://domain-mbktechstudio.netlify.app)           |                                                                                  |
+| **Main Test Website**      | [MIbnEKhalid.github.io/test](https://github.com/MIbnEKhalid/MIbnEKhalid.github.io/tree/test)               | [test.mbktechstudio.com](https://test.mbktechstudio.com)                               | Main Website Test Page                                                           |
+|                            |                                                                                                            | [test-mbktechstudio.netlify.app](https://test-mbktechstudio.netlify.app)               |                                                                                  |
+| **Privacy Policy Website** | [Privacy.MIbnEKhalid.github.io](https://github.com/MIbnEKhalid/Privacy.MIbnEKhalid.github.io)              | [privacy.mbktechstudio.com](https://Privacy.mbktechstudio.com)                         | Website for Privacy Policy                                                       |
+|                            |                                                                                                            | [privacy-mbktechstudio.netlify.app](https://privacy-mbktechstudio.netlify.app)         |                                                                                  |
+| **Docs Website**           | [Docs.MIbnEKhalid.github.io](https://github.com/MIbnEKhalid/Docs.MIbnEKhalid.github.io)                    | [Docs.mbktechstudio.com](https://docs.mbktechstudio.com)                               | Website for documentation of MBK Tech Studio's Projects, Products and apps (etc) |
+|                            |                                                                                                            | [project.mbktechstudio.com](https://Project.mbktechstudio.com)                         |                                                                                  |
+|                            |                                                                                                            | [docs-mbktechstudio.netlify.app](https://docs-mbktechstudio.netlify.app)               |                                                                                  |
+| **Portal Website**         | [Portal.MIbnEKhalid.github.io](https://github.com/MIbnEKhalid/Portal.MIbnEKhalid.github.io)                | [portal.mbktechstudio.com](https://portal.mbktechstudio.com)                           | Website For Admins and Test Users                                                |
+|                            |                                                                                                            | [portal-mbktechstudio.netlify.app](https://portal-mbktechstudio.netlify.app)           |                                                                                  |
+| **Portfolio Website**      | [Portfolio.MIbnEKhalid.github.io](https://github.com/MIbnEKhalid/Portal.MIbnEKhalid.github.io)             | [portfolio.mbktechstudio.com](https://portfolio.mbktechstudio.com)                     | My Personal Portfolio Website                                                    |
+|                            |                                                                                                            | [ibnekhalid.me](https://ibnekhalid.me)                                                 |                                                                                  |
+|                            |                                                                                                            | [portfolio-mbktechstudio.netlify.app](https://portfolio-mbktechstudio.netlify.app)     |                                                                                  |
+| **Uni Library Website**    | [Unilib.MIbnEKhalid.github.io](https://github.com/MIbnEKhalid/Unilib.MIbnEKhalid.github.io)                | [unilib.mbktechstudio.com](https://unilib.mbktechstudio.com)                           | Website For My Uni Classmates                                                    |
+|                            |                                                                                                            | [unilib-mbktechstudio.netlify.app](https://unilib-mbktechstudio.netlify.app)           |                                                                                  |
+| **Blog Website**           | [Blog.MIbnEKhalid.github.io](https://github.com/MIbnEKhalid/Blog.MIbnEKhalid.github.io)                    | [blog.mbktechstudio.com](https://blog.mbktechstudio.com)                               | Blog Website of MBK Tech Studio                                                  |
+|                            |                                                                                                            | [blog-mbktechstudio.netlify.app](https://blog-mbktechstudio.netlify.app)               |                                                                                  |
 
-To activate draft mode, add the property **draft: true** to the file, and it will no longer be displayed on the blog.
+**Note:** `mibnekhalid.github.io`, `privacy-mbktechstudio.netlify.app`, `docs-mbktechstudio.netlify.app`, `portal-mbktechstudio.netlify.app`, `portfolio-mbktechstudio.netlify.app`, `unilib-mbktechstudio.netlify.app`, `test-mbktechstudio.netlify.app`, `domain-mbktechstudio.netlify.app` and `maintenance-mbktechstudio.netlify.app` are original domains. The `mbktechstudio.com` domain is a custom domains with CNAME records redirecting to the original domains.
 
-Example :
+## Hosting:
 
-```ts
-title: MacBook Pro 2022
-description: 'The new MacBook Pro 2022 is here. With the Apple M2 chip, a new design, and more, the new MacBook Pro is the best laptop Apple has ever made.'
-pubDate: 'Jul 02 2022'
-heroImage: '../../assets/bg.jpg'
-category: 'Category 1'
-tags: ['JavaScript', 'css', 'HTML5', 'GitHub']
-draft: true <---
-```
+The Website (SubDomains Of MBKTechStudio) Is Hosted On Netlify.
 
-## ⚡️ Frontmatter
+## License
 
-## Required properties:
+This project is licensed under the GPL 3.0- see the [LICENSE](LICENSE) file for details.
+**NOTE:** Only The Source Code Of This Website Is Covered Under The [GPL 3.0 LICENSE](LICENSE). The Project Blog Posts, Some Images, , And Other Content Are NOT Covered Under This License And Remain The Intellectual Property Of The Author.
 
-- Title
-- Description
-- pubDate
-- heroImage (post cover)
-- category (Choose a category from src/data/categories.ts)
+## Contact
 
-## Optional properties:
-
-- draft (no need to include it, by default it's false)
-- tags
-
-> The schema for posts is located at src/content/config.ts. You can modify any parameter, for example, by adding a maximum of 80 characters for titles: title: z.string().max(80).
-> For more information, refer to the zod documentation.
-
-## 🧞 Commands
-
-All commands are run from the root of the project, from a terminal:
-
-| Command                 | Action                                                                                                                           |
-| :---------------------- | :------------------------------------------------------------------------------------------------------------------------------- |
-| `pnpm install`          | Installs dependencies                                                                                                            |
-| `pnpm run dev`          | Starts local dev server at `localhost:3000`                                                                                      |
-| `pnpm run build`        | Build your production site to `./dist/`                                                                                          |
-| `pnpm run preview`      | Preview your build locally, before deploying                                                                                     |
-| `pnpm run format:check` | Check code format with Prettier                                                                                                  |
-| `pnpm run format`       | Format codes with Prettier                                                                                                       |
-| `pnpm run sync`         | Generates TypeScript types for all Astro modules. [Learn more](https://docs.astro.build/en/reference/cli-reference/#astro-sync). |
-| `pnpm run lint`         | Lint with ESLint                                                                                                                 |
-
-## 👋 Contributors
-
-<a href="https://github.com/danielcgilibert/blog-template/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=danielcgilibert/blog-template" />
-</a>
+For questions or contributions, please contact Muhammad Bin Khalid at [mbktechstudio.com/Support](https://mbktechstudio.com/Support/?Project=Blog.MIbnEKhalid.github.io), [support@mbktechstudio.com](mailto:support@mbktechstudio.com) or [chmuhammadbinkhalid28.com](mailto:chmuhammadbinkhalid28.com).
