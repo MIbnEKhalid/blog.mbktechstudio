@@ -22,7 +22,8 @@
 	"scripts": {
 		"dev": "astro dev",
 		"start": "astro dev",
-		"build": "astro build",
+		"generate-blog-files": "node generateBlogFiles.js",
+		"build": "npm run generate-blog-files && astro build",
 		"sync": "astro sync",
 		"preview": "astro preview",
 		"postbuild": "pagefind --site dist",
