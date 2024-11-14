@@ -13,7 +13,6 @@ See Project Configs: [doc.Config.md](public/admin/doc.Config.md)
 
 Check out the [blog-template-gray.vercel.app](https://blog-template-gray.vercel.app/), hosted on Vercel
 
-
 ### NOTE:
 
 Only The Source Code Of This Website Is Covered Under The [GPL 3.0 LICENSE](LICENSE). The Project Blog Posts, Some Images, , And Other Content Are NOT Covered Under This License And Remain The Intellectual Property Of The Author.
@@ -27,6 +26,10 @@ Only The Source Code Of This Website Is Covered Under The [GPL 3.0 LICENSE](LICE
   - robots.txt -> update the Sitemap url to your own domain
   - open-graph -> the open-graph is the image that will be displayed when sharing the blog link. For posts, the preview image is the post cover.
 - Edit the social networks in the Header component - **src/components/Header.astro**, change the URL to your social network.
+
+## 📝 Blog Files Generation
+
+The `generateBlogFiles.js` script generates a file containing all blog titles and links. This file can be used for various purposes, such as retrieving blog posts to populate a select option or other functionalities.
 
 ## 🗂️ Adding a category
 
