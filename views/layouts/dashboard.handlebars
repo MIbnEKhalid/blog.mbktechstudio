@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - {{title}}</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/Assets/new-dashboard.css">
+    <link rel="icon" type="image/x-icon" href="/Assets/Images/Icon/dgicon.svg">
+    <script src="/Assets/Scripts/logout.js" defer></script>
+    {{{_sections.styles}}}
+</head>
+<body>
+    <div class="dashboard-wrapper">
+        <aside class="dashboard-sidebar">
+            <div class="dashboard-logo">
+                <i class="fas fa-blog"></i> MBK Blog
+            </div>
+            <nav>
+                <ul class="nav-menu">
+                    <li class="nav-item">
+                        <a href="/dashboard" class="nav-link {{#if (eq active 'dashboard')}}active{{/if}}">
+                            <i class="fas fa-chart-line"></i> Overview
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/dashboard/posts" class="nav-link {{#if (eq active 'posts')}}active{{/if}}">
+                            <i class="fas fa-newspaper"></i> Posts
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/dashboard/categories" class="nav-link {{#if (eq active 'categories')}}active{{/if}}">
+                            <i class="fas fa-folder"></i> Categories
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/dashboard/tags" class="nav-link {{#if (eq active 'tags')}}active{{/if}}">
+                            <i class="fas fa-tags"></i> Tags
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/dashboard/comments" class="nav-link {{#if (eq active 'comments')}}active{{/if}}">
+                            <i class="fas fa-comments"></i> Comments
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            <div style="margin-top: auto; padding: 1rem;">
+                <a onclick="logout()" class="nav-link">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </a>
+            </div>
+        </aside>
+
+        <main class="dashboard-main">
+            <div class="fade-in">
+                {{{body}}}
+            </div>
+        </main>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
+    {{{_sections.scripts}}}
+</body>
+</html>

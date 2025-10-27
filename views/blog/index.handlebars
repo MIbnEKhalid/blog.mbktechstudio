@@ -1,0 +1,463 @@
+{{> partial/homeMetaData}}
+<div class="section-container">
+    <!-- Search Bar -->
+    <div class="search-container">
+        <input type="text" 
+               id="searchInput" 
+               class="search-input" 
+               placeholder="Search posts by title, category, or tags...">
+        <div class="search-results" id="searchResults"></div>
+    </div>
+    
+    {{#if posts.length}}
+        <div class="posts-grid">
+            {{#each posts}}
+            <article class="post-card" data-post-id="{{this.id}}">
+                {{#if this.preview_image}}
+                <div class="post-image">
+                    <a href="/post/{{this.slug}}">
+                        <img src="{{this.preview_image}}" alt="{{this.title}}" loading="lazy">
+                    </a>
+                    {{#if (eq this.status 'private')}}
+                    <div class="private-badge">
+                        <i class="fas fa-lock"></i>
+                        <span>Private</span>
+                    </div>
+                    {{/if}}
+                    <div class="bookmark-badge" style="display: none;">
+                        <i class="fas fa-bookmark"></i>
+                        <span>Bookmarked</span>
+                    </div>
+                </div>
+                {{/if}}
+                <div class="post-meta">
+                    <div class="post-info">
+                        <span class="author">By <a href="/author/{{this.UserName}}">{{this.UserName}}</a></span>
+                        <span class="category">in {{#each (split this.categories ', ') as |category|}}
+                            <a href="/category/{{encodeURIComponent category}}">{{trim category}}</a>{{#unless @last}}, {{/unless}}
+                        {{/each}}</span>
+                        <span class="date">{{formatDate this.created_at}}</span>
+                    </div>
+                </div>
+                <h2 class="post-title">
+                    <a href="/post/{{this.slug}}">{{this.title}}</a>
+                </h2>
+                <div class="post-content">
+                    {{#if this.excerpt}}
+                        {{truncate (stripMarkdown this.excerpt) 150}}
+                    {{else}}
+                        {{truncate (stripMarkdown this.content_markdown) 150}}
+                    {{/if}}
+                </div>
+                <div class="post-footer">
+                    <a href="/post/{{this.slug}}" class="read-more">Read More</a>
+                    <span class="comments-count">{{this.comment_count}} comments</span>
+                </div>
+            </article>
+            {{/each}}
+        </div>
+    {{else}}
+        <div class="empty-state">
+            <h2>No posts found</h2>
+            <p>Be the first to create a post!</p>
+            {{#if user}}
+                <a href="/dashboard/posts/create" class="btn btn-primary">Create New Post</a>
+            {{else}}
+                <a href="/mbkauthe/login" class="btn btn-primary">Login to Post</a>
+            {{/if}}
+        </div>
+    {{/if}}
+</div>
+
+<style>
+
+.section-header {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.section-header h1 {
+    color: var(--light);
+    margin-bottom: 1rem;
+}
+
+.action-bar {
+    margin-top: 1.5rem;
+}
+
+.posts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 2rem;
+}
+
+.post-card {
+    background: var(--darker);
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    transition: var(--transition);
+    display: flex;
+    flex-direction: column;
+    box-shadow: var(--box-shadow);
+    overflow: hidden;
+}
+
+.post-image {
+    margin: -1.5rem -1.5rem 1.5rem -1.5rem;
+    position: relative;
+    aspect-ratio: 16/9;
+    overflow: hidden;
+    background-color: var(--dark);
+}
+
+.post-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: inherit;
+    transition: transform 0.3s ease;
+}
+
+.post-image:hover img {
+    transform: scale(1.05);
+}
+
+.bookmark-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: rgba(33, 150, 243, 0.95);
+    color: white;
+    padding: 0.5rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    animation: slideIn 0.3s ease;
+}
+
+.bookmark-badge i {
+    font-size: 1rem;
+}
+
+.private-badge {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: linear-gradient(135deg, #ff6b6b, #ee5a6f);
+    color: white;
+    padding: 0.5rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    animation: slideIn 0.3s ease;
+}
+
+.private-badge i {
+    font-size: 1rem;
+}
+    from {
+        opacity: 0;
+        transform: translateX(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.post-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 24px rgba(0,0,0,0.2);
+}
+
+.post-meta {
+    
+}
+
+.post-info {
+    color: var(--text-light);
+    font-size: 0.9rem;
+}
+
+.post-info span:not(:last-child)::after {
+    content: "•";
+    margin: 0 0.5rem;
+    color: var(--text-light);
+}
+
+.post-info a {
+    color: var(--accent);
+    text-decoration: none;
+    transition: var(--transition);
+}
+
+.post-info a:hover {
+    text-decoration: underline;
+}
+
+.post-title {
+    margin: 0.5rem 0;
+}
+
+.post-title a {
+    color: var(--light);
+    text-decoration: none;
+    font-size: 1.5rem;
+    transition: var(--transition);
+}
+
+.post-title a:hover {
+    color: var(--accent);
+}
+
+.post-content {
+    color: var(--text);
+    line-height: 1.6;
+    flex-grow: 1;
+}
+
+.post-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: auto;
+}
+
+.read-more {
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 500;
+    transition: var(--transition);
+}
+
+.read-more:hover {
+    color: var(--secondary);
+}
+
+.comments-count {
+    color: var(--text-light);
+    font-size: 0.875rem;
+    padding: 0.25rem 0.75rem;
+    background: rgba(0,0,0,0.2);
+    border-radius: 1rem;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 3rem;
+    background: var(--darker);
+    border-radius: var(--border-radius);
+    color: var(--text-light);
+}
+
+.empty-state h2 {
+    color: var(--light);
+    margin-bottom: 1rem;
+}
+
+.empty-state p {
+    margin-bottom: 2rem;
+}
+
+/* Search Bar Styles */
+.search-container {
+    position: relative;
+    margin-bottom: 3rem;
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.search-input {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    background: var(--dark);
+    border: 1px solid var(--text-light);
+    border-radius: var(--border-radius);
+    color: var(--light);
+    font-size: 1rem;
+    transition: var(--transition);
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 8px rgba(33, 150, 243, 0.3);
+}
+
+.search-results {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: var(--dark);
+    border: 1px solid var(--accent);
+    border-top: none;
+    border-radius: 0 0 var(--border-radius) var(--border-radius);
+    max-height: 400px;
+    overflow-y: auto;
+    display: none;
+    z-index: 100;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+}
+
+.search-result-item {
+    display: block;
+    padding: 0.75rem 1rem;
+    color: var(--text);
+    text-decoration: none;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    transition: var(--transition);
+}
+
+.search-result-item:hover {
+    background: rgba(33, 150, 243, 0.1);
+    color: var(--accent);
+}
+
+.search-result-item:last-child {
+    border-bottom: none;
+}
+
+.search-result-title {
+    font-weight: 500;
+    color: var(--light);
+    margin-bottom: 0.25rem;
+}
+
+.search-result-meta {
+    font-size: 0.85rem;
+    color: var(--text-light);
+    display: flex;
+    gap: 0.5rem;
+}
+
+.search-result-category {
+    color: var(--accent);
+}
+
+.search-result-date {
+    opacity: 0.7;
+}
+
+@media (max-width: 768px) {
+    .post-title a {
+        font-size: 1.25rem;
+    }
+    
+    .search-container {
+        margin-bottom: 2rem;
+    }
+    
+    .search-input {
+        font-size: 16px;
+    }
+    
+    .search-results {
+        max-height: 300px;
+    }
+}
+</style>
+
+<script>
+// Initialize posts data for search
+const allPosts = {{{jsonStringify posts}}};
+
+const searchInput = document.getElementById('searchInput');
+const searchResults = document.getElementById('searchResults');
+
+// Debounce function to prevent excessive searching
+function debounce(func, delay) {
+    let timeoutId;
+    return function(...args) {
+        clearTimeout(timeoutId);
+        timeoutId = setTimeout(() => func.apply(this, args), delay);
+    };
+}
+
+// Search posts function
+function searchPosts(searchTerm) {
+    if (!searchTerm.trim()) {
+        searchResults.innerHTML = '';
+        searchResults.style.display = 'none';
+        return;
+    }
+    
+    const term = searchTerm.toLowerCase();
+    const filtered = allPosts.filter(post => {
+        const title = (post.title || '').toLowerCase();
+        const content = (post.content_markdown || '').toLowerCase();
+        const excerpt = (post.excerpt || '').toLowerCase();
+        const categories = (post.categories || '').toLowerCase();
+        
+        return title.includes(term) || 
+               content.includes(term) || 
+               excerpt.includes(term) || 
+               categories.includes(term);
+    });
+    
+    // Display results
+    if (filtered.length === 0) {
+        searchResults.innerHTML = '<div class="search-result-item">No posts found</div>';
+    } else {
+        searchResults.innerHTML = filtered.map(post => `
+            <a href="/post/${post.slug}" class="search-result-item">
+                <div class="search-result-title">${post.title}</div>
+                <div class="search-result-meta">
+                    ${post.categories ? `<span class="search-result-category">${post.categories}</span>` : ''}
+                    <span class="search-result-date">${new Date(post.created_at).toLocaleDateString()}</span>
+                </div>
+            </a>
+        `).join('');
+    }
+    
+    searchResults.style.display = 'block';
+}
+
+// Event listener with debounce
+searchInput.addEventListener('input', debounce((e) => {
+    searchPosts(e.target.value);
+}, 300));
+
+// Close search results when clicking outside
+document.addEventListener('click', (e) => {
+    if (!e.target.closest('.search-container')) {
+        searchResults.style.display = 'none';
+    }
+});
+
+// Reopen search results when focusing on input
+searchInput.addEventListener('focus', () => {
+    if (searchInput.value.trim()) {
+        searchResults.style.display = 'block';
+    }
+});
+
+// Check bookmarks and update badge display
+function updateBookmarkBadges() {
+    const bookmarks = JSON.parse(localStorage.getItem('bookmarkedPosts')) || [];
+    const bookmarkedIds = new Set(bookmarks.map(b => b.id));
+    
+    document.querySelectorAll('.post-card').forEach(card => {
+        const postId = card.getAttribute('data-post-id');
+        const badge = card.querySelector('.bookmark-badge');
+        
+        if (badge) {
+            if (bookmarkedIds.has(postId)) {
+                badge.style.display = 'flex';
+            } else {
+                badge.style.display = 'none';
+            }
+        }
+    });
+}
+
+// Initialize bookmarks on page load
+document.addEventListener('DOMContentLoaded', updateBookmarkBadges);
+
+// Listen for storage changes (when bookmarks change in another tab)
+window.addEventListener('storage', updateBookmarkBadges);
+</script>

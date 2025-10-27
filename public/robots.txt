@@ -1,4 +1,56 @@
+# MBK Tech Studio Blog - Search Engine Crawler Instructions
+# Generated for optimal SEO and crawler guidance
+
 User-agent: *
 Allow: /
+Allow: /categories
+Allow: /tags
+Allow: /author/
+Allow: /post/
+Allow: /Assets/
 
-Sitemap: https://blog.mbktechstudio.com/sitemap-index.xml
+# Disallow admin and private areas
+Disallow: /dashboard/
+Disallow: /admin/
+Disallow: /api/
+Disallow: /mbkauthe/
+Disallow: */edit
+Disallow: */delete
+
+# Crawl delay for all bots (in seconds)
+Crawl-delay: 1
+
+# Specific bot rules
+User-agent: Googlebot
+Allow: /
+Crawl-delay: 0.5
+Request-rate: 10/1s
+
+User-agent: Bingbot
+Allow: /
+Crawl-delay: 1
+Request-rate: 5/1s
+
+User-agent: Slurp
+Allow: /
+Crawl-delay: 1
+
+User-agent: DuckDuckBot
+Allow: /
+Crawl-delay: 1
+
+# Disallow bad bots
+User-agent: MJ12bot
+Disallow: /
+
+User-agent: AhrefsBot
+Disallow: /
+
+User-agent: SemrushBot
+Disallow: /
+
+# Sitemap locations
+Sitemap: https://blog.mbktechstudio.com/sitemap.xml
+Sitemap: https://blog.mbktechstudio.com/sitemap-posts.xml
+Sitemap: https://blog.mbktechstudio.com/sitemap-categories.xml
+Sitemap: https://blog.mbktechstudio.com/sitemap-tags.xml

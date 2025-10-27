@@ -1,0 +1,375 @@
+{{#section 'styles'}}
+<style>
+.posts-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.search-box {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+.search-input {
+    padding: 0.5rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    min-width: 250px;
+}
+
+.status-badge {
+    padding: 0.25rem 0.5rem;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+.status-published {
+    background-color: #e1f7e7;
+    color: #27ae60;
+}
+
+.status-draft {
+    background-color: #ffeaa7;
+    color: #d35400;
+}
+
+.status-private {
+    background-color: #dfe6e9;
+    color: #636e72;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.post-preview-img {
+    width: 80px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 4px;
+    border: 1px solid var(--dark);
+}
+
+.post-preview-placeholder {
+    width: 80px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--darker);
+    border-radius: 4px;
+    border: 1px solid var(--dark);
+}
+
+.post-preview-placeholder i {
+    font-size: 1.5rem;
+    color: var(--text-light);
+    opacity: 0.5;
+}
+
+.post-stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.stat-card {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.stat-card h3 {
+    margin: 0;
+    font-size: 0.875rem;
+    color: #666;
+}
+
+.stat-card .value {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-top: 0.5rem;
+}
+</style>
+{{/section}}
+
+<div class="content-header">
+    <h1 class="content-title">Posts Management</h1>
+    <a href="/dashboard/posts/create" class="btn btn-primary">
+        <i class="fas fa-plus"></i> Create New Post
+    </a>
+</div>
+
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-icon" style="background: rgba(67, 97, 238, 0.1); color: var(--primary-color);">
+            <i class="fas fa-newspaper"></i>
+        </div>
+        <div class="stat-info">
+            <h3>Total Posts</h3>
+            <div class="value">{{totalPosts}}</div>
+        </div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon" style="background: rgba(76, 175, 80, 0.1); color: var(--success-color);">
+            <i class="fas fa-check-circle"></i>
+        </div>
+        <div class="stat-info">
+            <h3>Published</h3>
+            <div class="value">{{publishedPosts}}</div>
+        </div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon" style="background: rgba(255, 152, 0, 0.1); color: var(--warning-color);">
+            <i class="fas fa-edit"></i>
+        </div>
+        <div class="stat-info">
+            <h3>Drafts</h3>
+            <div class="value">{{draftPosts}}</div>
+        </div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon" style="background: rgba(33, 150, 243, 0.1); color: var(--info-color);">
+            <i class="fas fa-folder"></i>
+        </div>
+        <div class="stat-info">
+            <h3>Categories</h3>
+            <div class="value">{{totalCategories}}</div>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="filters-container">
+        <div class="search-box">
+            <i class="fas fa-search search-icon"></i>
+            <input type="text" class="search-input" placeholder="Search posts..." id="searchPosts">
+        </div>
+        
+        <div class="filter-options">
+            <div class="filter-group">
+                <label>Status:</label>
+                <select id="statusFilter" class="form-select">
+                    <option value="all">All Status</option>
+                    <option value="published">Published</option>
+                    <option value="draft">Draft</option>
+                    <option value="private">Private</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label>Category:</label>
+                <select id="categoryFilter" class="form-select">
+                    <option value="all">All Categories</option>
+                    {{#each categories}}
+                        <option value="{{this.name}}">{{this.name}}</option>
+                    {{/each}}
+                </select>
+            </div>
+            <div class="filter-group">
+                <label>Sort by:</label>
+                <select id="sortFilter" class="form-select">
+                    <option value="date-desc">Date (Newest)</option>
+                    <option value="date-asc">Date (Oldest)</option>
+                    <option value="views-desc">Views (High to Low)</option>
+                    <option value="views-asc">Views (Low to High)</option>
+                    <option value="title">Title</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <div class="table-container">
+        {{#if posts}}
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Preview</th>
+                        <th>Post Details</th>
+                        <th>Category</th>
+                        <th>Created</th>
+                        <th>Status</th>
+                        <th>Views</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each posts}}
+                    <tr>
+                        <td style="width: 100px;">
+                            {{#if preview_image}}
+                                <img src="{{preview_image}}" alt="Preview" class="post-preview-img">
+                            {{else}}
+                                <div class="post-preview-placeholder">
+                                    <i class="fas fa-image"></i>
+                                </div>
+                            {{/if}}
+                        </td>
+                        <td style="min-width: 300px;">
+                            <div style="font-weight: 500;">{{title}}</div>
+                            <div style="font-size: 0.875rem; color: #666; margin-top: 0.25rem;">{{#if excerpt}}{{truncate (stripMarkdown excerpt) 120}}{{else}}{{truncate (stripMarkdown content_markdown) 120}}{{/if}}</div>
+                        </td>
+                        <td>
+                            <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                                {{#if categories}}
+                                    {{#each (split categories ',') as |category|}}
+                                        <span style="background: #e9ecef; padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.875rem;">
+                                            {{trim category}}
+                                        </span>
+                                    {{/each}}
+                                {{else}}
+                                    <span style="color: #666; font-style: italic; font-size: 0.875rem;">No category</span>
+                                {{/if}}
+                            </div>
+                        </td>
+                        <td>
+                            <div style="font-size: 0.875rem;">{{formatDate created_at}}</div>
+                        </td>
+                        <td>
+                            <span class="status-badge {{#if (eq status 'published')}}status-published{{else if (eq status 'draft')}}status-draft{{else}}status-private{{/if}}">
+                                <i class="fas {{#if (eq status 'published')}}fa-check-circle{{else if (eq status 'draft')}}fa-clock{{else}}fa-lock{{/if}} mr-1"></i>
+                                {{#if (eq status 'published')}}Published{{else if (eq status 'draft')}}Draft{{else}}Private{{/if}}
+                            </span>
+                        </td>
+                        <td>
+                            <div style="font-weight: 500;">{{views}}</div>
+                            <div style="font-size: 0.75rem; color: #666;">views</div>
+                        </td>
+                        <td>
+                            <div class="action-buttons">
+                                <a href="/post/{{slug}}" class="btn btn-sm btn-primary" target="_blank" title="View">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                                <a href="/dashboard/posts/edit/{{id}}" class="btn btn-sm btn-primary" title="Edit">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <button onclick="deletePost({{id}})" class="btn btn-sm btn-danger" title="Delete">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                    {{/each}}
+                </tbody>
+            </table>
+        {{else}}
+            <div style="text-align: center; padding: 3rem;">
+                <div style="margin-bottom: 1rem;">
+                    <i class="fas fa-newspaper" style="font-size: 3rem; color: #ddd;"></i>
+                </div>
+                <h3 style="color: #666; margin-bottom: 1rem;">No posts found</h3>
+                <p style="color: #888; margin-bottom: 2rem;">Create your first post to get started!</p>
+                <a href="/dashboard/posts/create" class="btn btn-primary">
+                    <i class="fas fa-plus"></i> Create New Post
+                </a>
+            </div>
+        {{/if}}
+    </div>
+</div>
+
+<script>
+// Filter and sort functionality
+function filterAndSortPosts() {
+    const searchText = document.getElementById('searchPosts').value.toLowerCase();
+    const statusFilter = document.getElementById('statusFilter').value;
+    const categoryFilter = document.getElementById('categoryFilter').value;
+    const sortFilter = document.getElementById('sortFilter').value;
+    const tbody = document.querySelector('tbody');
+    const rows = Array.from(tbody.querySelectorAll('tr'));
+    
+    // Apply filters
+    rows.forEach(row => {
+        const title = row.querySelector('td:nth-child(2)').textContent.toLowerCase();
+        const categories = Array.from(row.querySelector('td:nth-child(3)').querySelectorAll('span'))
+            .map(span => span.textContent.trim().toLowerCase());
+        const status = row.querySelector('.status-badge').textContent.trim().toLowerCase();
+        
+        const matchesSearch = title.includes(searchText) || categories.some(cat => cat.includes(searchText));
+        const matchesStatus = statusFilter === 'all' || status.includes(statusFilter.toLowerCase());
+        const matchesCategory = categoryFilter === 'all' || 
+            categories.some(cat => cat === categoryFilter.toLowerCase());
+        
+        row.style.display = matchesSearch && matchesStatus && matchesCategory ? '' : 'none';
+    });
+    
+    // Sort visible rows
+    const visibleRows = rows.filter(row => row.style.display !== 'none');
+    visibleRows.sort((a, b) => {
+        switch (sortFilter) {
+            case 'date-desc':
+            case 'date-asc': {
+                const aDate = new Date(a.querySelector('td:nth-child(3)').textContent);
+                const bDate = new Date(b.querySelector('td:nth-child(3)').textContent);
+                return sortFilter === 'date-desc' ? bDate - aDate : aDate - bDate;
+            }
+            case 'views-desc':
+            case 'views-asc': {
+                const aViews = parseInt(a.querySelector('td:nth-child(5)').textContent);
+                const bViews = parseInt(b.querySelector('td:nth-child(5)').textContent);
+                return sortFilter === 'views-desc' ? bViews - aViews : aViews - bViews;
+            }
+            case 'title': {
+                const aTitle = a.querySelector('td:first-child').textContent.toLowerCase();
+                const bTitle = b.querySelector('td:first-child').textContent.toLowerCase();
+                return aTitle.localeCompare(bTitle);
+            }
+            default:
+                return 0;
+        }
+    });
+    
+    // Update the DOM
+    visibleRows.forEach(row => tbody.appendChild(row));
+}
+
+// Add event listeners for all filter controls
+document.getElementById('searchPosts').addEventListener('input', filterAndSortPosts);
+document.getElementById('statusFilter').addEventListener('change', filterAndSortPosts);
+document.getElementById('categoryFilter').addEventListener('change', filterAndSortPosts);
+document.getElementById('sortFilter').addEventListener('change', filterAndSortPosts);
+
+function deletePost(id) {
+    if (confirm('Are you sure you want to delete this post? This action cannot be undone.')) {
+        fetch(`/api/posts/${id}`, {
+            method: 'DELETE'
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                window.location.reload();
+            } else {
+                alert('Failed to delete post. Please try again.');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('An error occurred while deleting the post.');
+        });
+    }
+}
+</script>
+
+<script>
+function deletePost(id) {
+    if (confirm('Are you sure you want to delete this post?')) {
+        fetch(`/api/posts/${id}`, {
+            method: 'DELETE',
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                window.location.reload();
+            } else {
+                alert('Failed to delete post');
+            }
+        });
+    }
+}
+</script>

@@ -1,0 +1,339 @@
+{{#section 'styles'}}
+<style>
+.category-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.form-container {
+    margin-bottom: 2rem;
+}
+
+.search-box {
+    position: relative;
+    margin-bottom: 1.5rem;
+}
+
+.search-input {
+    width: 100%;
+    padding: 0.75rem 1rem 0.75rem 2.5rem;
+    border: 1px solid var(--dark);
+    border-radius: var(--border-radius);
+    font-size: 0.875rem;
+    background-color: var(--darker);
+    color: var(--text);
+}
+
+.search-icon {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-light);
+}
+
+.table th {
+    background-color: var(--dark);
+    font-weight: 600;
+}
+
+.table tr:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+.btn-sm {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.875rem;
+}
+
+.d-flex {
+    display: flex !important;
+}
+
+.d-none {
+    display: none !important;
+}
+
+.ml-2 {
+    margin-left: 0.5rem !important;
+}
+
+.filter-options {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    padding: 1rem;
+    background-color: var(--darker);
+    border-radius: var(--border-radius);
+    margin-top: 1rem;
+}
+
+.form-select {
+    padding: 0.5rem;
+    border: 1px solid var(--dark);
+    border-radius: var(--border-radius);
+    background-color: var(--darker);
+    color: var(--text);
+    font-size: 0.875rem;
+    min-width: 150px;
+}
+
+.filter-group {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.filter-group label {
+    font-size: 0.875rem;
+    color: var(--text-light);
+    white-space: nowrap;
+}
+</style>
+{{/section}}
+
+<div class="content-header">
+    <h1 class="content-title">Categories Management</h1>
+</div>
+
+<div class="category-stats">
+    <div class="stat-card">
+        <div class="stat-icon" style="background: rgba(33, 150, 243, 0.1); color: var(--info-color);">
+            <i class="fas fa-folder"></i>
+        </div>
+        <div class="stat-info">
+            <h3>Total Categories</h3>
+            <div class="value">{{totalCategories}}</div>
+        </div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon" style="background: rgba(76, 175, 80, 0.1); color: var(--success-color);">
+            <i class="fas fa-file-alt"></i>
+        </div>
+        <div class="stat-info">
+            <h3>Total Posts</h3>
+            <div class="value">{{totalPosts}}</div>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="form-container">
+        <form id="categoryForm">
+            <div class="form-group mb-3">
+                <input type="text" id="categoryName" class="form-control" placeholder="New Category Name" required>
+            </div>
+            <div class="form-group mb-3">
+                <textarea id="categoryDescription" class="form-control" placeholder="Category Description" rows="3"></textarea>
+            </div>
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary">Add Category</button>
+            </div>
+        </form>
+    </div>
+
+    <div class="filters-container">
+        <div class="search-box">
+            <i class="fas fa-search search-icon"></i>
+            <input type="text" class="search-input" placeholder="Search categories..." id="searchCategories">
+        </div>
+        
+        <div class="filter-options">
+            <div class="filter-group">
+                <label>Filter by Posts:</label>
+                <select id="postFilter" class="form-select">
+                    <option value="all">All Categories</option>
+                    <option value="with-posts">With Posts</option>
+                    <option value="no-posts">No Posts</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label>Sort by:</label>
+                <select id="sortFilter" class="form-select">
+                    <option value="name">Name</option>
+                    <option value="posts-asc">Posts (Low to High)</option>
+                    <option value="posts-desc">Posts (High to Low)</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <div class="table-container">
+        {{#if categories}}
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Description</th>
+                        <th>Post Count</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="categories-table-body">
+                    {{#each categories}}
+                    <tr id="row-{{id}}">
+                        <td>
+                            <span class="category-name" id="name-{{id}}">{{name}}</span>
+                            <input type="text" class="form-control d-none" id="edit-{{id}}" value="{{name}}">
+                        </td>
+                        <td>
+                            <span class="category-description" id="desc-{{id}}">{{description}}</span>
+                            <textarea class="form-control d-none" id="edit-desc-{{id}}" rows="2">{{description}}</textarea>
+                        </td>
+                        <td>{{post_count}}</td>
+                        <td>
+                            <button onclick="toggleEdit({{id}})" class="btn btn-sm btn-primary edit-btn-{{id}}">Edit</button>
+                            <button onclick="saveCategory({{id}})" class="btn btn-sm btn-success d-none save-btn-{{id}}">Save</button>
+                            <button onclick="deleteCategory({{id}})" class="btn btn-sm btn-danger">Delete</button>
+                        </td>
+                    </tr>
+                    {{/each}}
+                </tbody>
+            </table>
+        {{else}}
+            <div style="text-align: center; padding: 3rem;">
+                <p>No categories found.</p>
+            </div>
+        {{/if}}
+    </div>
+</div>
+
+<script>
+// Filter and search functionality
+function filterAndSortCategories() {
+    const searchText = document.getElementById('searchCategories').value.toLowerCase();
+    const postFilter = document.getElementById('postFilter').value;
+    const sortFilter = document.getElementById('sortFilter').value;
+    const tbody = document.querySelector('tbody');
+    const rows = Array.from(tbody.querySelectorAll('tr'));
+    
+    // First, apply search and post count filters
+    rows.forEach(row => {
+        const name = row.querySelector('.category-name').textContent.toLowerCase();
+        const description = row.querySelector('.category-description').textContent.toLowerCase();
+        const postCount = parseInt(row.querySelector('td:nth-child(3)').textContent);
+        
+        const matchesSearch = name.includes(searchText) || description.includes(searchText);
+        const matchesPostFilter = 
+            postFilter === 'all' || 
+            (postFilter === 'with-posts' && postCount > 0) || 
+            (postFilter === 'no-posts' && postCount === 0);
+        
+        row.style.display = matchesSearch && matchesPostFilter ? '' : 'none';
+    });
+    
+    // Then, sort visible rows
+    const visibleRows = rows.filter(row => row.style.display !== 'none');
+    visibleRows.sort((a, b) => {
+        const aValue = a.querySelector('.category-name').textContent.toLowerCase();
+        const bValue = b.querySelector('.category-name').textContent.toLowerCase();
+        const aCount = parseInt(a.querySelector('td:nth-child(3)').textContent);
+        const bCount = parseInt(b.querySelector('td:nth-child(3)').textContent);
+        
+        switch (sortFilter) {
+            case 'name':
+                return aValue.localeCompare(bValue);
+            case 'posts-asc':
+                return aCount - bCount;
+            case 'posts-desc':
+                return bCount - aCount;
+            default:
+                return 0;
+        }
+    });
+    
+    // Update the DOM with sorted rows
+    visibleRows.forEach(row => tbody.appendChild(row));
+}
+
+// Add event listeners for all filter controls
+document.getElementById('searchCategories').addEventListener('input', filterAndSortCategories);
+document.getElementById('postFilter').addEventListener('change', filterAndSortCategories);
+document.getElementById('sortFilter').addEventListener('change', filterAndSortCategories);
+
+document.getElementById('categoryForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const nameInput = document.getElementById('categoryName');
+    const descInput = document.getElementById('categoryDescription');
+    const name = nameInput.value.trim();
+    const description = descInput.value.trim();
+    
+    if (!name) return;
+
+    try {
+        const response = await fetch('/dashboard/api/categories', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name, description }),
+        });
+        const data = await response.json();
+        if (data.success) {
+            // Optimistically add to UI or just reload
+            window.location.reload();
+        } else {
+            alert(data.error || 'Failed to add category');
+        }
+    } catch (err) {
+        console.error(err);
+        alert('An error occurred.');
+    }
+});
+
+function toggleEdit(id) {
+    document.getElementById(`name-${id}`).classList.toggle('d-none');
+    document.getElementById(`edit-${id}`).classList.toggle('d-none');
+    document.getElementById(`desc-${id}`).classList.toggle('d-none');
+    document.getElementById(`edit-desc-${id}`).classList.toggle('d-none');
+    document.querySelector(`.edit-btn-${id}`).classList.toggle('d-none');
+    document.querySelector(`.save-btn-${id}`).classList.toggle('d-none');
+}
+
+async function saveCategory(id) {
+    const nameInput = document.getElementById(`edit-${id}`);
+    const descInput = document.getElementById(`edit-desc-${id}`);
+    const name = nameInput.value.trim();
+    const description = descInput.value.trim();
+    
+    if (!name) return;
+
+    try {
+        const response = await fetch(`/dashboard/api/categories/${id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name, description }),
+        });
+        const data = await response.json();
+        if (data.success) {
+            document.getElementById(`name-${id}`).textContent = name;
+            document.getElementById(`desc-${id}`).textContent = description;
+            toggleEdit(id);
+        } else {
+            alert(data.error || 'Failed to update category');
+        }
+    } catch (err) {
+        console.error(err);
+        alert('An error occurred.');
+    }
+}
+
+async function deleteCategory(id) {
+    if (confirm('Are you sure you want to delete this category? This will remove the category from all associated posts.')) {
+        try {
+            const response = await fetch(`/dashboard/api/categories/${id}`, {
+                method: 'DELETE',
+            });
+            const data = await response.json();
+            if (data.success) {
+                document.getElementById(`row-${id}`).remove();
+            } else {
+                alert(data.error || 'Failed to delete category');
+            }
+        } catch (err) {
+            console.error(err);
+            alert('An error occurred.');
+        }
+    }
+}
+</script>

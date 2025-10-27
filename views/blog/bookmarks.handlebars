@@ -1,0 +1,571 @@
+{{#section 'styles'}}
+<title>My Bookmarks - Blog</title>
+<meta name="description" content="View all your bookmarked blog posts">
+<meta name="robots" content="noindex, nofollow">
+{{/section}}
+
+<style>
+    .bookmarks-header {
+        text-align: center;
+        margin-bottom: 3rem;
+        padding: 2rem 0;
+    }
+
+    .bookmarks-header h1 {
+        color: var(--light);
+        font-size: 2.5rem;
+        margin-bottom: 1rem;
+    }
+
+    .bookmarks-header p {
+        color: var(--text-light);
+        font-size: 1.1rem;
+    }
+
+    .bookmarks-actions {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        margin-top: 1.5rem;
+        flex-wrap: wrap;
+    }
+
+    .bookmarks-actions button {
+        padding: 0.5rem 1.5rem;
+        background-color: var(--accent);
+        border: none;
+        color: var(--dark);
+        border-radius: 6px;
+        cursor: pointer;
+        font-weight: 500;
+        transition: all 0.3s;
+    }
+
+    .bookmarks-actions button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(33, 150, 243, 0.4);
+    }
+
+    .bookmarks-actions button.secondary {
+        background-color: transparent;
+        border: 2px solid var(--accent);
+        color: var(--accent);
+    }
+
+    .bookmarks-actions button.secondary:hover {
+        background-color: rgba(33, 150, 243, 0.1);
+    }
+
+    .bookmarks-stats {
+        display: flex;
+        justify-content: center;
+        gap: 2rem;
+        margin-top: 1rem;
+        color: var(--text-light);
+        font-size: 0.95rem;
+    }
+
+    .stat-item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .stat-item i {
+        color: var(--accent);
+        font-size: 1.2rem;
+    }
+
+    .section-container {
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 2rem;
+    }
+
+    .posts-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 2rem;
+    }
+
+    .post-card {
+        background: var(--darker);
+        border-radius: var(--border-radius);
+        padding: 1.5rem;
+        transition: var(--transition);
+        display: flex;
+        flex-direction: column;
+        box-shadow: var(--box-shadow);
+        overflow: hidden;
+        position: relative;
+    }
+
+    .post-image {
+        margin: -1.5rem -1.5rem 1.5rem -1.5rem;
+        position: relative;
+        aspect-ratio: 16/9;
+        overflow: hidden;
+        background-color: var(--dark);
+    }
+
+    .post-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.3s ease;
+    }
+
+    .post-image:hover img {
+        transform: scale(1.05);
+    }
+
+    .remove-bookmark-btn {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background: rgba(244, 67, 54, 0.9);
+        border: none;
+        color: white;
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s;
+        font-size: 1rem;
+        z-index: 10;
+    }
+
+    .remove-bookmark-btn:hover {
+        background: rgba(244, 67, 54, 1);
+        transform: scale(1.1);
+    }
+
+    .private-badge {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        background: linear-gradient(135deg, #ff6b6b, #ee5a6f);
+        color: white;
+        padding: 0.5rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        animation: slideIn 0.3s ease;
+        z-index: 9;
+    }
+
+    .private-badge i {
+        font-size: 1rem;
+    }
+
+    @keyframes slideIn {
+        from {
+            opacity: 0;
+            transform: translateX(-20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+
+    .post-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 24px rgba(0,0,0,0.2);
+    }
+
+    .post-meta {
+        margin-bottom: 0.75rem;
+    }
+
+    .post-info {
+        color: var(--text-light);
+        font-size: 0.9rem;
+    }
+
+    .post-info span:not(:last-child)::after {
+        content: "•";
+        margin: 0 0.5rem;
+        color: var(--text-light);
+    }
+
+    .post-info a {
+        color: var(--accent);
+        text-decoration: none;
+        transition: var(--transition);
+    }
+
+    .post-info a:hover {
+        text-decoration: underline;
+    }
+
+    .post-title {
+        margin: 0.5rem 0;
+    }
+
+    .post-title a {
+        color: var(--light);
+        text-decoration: none;
+        font-size: 1.5rem;
+        transition: var(--transition);
+    }
+
+    .post-title a:hover {
+        color: var(--accent);
+    }
+
+    .post-content {
+        color: var(--text);
+        line-height: 1.6;
+        flex-grow: 1;
+        margin-bottom: 1rem;
+    }
+
+    .post-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: auto;
+    }
+
+    .read-more {
+        color: var(--accent);
+        text-decoration: none;
+        font-weight: 500;
+        transition: var(--transition);
+    }
+
+    .read-more:hover {
+        color: var(--secondary);
+    }
+
+    .comments-count {
+        color: var(--text-light);
+        font-size: 0.875rem;
+        padding: 0.25rem 0.75rem;
+        background: rgba(0,0,0,0.2);
+        border-radius: 1rem;
+    }
+
+    .empty-bookmarks {
+        text-align: center;
+        padding: 4rem 2rem;
+        background: var(--darker);
+        border-radius: var(--border-radius);
+        color: var(--text-light);
+    }
+
+    .empty-bookmarks i {
+        font-size: 4rem;
+        color: var(--accent);
+        opacity: 0.5;
+        margin-bottom: 1rem;
+    }
+
+    .empty-bookmarks h2 {
+        color: var(--light);
+        margin-bottom: 1rem;
+    }
+
+    .empty-bookmarks p {
+        margin-bottom: 2rem;
+        font-size: 1.1rem;
+    }
+
+    .empty-bookmarks .btn {
+        display: inline-block;
+    }
+
+    @media (max-width: 768px) {
+        .bookmarks-header h1 {
+            font-size: 2rem;
+        }
+
+        .bookmarks-stats {
+            gap: 1rem;
+            font-size: 0.85rem;
+        }
+
+        .bookmarks-actions {
+            flex-direction: column;
+        }
+
+        .bookmarks-actions button {
+            width: 100%;
+        }
+
+        .posts-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+<div class="section-container">
+    <div class="bookmarks-header">
+        <h1><i class="fas fa-bookmark" style="color: var(--accent); margin-right: 0.5rem;"></i>My Bookmarks</h1>
+        <p>Save your favorite posts for later reading</p>
+        
+        {{#if posts.length}}
+        <div class="bookmarks-stats">
+            <div class="stat-item">
+                <i class="fas fa-bookmark"></i>
+                <span>{{posts.length}} bookmark{{#unless (eq posts.length 1)}}s{{/unless}}</span>
+            </div>
+            <div class="stat-item">
+                <i class="fas fa-book"></i>
+                <span id="totalReadingTime">0 min</span> read time
+            </div>
+        </div>
+        
+        <div class="bookmarks-actions">
+            <button class="secondary" onclick="location.href='/'">
+                <i class="fas fa-arrow-left" style="margin-right: 0.5rem;"></i>Back to Blog
+            </button>
+            <button onclick="exportBookmarks()">
+                <i class="fas fa-download" style="margin-right: 0.5rem;"></i>Export Bookmarks
+            </button>
+            <button class="secondary" onclick="clearAllBookmarks()" style="background-color: rgba(244, 67, 54, 0.1); color: #f44336; border-color: #f44336;">
+                <i class="fas fa-trash" style="margin-right: 0.5rem;"></i>Clear All
+            </button>
+        </div>
+        {{/if}}
+    </div>
+
+    {{#if posts.length}}
+        <div class="posts-grid">
+            {{#each posts}}
+            <article class="post-card" data-post-id="{{this.id}}">
+                <button class="remove-bookmark-btn" onclick="removeBookmark('{{this.id}}')" title="Remove bookmark">
+                    <i class="fas fa-times"></i>
+                </button>
+                
+                {{#if this.preview_image}}
+                <div class="post-image">
+                    <a href="/post/{{this.slug}}">
+                        <img src="{{this.preview_image}}" alt="{{this.title}}" loading="lazy">
+                    </a>
+                    {{#if (eq this.status 'private')}}
+                    <div class="private-badge">
+                        <i class="fas fa-lock"></i>
+                        <span>Private</span>
+                    </div>
+                    {{/if}}
+                </div>
+                {{/if}}
+                
+                <div class="post-meta">
+                    <div class="post-info">
+                        <span class="author">By <a href="/author/{{this.UserName}}">{{this.UserName}}</a></span>
+                        <span class="category">in {{#each (split this.categories ', ') as |category|}}
+                            <a href="/category/{{encodeURIComponent category}}">{{trim category}}</a>{{#unless @last}}, {{/unless}}
+                        {{/each}}</span>
+                        <span class="date">{{formatDate this.created_at}}</span>
+                    </div>
+                </div>
+                
+                <h2 class="post-title">
+                    <a href="/post/{{this.slug}}">{{this.title}}</a>
+                </h2>
+                
+                <div class="post-content">
+                    {{#if this.excerpt}}
+                        {{truncate (stripMarkdown this.excerpt) 150}}
+                    {{else}}
+                        {{truncate (stripMarkdown this.content_markdown) 150}}
+                    {{/if}}
+                </div>
+                
+                <div class="post-footer">
+                    <a href="/post/{{this.slug}}" class="read-more">Read More</a>
+                    <span class="comments-count">{{this.comment_count}} comments</span>
+                </div>
+            </article>
+            {{/each}}
+        </div>
+    {{else}}
+        <div class="empty-bookmarks">
+            <i class="fas fa-bookmark"></i>
+            <h2>No Bookmarks Yet</h2>
+            <p>Start bookmarking posts to save them for later!</p>
+            <button onclick="location.href='/'" class="btn btn-primary" style="padding: 0.5rem 1.5rem; background-color: var(--accent); color: var(--dark); border-radius: 6px; font-weight: 500; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 0.5rem;">
+                Back to Blog
+            </button>
+        </div>
+    {{/if}}
+</div>
+
+<script>
+// Get bookmarks from localStorage and pass IDs to server
+function loadBookmarks() {
+    const bookmarks = JSON.parse(localStorage.getItem('bookmarkedPosts')) || [];
+    const bookmarkIds = bookmarks.map(b => b.id);
+    
+    if (bookmarkIds.length > 0) {
+        // Redirect with bookmark IDs as query parameter
+        const params = new URLSearchParams();
+        params.append('ids', JSON.stringify(bookmarkIds));
+        window.location.href = `/bookmarks?${params.toString()}`;
+    }
+}
+
+// Initialize bookmarks on page load - check if we need to redirect
+document.addEventListener('DOMContentLoaded', function() {
+    const currentUrl = new URL(window.location);
+    const bookmarks = JSON.parse(localStorage.getItem('bookmarkedPosts')) || [];
+    const bookmarkIds = bookmarks.map(b => b.id).sort((a, b) => a - b);
+    
+    // Get current IDs from URL
+    let currentIds = [];
+    if (currentUrl.searchParams.has('ids')) {
+        try {
+            currentIds = JSON.parse(currentUrl.searchParams.get('ids')).sort((a, b) => a - b);
+        } catch (e) {
+            currentIds = [];
+        }
+    }
+    
+    // Compare current IDs with localStorage IDs
+    const idsMatch = JSON.stringify(currentIds) === JSON.stringify(bookmarkIds);
+    
+    if (!idsMatch) {
+        // IDs don't match, redirect with updated IDs
+        if (bookmarkIds.length > 0) {
+            const params = new URLSearchParams();
+            params.append('ids', JSON.stringify(bookmarkIds));
+            window.location.href = `/bookmarks?${params.toString()}`;
+        } else {
+            // No bookmarks, remove ids from URL
+            currentUrl.searchParams.delete('ids');
+            window.location.href = currentUrl.toString();
+        }
+    }
+    
+    calculateReadingTime();
+});
+
+// Remove bookmark from post
+function removeBookmark(postId) {
+    let bookmarks = JSON.parse(localStorage.getItem('bookmarkedPosts')) || [];
+    bookmarks = bookmarks.filter(b => b.id !== postId);
+    localStorage.setItem('bookmarkedPosts', JSON.stringify(bookmarks));
+    
+    // Update URL query parameters
+    const currentUrl = new URL(window.location);
+    if (currentUrl.searchParams.has('ids')) {
+        let ids = JSON.parse(currentUrl.searchParams.get('ids'));
+        ids = ids.filter(id => id != postId);
+        
+        if (ids.length > 0) {
+            currentUrl.searchParams.set('ids', JSON.stringify(ids));
+        } else {
+            currentUrl.searchParams.delete('ids');
+        }
+        
+        window.history.replaceState({}, '', currentUrl);
+    }
+    
+    // Remove from DOM with animation
+    const card = document.querySelector(`[data-post-id="${postId}"]`);
+    if (card) {
+        card.style.opacity = '0';
+        card.style.transform = 'scale(0.95)';
+        setTimeout(() => {
+            card.remove();
+            
+            // Check if there are any posts left
+            if (document.querySelectorAll('.post-card').length === 0) {
+                location.reload();
+            }
+        }, 300);
+    }
+}
+
+// Clear all bookmarks
+function clearAllBookmarks() {
+    if (confirm('Are you sure you want to clear all bookmarks? This action cannot be undone.')) {
+        localStorage.removeItem('bookmarkedPosts');
+        
+        // Update URL to remove ids parameter
+        const currentUrl = new URL(window.location);
+        currentUrl.searchParams.delete('ids');
+        window.history.replaceState({}, '', currentUrl);
+        
+        // Reload page after a short delay to show empty state
+        setTimeout(() => {
+            location.reload();
+        }, 300);
+    }
+}
+
+// Export bookmarks as JSON
+function exportBookmarks() {
+    const bookmarks = JSON.parse(localStorage.getItem('bookmarkedPosts')) || [];
+    
+    if (bookmarks.length === 0) {
+        alert('No bookmarks to export');
+        return;
+    }
+    
+    // Get posts data from DOM to include URLs and authors
+    const postsData = [];
+    document.querySelectorAll('.post-card').forEach(card => {
+        const postId = card.getAttribute('data-post-id');
+        const titleElement = card.querySelector('.post-title a');
+        const authorElement = card.querySelector('.post-info a');
+        const dateElement = card.querySelector('.date');
+        
+        if (titleElement && authorElement) {
+            postsData.push({
+                id: postId,
+                title: titleElement.textContent,
+                url: titleElement.href,
+                author: authorElement.textContent,
+                date: dateElement ? dateElement.textContent : '',
+                bookmarkedAt: bookmarks.find(b => b.id == postId)?.bookmarkedAt || new Date().toISOString()
+            });
+        }
+    });
+    
+    const exportData = {
+        exportDate: new Date().toISOString(),
+        totalBookmarks: postsData.length,
+        bookmarks: postsData
+    };
+    
+    const dataStr = JSON.stringify(exportData, null, 2);
+    const dataBlob = new Blob([dataStr], { type: 'application/json' });
+    const url = URL.createObjectURL(dataBlob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `bookmarks-${new Date().toISOString().split('T')[0]}.json`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+}
+
+// Calculate total reading time
+function calculateReadingTime() {
+    const posts = document.querySelectorAll('.post-card');
+    let totalTime = 0;
+    
+    posts.forEach(card => {
+        const content = card.querySelector('.post-content');
+        if (content) {
+            const words = content.textContent.split(/\s+/).length;
+            const time = Math.ceil(words / 200); // Average reading speed: 200 words per minute
+            totalTime += time;
+        }
+    });
+    
+    const timeElement = document.getElementById('totalReadingTime');
+    if (timeElement) {
+        timeElement.textContent = `${totalTime} min`;
+    }
+}
+</script>

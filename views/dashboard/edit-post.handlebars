@@ -1,0 +1,859 @@
+{{#section 'styles'}}
+<style>
+:root {
+    --primary-color: #2196F3;
+    --primary-light: #e3f2fd;
+    --danger-color: #dc3545;
+    --success-color: #28a745;
+    --border-color: #e0e0e0;
+    --text-muted: #6c757d;
+    --box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.edit-post-form {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 2rem;
+    background: var(--dark);
+    border-radius: 8px;
+    box-shadow: var(--box-shadow);
+}
+
+.form-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid var(--border-color);
+}
+
+.form-header h1 {
+    margin: 0;
+    font-size: 1.8rem;
+    color: var(--text-light);
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    color: var(--text-light);
+}
+
+.form-control {
+    width: 100%;
+    padding: 0.75rem;
+    border: 2px solid var(--border-color);
+    border-radius: 6px;
+    background-color: var(--darker);
+    color: var(--text-light);
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.form-control:focus {
+    border-color: var(--primary-color);
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.2);
+}
+
+.tag-management {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.tag-input {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    padding: 0.75rem;
+    border: 2px solid var(--border-color);
+    border-radius: 6px;
+    background-color: var(--darker);
+    min-height: 45px;
+}
+
+.tag-selector {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.tag-selector select {
+    flex: 1;
+}
+
+.tag-selector input {
+    flex: 1;
+}
+
+.custom-tag-input {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    margin-top: 0.5rem;
+}
+
+.custom-tag-input input {
+    flex: 1;
+}
+
+.category-management {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.category-input {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    padding: 0.75rem;
+    border: 2px solid var(--border-color);
+    border-radius: 6px;
+    background-color: var(--darker);
+    min-height: 45px;
+}
+
+.category-selector {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.category-selector select {
+    flex: 1;
+}
+
+.category-selector input {
+    flex: 1;
+}
+
+.search-results {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background-color: var(--darker);
+    border: 2px solid var(--primary-color);
+    border-top: none;
+    border-radius: 0 0 6px 6px;
+    max-height: 200px;
+    overflow-y: auto;
+    z-index: 1000;
+    display: none;
+}
+
+.search-results.show {
+    display: block;
+}
+
+.search-result-item {
+    padding: 0.75rem;
+    cursor: pointer;
+    color: var(--text-light);
+    border-bottom: 1px solid var(--border-color);
+    transition: background-color 0.2s;
+}
+
+.search-result-item:hover {
+    background-color: var(--primary-light);
+    color: var(--primary-color);
+}
+
+.search-result-item:last-child {
+    border-bottom: none;
+}
+
+.search-container {
+    position: relative;
+    flex: 1;
+}
+
+.tag {
+    background-color: var(--primary-light);
+    color: var(--primary-color);
+    padding: 0.4rem 0.8rem;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    transition: all 0.2s;
+}
+
+.tag:hover {
+    background-color: #bbdefb;
+}
+
+.category {
+    background-color: #e8f5e9;
+    color: #2e7d32;
+    padding: 0.4rem 0.8rem;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    transition: all 0.2s;
+}
+
+.category:hover {
+    background-color: #c8e6c9;
+}
+
+.category button {
+    background: none;
+    border: none;
+    color: #2e7d32;
+    cursor: pointer;
+    padding: 0;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    transition: transform 0.2s;
+}
+
+.category button:hover {
+    transform: scale(1.2);
+}
+
+.tag button {
+    background: none;
+    border: none;
+    color: var(--primary-color);
+    cursor: pointer;
+    padding: 0;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    transition: transform 0.2s;
+}
+
+.tag button:hover {
+    transform: scale(1.2);
+}
+
+.preview-image-container {
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    padding: 1.5rem;
+    background-color: var(--darker);
+    transition: border-color 0.2s;
+}
+
+.preview-image-container:hover {
+    border-color: var(--primary-color);
+}
+
+.preview-image {
+    max-width: 300px;
+    max-height: 200px;
+    border-radius: 8px;
+    object-fit: cover;
+    display: block;
+    box-shadow: var(--box-shadow);
+}
+
+.current-preview {
+    display: inline-block;
+    margin-bottom: 1rem;
+}
+
+.text-muted {
+    color: var(--text-muted) !important;
+    font-size: 0.9rem;
+    margin-top: 0.5rem;
+}
+
+.mt-3 {
+    margin-top: 1rem !important;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+    margin-top: 2.5rem;
+    padding-top: 1.5rem;
+    border-top: 2px solid var(--border-color);
+}
+
+.btn {
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    font-weight: 500;
+    border-radius: 6px;
+    transition: all 0.2s;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.btn-primary {
+    background-color: var(--primary-color);
+    border: none;
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: #1976d2;
+    transform: translateY(-1px);
+}
+
+.btn-secondary {
+    background-color: transparent;
+    border: 2px solid var(--border-color);
+    color: var(--text-light);
+}
+
+.btn-secondary:hover {
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+}
+
+#previewBtn {
+    background-color: var(--darker);
+    border: 2px solid var(--border-color);
+    color: var(--text-light);
+    font-size: 0.9rem;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    transition: all 0.2s;
+    z-index: 10;
+}
+
+#previewBtn:hover {
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+}
+
+#markdownPreview {
+    background-color: var(--darker);
+    border: 2px solid var(--border-color);
+    border-radius: 6px;
+    padding: 1.5rem;
+    margin-top: 1rem;
+    line-height: 1.6;
+}
+
+.toggle-switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 34px;
+}
+
+.toggle-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: .4s;
+    border-radius: 34px;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+}
+
+input:checked + .slider {
+    background-color: #2196F3;
+}
+
+input:checked + .slider:before {
+    transform: translateX(26px);
+}
+</style>
+{{/section}}
+
+<div class="content-card">
+    <form class="edit-post-form" id="editPostForm">
+        <div class="form-header">
+            <h1>{{#if post}}Edit Post{{else}}Create New Post{{/if}}</h1>
+            <div class="status-controls">
+                <select name="status" class="form-control">
+                    <option value="draft" {{#if (eq post.status 'draft')}}selected{{/if}}>Draft</option>
+                    <option value="published" {{#if (eq post.status 'published')}}selected{{/if}}>Published</option>
+                    <option value="private" {{#if (eq post.status 'private')}}selected{{/if}}>Private</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label" for="title">Title</label>
+            <input type="text" class="form-control" id="title" name="title" value="{{post.title}}" required>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label" for="excerpt">Excerpt</label>
+            <textarea class="form-control" id="excerpt" name="excerpt" rows="3">{{post.excerpt}}</textarea>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">Preview Image URL</label>
+            <div class="preview-image-container">
+                {{#if post.preview_image}}
+                    <div class="current-preview mb-3">
+                        <img src="{{post.preview_image}}" alt="Current preview" class="preview-image">
+                    </div>
+                {{/if}}
+                <div class="preview-url-input">
+                    <input type="url" 
+                           id="previewImage" 
+                           name="preview_image" 
+                           class="form-control" 
+                           placeholder="Enter image URL" 
+                           value="{{post.preview_image}}"
+                           onchange="previewImageUrl(this)">
+                    <small class="text-muted">Enter a valid image URL (https://example.com/image.jpg)</small>
+                </div>
+                <div id="imagePreview" class="mt-3" style="display: none;">
+                    <img src="" alt="URL preview" class="preview-image">
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label" for="content">Content (Markdown)</label>
+            <div style="position: relative;">
+                <textarea class="form-control" id="content" name="content" rows="10" style="font-family: 'Courier New', monospace;">{{#if post.content_markdown}}{{post.content_markdown}}{{else}}{{post.content}}{{/if}}</textarea>
+                <button type="button" id="previewBtn" class="btn btn-secondary" style="position: absolute; top: 10px; right: 10px;">Preview</button>
+            </div>
+            <div id="markdownPreview" style="display: none; margin-top: 1rem; padding: 1rem; border: 1px solid #ddd; border-radius: 4px;"></div>
+            <small style="color: #6c757d; margin-top: 0.5rem; display: block;">Write your content in Markdown format. It will be converted to HTML when displayed.</small>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">Categories <span style="color: #dc3545;">*</span></label>
+            <div class="category-management">
+                <div class="category-input" id="categoryContainer">
+                    {{#each post.categoryIds}}
+                    <span class="category" data-category-id="{{this}}">
+                        {{#getCategory ../categories this}}{{/getCategory}}
+                        <button type="button" class="remove-category">&times;</button>
+                    </span>
+                    {{/each}}
+                </div>
+                <div class="category-selector">
+                    <div class="search-container">
+                        <input type="text" 
+                               id="categorySearch" 
+                               class="form-control" 
+                               placeholder="Search categories...">
+                        <div class="search-results" id="categoryResults"></div>
+                    </div>
+                    <select id="categorySelect" class="form-control" style="display: none;">
+                        <option value="">Select a category...</option>
+                        {{#each categories}}
+                        <option value="{{id}}">{{name}}</option>
+                        {{/each}}
+                    </select>
+                    <button type="button" id="addCategory" class="btn btn-secondary">Add Category</button>
+                </div>
+                <small class="text-muted">Select categories to assign to this post. At least one category is required.</small>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">Tags</label>
+            <div class="tag-management">
+                <div class="tag-input" id="tagContainer">
+                    {{#each post.tags}}
+                    <span class="tag">
+                        {{this}}
+                        <button type="button" class="remove-tag">&times;</button>
+                    </span>
+                    {{/each}}
+                </div>
+                <div class="tag-selector">
+                    <div class="search-container">
+                        <input type="text" 
+                               id="tagSearch" 
+                               class="form-control" 
+                               placeholder="Search tags...">
+                        <div class="search-results" id="tagResults"></div>
+                    </div>
+                    <select id="tagSelect" class="form-control" style="display: none;">
+                        <option value="">Select a tag...</option>
+                        {{#each availableTags}}
+                        <option value="{{name}}">{{name}}</option>
+                        {{/each}}
+                    </select>
+                    <button type="button" id="addSelectedTag" class="btn btn-secondary">Add Tag</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="action-buttons">
+            <button type="button" class="btn btn-secondary" onclick="window.history.back()">Cancel</button>
+            <button type="submit" class="btn btn-primary">
+                {{#if post}}Update{{else}}Create{{/if}} Post
+            </button>
+        </div>
+    </form>
+</div>
+
+{{#section 'scripts'}}
+<script>
+(function() {
+    const tagContainer = document.getElementById('tagContainer');
+    const form = document.getElementById('editPostForm');
+
+    // Check if required elements exist before adding event listeners
+    if (!tagContainer || !form) {
+        console.error('Required form elements not found');
+        return;
+    }
+
+    // Handle predefined tags
+    const tagSelect = document.getElementById('tagSelect');
+    const tagSearch = document.getElementById('tagSearch');
+    const tagResults = document.getElementById('tagResults');
+    const addSelectedTag = document.getElementById('addSelectedTag');
+    
+    // Store all available tags
+    const allTags = Array.from(tagSelect.options)
+        .filter(option => option.value !== '')
+        .map(option => ({ value: option.value, text: option.text }));
+
+    if (tagSearch) {
+        tagSearch.addEventListener('input', (e) => {
+            filterAndShowTags(e.target.value);
+        });
+
+        // Close results when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.search-container') && !e.target.closest('#tagResults')) {
+                tagResults.classList.remove('show');
+            }
+        });
+
+        tagSearch.addEventListener('focus', () => {
+            if (tagSearch.value || allTags.length > 0) {
+                filterAndShowTags(tagSearch.value);
+            }
+        });
+    }
+
+    function filterAndShowTags(searchTerm) {
+        const filtered = allTags.filter(tag => 
+            tag.text.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+
+        tagResults.innerHTML = '';
+
+        if (filtered.length === 0) {
+            if (searchTerm) {
+                tagResults.innerHTML = '<div class="search-result-item" style="color: var(--text-muted);">No tags found</div>';
+            }
+            tagResults.classList.toggle('show', searchTerm.length > 0);
+        } else {
+            filtered.forEach(tag => {
+                const item = document.createElement('div');
+                item.className = 'search-result-item';
+                item.textContent = tag.text;
+                item.addEventListener('click', () => {
+                    addTag(tag.value);
+                    tagSearch.value = '';
+                    tagResults.classList.remove('show');
+                });
+                tagResults.appendChild(item);
+            });
+            tagResults.classList.add('show');
+        }
+    }
+
+    if (addSelectedTag) {
+        addSelectedTag.addEventListener('click', () => {
+            // Find the first visible tag from search results
+            const visibleItems = tagResults.querySelectorAll('.search-result-item');
+            if (visibleItems.length > 0 && visibleItems[0].textContent !== 'No tags found') {
+                visibleItems[0].click();
+            }
+        });
+    }
+
+    function addTag(text) {
+        if (!text || !tagContainer) return;
+        
+        // Check if tag already exists
+        const existingTags = Array.from(tagContainer.getElementsByClassName('tag'))
+            .map(tag => tag.textContent.trim().replace('×', '').trim());
+        
+        if (existingTags.includes(text)) {
+            return; // Don't add duplicate tags
+        }
+        
+        const tag = document.createElement('span');
+        tag.className = 'tag';
+        tag.innerHTML = `
+            ${text}
+            <button type="button" class="remove-tag">&times;</button>
+        `;
+        tagContainer.appendChild(tag);
+    }
+
+    // Event delegation for tag removal
+    tagContainer.addEventListener('click', (e) => {
+        if (e.target.classList.contains('remove-tag')) {
+            e.target.parentElement.remove();
+        }
+    });
+
+    // Category management
+    const categorySelect = document.getElementById('categorySelect');
+    const categorySearch = document.getElementById('categorySearch');
+    const categoryResults = document.getElementById('categoryResults');
+    const addCategoryBtn = document.getElementById('addCategory');
+    const categoryContainer = document.getElementById('categoryContainer');
+    const categories = {{{jsonStringify categories}}};
+    
+    // Store all available categories
+    const allCategories = Array.from(categorySelect.options)
+        .filter(option => option.value !== '')
+        .map(option => ({ value: parseInt(option.value, 10), text: option.text }));
+
+    if (categorySearch) {
+        categorySearch.addEventListener('input', (e) => {
+            filterAndShowCategories(e.target.value);
+        });
+
+        // Close results when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.search-container') && !e.target.closest('#categoryResults')) {
+                categoryResults.classList.remove('show');
+            }
+        });
+
+        categorySearch.addEventListener('focus', () => {
+            if (categorySearch.value || allCategories.length > 0) {
+                filterAndShowCategories(categorySearch.value);
+            }
+        });
+    }
+
+    function filterAndShowCategories(searchTerm) {
+        const filtered = allCategories.filter(cat => 
+            cat.text.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+
+        categoryResults.innerHTML = '';
+
+        if (filtered.length === 0) {
+            if (searchTerm) {
+                categoryResults.innerHTML = '<div class="search-result-item" style="color: var(--text-muted);">No categories found</div>';
+            }
+            categoryResults.classList.toggle('show', searchTerm.length > 0);
+        } else {
+            filtered.forEach(cat => {
+                const item = document.createElement('div');
+                item.className = 'search-result-item';
+                item.textContent = cat.text;
+                item.addEventListener('click', () => {
+                    addCategory(cat.value);
+                    categorySearch.value = '';
+                    categoryResults.classList.remove('show');
+                });
+                categoryResults.appendChild(item);
+            });
+            categoryResults.classList.add('show');
+        }
+    }
+
+    if (addCategoryBtn) {
+        addCategoryBtn.addEventListener('click', () => {
+            // Find the first visible category from search results
+            const visibleItems = categoryResults.querySelectorAll('.search-result-item');
+            if (visibleItems.length > 0 && visibleItems[0].textContent !== 'No categories found') {
+                visibleItems[0].click();
+            }
+        });
+    }
+
+    function addCategory(categoryId) {
+        if (!categoryId || !categoryContainer) return;
+
+        // Check if category already exists
+        const existingCategories = Array.from(categoryContainer.getElementsByClassName('category'))
+            .map(cat => parseInt(cat.getAttribute('data-category-id'), 10));
+
+        if (existingCategories.includes(categoryId)) {
+            return; // Don't add duplicate categories
+        }
+
+        // Find category name
+        const category = categories.find(c => c.id === categoryId);
+        if (!category) return;
+
+        const categoryElement = document.createElement('span');
+        categoryElement.className = 'category';
+        categoryElement.setAttribute('data-category-id', categoryId);
+        categoryElement.innerHTML = `
+            ${category.name}
+            <button type="button" class="remove-category">&times;</button>
+        `;
+        categoryContainer.appendChild(categoryElement);
+    }
+
+    // Event delegation for category removal
+    categoryContainer.addEventListener('click', (e) => {
+        if (e.target.classList.contains('remove-category')) {
+            e.target.parentElement.remove();
+        }
+    });
+
+    // Handle form submission
+        // Preview image URL function
+    window.previewImageUrl = function(input) {
+        const imagePreview = document.getElementById('imagePreview');
+        const previewImg = imagePreview.querySelector('img');
+        const currentPreview = document.querySelector('.current-preview');
+        
+        if (input.value) {
+            // Update preview
+            previewImg.src = input.value;
+            imagePreview.style.display = 'block';
+            
+            // Hide current preview if exists
+            if (currentPreview) {
+                currentPreview.style.display = 'none';
+            }
+            
+            // Handle image load error
+            previewImg.onerror = function() {
+                imagePreview.style.display = 'none';
+                if (currentPreview) {
+                    currentPreview.style.display = 'block';
+                }
+                alert('Invalid image URL or image not accessible');
+            };
+        } else {
+            imagePreview.style.display = 'none';
+            if (currentPreview) {
+                currentPreview.style.display = 'block';
+            }
+        }
+    };
+
+    // Handle markdown preview
+    const previewBtn = document.getElementById('previewBtn');
+    const markdownPreview = document.getElementById('markdownPreview');
+    const contentTextarea = document.getElementById('content');
+    
+    if (previewBtn && markdownPreview && contentTextarea) {
+        let isPreviewMode = false;
+        
+        previewBtn.addEventListener('click', async () => {
+            try {
+                isPreviewMode = !isPreviewMode;
+                
+                if (isPreviewMode) {
+                    const content = contentTextarea.value;
+                    const response = await fetch('/dashboard/api/markdown-preview', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ markdown: content })
+                    });
+                    
+                    if (response.ok) {
+                        const { html } = await response.json();
+                        markdownPreview.innerHTML = html;
+                        markdownPreview.style.display = 'block';
+                        contentTextarea.style.display = 'none';
+                        previewBtn.textContent = 'Edit';
+                    } else {
+                        throw new Error('Failed to generate preview');
+                    }
+                } else {
+                    markdownPreview.style.display = 'none';
+                    contentTextarea.style.display = 'block';
+                    previewBtn.textContent = 'Preview';
+                }
+            } catch (err) {
+                console.error('Error generating preview:', err);
+                alert('Failed to generate preview');
+            }
+        });
+    }
+
+        if (form) {
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            try {
+                // Get selected categories from the category container
+                const selectedCategoryElements = Array.from(categoryContainer.getElementsByClassName('category'));
+                const selectedCategories = selectedCategoryElements
+                    .map(el => parseInt(el.getAttribute('data-category-id'), 10))
+                    .filter(id => !isNaN(id));
+                
+                // Validate that at least one category is selected
+                if (selectedCategories.length === 0) {
+                    alert('Please select at least one category for the post');
+                    categoryContainer.focus();
+                    return;
+                }
+                
+                const formData = new FormData();
+                
+                // Add basic form fields
+                formData.append('title', form.querySelector('#title').value);
+                formData.append('content', form.querySelector('#content').value);
+                formData.append('excerpt', form.querySelector('#excerpt').value);
+                formData.append('preview_image', form.querySelector('#previewImage').value);
+                formData.append('status', form.querySelector('select[name="status"]').value);
+                
+                // Add tags and categories to form data
+                const tags = Array.from(tagContainer.getElementsByClassName('tag'))
+                    .map(tag => tag.textContent.trim().replace('×', '').trim())
+                    .filter(tag => tag.length > 0);
+                
+                formData.append('tags', JSON.stringify(tags));
+                formData.append('categories', JSON.stringify(selectedCategories));
+                
+                const response = await fetch('{{#if post}}/dashboard/api/posts/{{post.id}}{{else}}/dashboard/api/posts{{/if}}', {
+                    method: '{{#if post}}PUT{{else}}POST{{/if}}',
+                    body: formData
+                });
+
+                if (response.ok) {
+                    window.location.href = '/dashboard/posts';
+                } else {
+                    const error = await response.json();
+                    alert(error.message || 'Failed to save post');
+                }
+            } catch (err) {
+                console.error('Error saving post:', err);
+                alert('An error occurred while saving the post');
+            }
+        });
+    }
+})();
+</script>
+{{/section}}

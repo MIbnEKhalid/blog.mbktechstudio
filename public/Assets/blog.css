@@ -1,0 +1,35 @@
+.blog-post {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.blog-post-content {
+    font-size: 1.1rem;
+    line-height: 1.6;
+}
+
+.comments-list .comment {
+    border-bottom: 1px solid #eee;
+    padding-bottom: 1rem;
+}
+
+.comments-list .comment:last-child {
+    border-bottom: none;
+}
+
+.card-text {
+    color: #6c757d;
+}
+
+.blog-post h1 {
+    font-size: 2.5rem;
+    font-weight: bold;
+}
+
+.comment textarea {
+    resize: vertical;
+}
+
+.badge {
+    font-size: 0.8rem;
+}

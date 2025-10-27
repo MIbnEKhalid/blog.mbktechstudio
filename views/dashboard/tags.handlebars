@@ -1,0 +1,307 @@
+{{#section 'styles'}}
+<style>
+.tag-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.search-box {
+    position: relative;
+    margin-bottom: 1.5rem;
+}
+
+.search-input {
+    width: 100%;
+    padding: 0.75rem 1rem 0.75rem 2.5rem;
+    border: 1px solid var(--dark);
+    border-radius: var(--border-radius);
+    font-size: 0.875rem;
+    background-color: var(--darker);
+    color: var(--text);
+}
+
+.search-icon {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-light);
+}
+
+.tag-form {
+    background: var(--darker);
+    padding: 1.5rem;
+    border-radius: var(--border-radius);
+    margin-bottom: 2rem;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.tag-name-edit {
+    max-width: 300px;
+}
+
+.tag-count {
+    font-weight: 500;
+    color: var(--accent);
+}
+</style>
+{{/section}}
+
+<div class="content-header">
+    <h1 class="content-title">Tags Management</h1>
+</div>
+
+<div class="tag-stats">
+    <div class="stat-card">
+        <div class="stat-icon" style="background: rgba(33, 150, 243, 0.1); color: var(--info-color);">
+            <i class="fas fa-tags"></i>
+        </div>
+        <div class="stat-info">
+            <h3>Total Tags</h3>
+            <div class="value">{{tags.length}}</div>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="tag-form">
+        <form id="tagForm" class="mb-4">
+            <div class="form-group d-flex">
+                <input type="text" id="tagName" class="search-input" placeholder="New Tag Name" required>
+                <button type="submit" class="btn btn-primary ml-2">Add Tag</button>
+            </div>
+        </form>
+    </div>
+
+    <div class="filters-container">
+        <div class="search-box">
+            <i class="fas fa-search search-icon"></i>
+            <input type="text" class="search-input" placeholder="Search tags..." id="searchTags">
+        </div>
+        
+        <div class="filter-options">
+            <div class="filter-group">
+                <label>Filter by Posts:</label>
+                <select id="postFilter" class="form-select">
+                    <option value="all">All Tags</option>
+                    <option value="with-posts">With Posts</option>
+                    <option value="no-posts">No Posts</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label>Sort by:</label>
+                <select id="sortFilter" class="form-select">
+                    <option value="name">Name</option>
+                    <option value="posts-asc">Posts (Low to High)</option>
+                    <option value="posts-desc">Posts (High to Low)</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <div class="table-container">
+        {{#if tags}}
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Posts</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each tags}}
+                    <tr>
+                        <td class="tag-name-edit">
+                            <span class="tag-name" id="name-{{id}}">{{name}}</span>
+                            <input type="text" class="search-input d-none" id="edit-{{id}}" value="{{name}}">
+                        </td>
+                        <td>
+                            <span class="tag-count">{{post_count}} {{#if (eq post_count 1)}}post{{else}}posts{{/if}}</span>
+                        </td>
+                        <td>
+                            <div class="action-buttons">
+                                <button onclick="toggleEdit({{id}})" class="btn btn-sm btn-primary edit-btn-{{id}}" title="Edit">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button onclick="saveTag({{id}})" class="btn btn-sm btn-success d-none save-btn-{{id}}" title="Save">
+                                    <i class="fas fa-check"></i>
+                                </button>
+                                <button onclick="deleteTag({{id}})" class="btn btn-sm btn-danger" title="Delete">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                    {{/each}}
+                </tbody>
+            </table>
+        {{else}}
+            <div style="text-align: center; padding: 3rem;">
+                <div style="margin-bottom: 1rem;">
+                    <i class="fas fa-tags" style="font-size: 3rem; color: #ddd;"></i>
+                </div>
+                <h3 style="color: #666; margin-bottom: 1rem;">No tags found</h3>
+                <p style="color: #888;">Create tags to better organize your blog posts.</p>
+            </div>
+        {{/if}}
+    </div>
+</div>
+</div>
+
+<script>
+// Filter and sort functionality
+function filterAndSortTags() {
+    const searchText = document.getElementById('searchTags').value.toLowerCase();
+    const postFilter = document.getElementById('postFilter').value;
+    const sortFilter = document.getElementById('sortFilter').value;
+    const tbody = document.querySelector('tbody');
+    const rows = Array.from(tbody.querySelectorAll('tr'));
+    
+    // Apply filters
+    rows.forEach(row => {
+        const tagName = row.querySelector('.tag-name').textContent.toLowerCase();
+        const postCount = parseInt(row.querySelector('.tag-count').textContent);
+        
+        const matchesSearch = tagName.includes(searchText);
+        const matchesPostFilter = 
+            postFilter === 'all' || 
+            (postFilter === 'with-posts' && postCount > 0) || 
+            (postFilter === 'no-posts' && postCount === 0);
+        
+        row.style.display = matchesSearch && matchesPostFilter ? '' : 'none';
+    });
+    
+    // Sort visible rows
+    const visibleRows = rows.filter(row => row.style.display !== 'none');
+    visibleRows.sort((a, b) => {
+        const aValue = a.querySelector('.tag-name').textContent.toLowerCase();
+        const bValue = b.querySelector('.tag-name').textContent.toLowerCase();
+        const aCount = parseInt(a.querySelector('.tag-count').textContent);
+        const bCount = parseInt(b.querySelector('.tag-count').textContent);
+        
+        switch (sortFilter) {
+            case 'name':
+                return aValue.localeCompare(bValue);
+            case 'posts-asc':
+                return aCount - bCount;
+            case 'posts-desc':
+                return bCount - aCount;
+            default:
+                return 0;
+        }
+    });
+    
+    // Update the DOM
+    visibleRows.forEach(row => tbody.appendChild(row));
+}
+
+// Add event listeners for all filter controls
+document.getElementById('searchTags').addEventListener('input', filterAndSortTags);
+document.getElementById('postFilter').addEventListener('change', filterAndSortTags);
+document.getElementById('sortFilter').addEventListener('change', filterAndSortTags);
+
+// Add new tag
+document.getElementById('tagForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const name = document.getElementById('tagName').value;
+    
+    try {
+        const response = await fetch('/dashboard/api/tags', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ name }),
+        });
+
+        const data = await response.json();
+        if (data.success) {
+            window.location.reload();
+        } else {
+            alert(data.error || 'Failed to add tag');
+        }
+    } catch (err) {
+        console.error(err);
+        alert('An error occurred while adding the tag');
+    }
+});
+
+// Toggle edit mode
+function toggleEdit(id) {
+    document.getElementById(`name-${id}`).classList.toggle('d-none');
+    document.getElementById(`edit-${id}`).classList.toggle('d-none');
+    document.querySelector(`.edit-btn-${id}`).classList.toggle('d-none');
+    document.querySelector(`.save-btn-${id}`).classList.toggle('d-none');
+    
+    // Focus the input when showing
+    if (!document.getElementById(`edit-${id}`).classList.contains('d-none')) {
+        document.getElementById(`edit-${id}`).focus();
+    }
+}
+
+// Save tag changes
+async function saveTag(id) {
+    const name = document.getElementById(`edit-${id}`).value;
+    
+    try {
+        const response = await fetch(`/dashboard/api/tags/${id}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ name }),
+        });
+
+        const data = await response.json();
+        if (data.success) {
+            window.location.reload();
+        } else {
+            alert(data.error || 'Failed to update tag');
+        }
+    } catch (err) {
+        console.error(err);
+        alert('An error occurred while updating the tag');
+    }
+}
+
+// Delete tag
+async function deleteTag(id) {
+    if (!confirm('Are you sure you want to delete this tag? This will remove the tag from all associated posts.')) {
+        return;
+    }
+
+    try {
+        const response = await fetch(`/dashboard/api/tags/${id}`, {
+            method: 'DELETE'
+        });
+
+        const data = await response.json();
+        if (data.success) {
+            window.location.reload();
+        } else {
+            alert(data.error || 'Failed to delete tag');
+        }
+    } catch (err) {
+        console.error(err);
+        alert('An error occurred while deleting the tag');
+    }
+}
+
+// Add Escape key handler for edit mode
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        const activeEdit = document.querySelector('input[id^="edit-"]:not(.d-none)');
+        if (activeEdit) {
+            const id = activeEdit.id.replace('edit-', '');
+            toggleEdit(id);
+        }
+    }
+});
+</script>

@@ -1,99 +1,105 @@
-# MBK Tech Studio Blogs
+# MBK Blog - SEO Optimized Blogging Platform
 
-https://blogs.mbktechstudio.com/
+## Features
+- **SEO Optimized** with sitemap generation, robots.txt, canonical URLs, and schema markup
+- **Dynamic Blog Posts** with categories and tags
+- **Comment System** with nested replies
+- **Admin Dashboard** for content management
+- **Responsive Design** for mobile and desktop
 
-Website Source Code
-[danielcgilibert/blog-template](https://github.com/danielcgilibert/blog-template)
+## Installation
 
-Documentation: [danielcgilibert/blog-template/README.md](https://github.com/danielcgilibert/blog-template/blob/main/README.md)
-
-See Project Configs: [doc.Config.md](public/admin/doc.Config.md)
-
-## 💻 Demo
-
-Check out the [blog-template-gray.vercel.app](https://blog-template-gray.vercel.app/), hosted on Vercel
-
-### NOTE:
-
-Only The Source Code Of This Website Is Covered Under The [GPL 3.0 LICENSE](LICENSE). The Project Blog Posts, Some Images, , And Other Content Are NOT Covered Under This License And Remain The Intellectual Property Of The Author.
-
-## 📐 Configure
-
-- Edit the configuration file **src/data/site.config.ts** for the basic blog metadata.
-- Update the **astro.config.mjs** file at the root of the project with your own domain.
-- Modify the files in the **/public** folder:
-  - favicon
-  - robots.txt -> update the Sitemap url to your own domain
-  - open-graph -> the open-graph is the image that will be displayed when sharing the blog link. For posts, the preview image is the post cover.
-- Edit the social networks in the Header component - **src/components/Header.astro**, change the URL to your social network.
-
-## 📝 Blog Files Generation
-
-The `generateBlogFiles.js` script generates a file containing all blog titles and links. This file can be used for various purposes, such as retrieving blog posts to populate a select option or other functionalities.
-
-## 🗂️ Adding a category
-
-To add a new category to your blog, simply go to the src/data/categories.ts file and add it to the array.
-
-Example:
-
-```ts
-export  const  CATEGORIES  =  [
-'JavaScript',
-'React',
-'new category here'  <---
-]  as  const
+```bash
+npm install
 ```
 
-> 🚨 Zod checks whether the category is not correctly written or does not exist in the properties of the markdown document. **It will throw an error when building the application.** 🚨
+## Environment Setup
 
-### List Of Main Domains
+Create a `.env` file in the root directory with your configuration:
 
-|                      | Domains                                        | Purpose                                                                                                |
-| -------------------- | ---------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
-| **Main Domain**      | [mbktechstudio.com](https://mbktechstudio.com) | Main Domain Used For all purposes for personal and official                                            |
-| **Secondary Domain** | [mbktech.xyz](https://mbktech.xyz)             | Backup domain, rarely used.                                                                            |
-| **Portfolio Domain** | [ibnekhalid.me](https://ibnekhalid.me)         | The primary website for my personal portfolio, domain was provided as part of the GitHub Student Pack. |
+```env
+DATABASE_URL=your_database_url
+PORT=3065
+NODE_ENV=production
+BASE_URL=https://yourblogdomain.com
+```
 
-### List Of mbktechstudio.com sub domains
+## Running the Application
 
-| **Repository Name**        | **Repo Link**                                                                                              | **Website Link**                                                                       | **Purpose**                                                                      |
-| -------------------------- | ---------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
-| **Main Website**           | [MIbnEKhalid.github.io](https://github.com/MIbnEKhalid/MIbnEKhalid.github.io)                              | [mbktechstudio.com](https://mbktechstudio.com)                                         | Main Page of MBK Tech Studio                                                     |
-| **Maintenance Website**    | [MIbnEKhalid.github.io/Maintenance](https://github.com/MIbnEKhalid/MIbnEKhalid.github.io/tree/Maintenance) | [mbktechstudio.com](https://mbktechstudio.com)                                         | Maintenance page deploy when websiye under Maintenance                           |
-|                            |                                                                                                            | [maintenance.mbktechstudio.com](https://maintenance.mbktechstudio.com)                 |                                                                                  |
-|                            |                                                                                                            | [maintenance-mbktechstudio.netlify.app](https://maintenance-mbktechstudio.netlify.app) |                                                                                  |
-| **Domain Website**         | [MIbnEKhalid.github.io/domain](https://github.com/MIbnEKhalid/MIbnEKhalid.github.io/tree/domain)           | [domain.mbktechstudio.com](https://domain.mbktechstudio.com)                           | Website that showcase all subdomains)                                            |
-|                            |                                                                                                            | [domains.mbktechstudio.com](https://domains.mbktechstudio.com)                         |                                                                                  |
-|                            |                                                                                                            | [domain-mbktechstudio.netlify.app](https://domain-mbktechstudio.netlify.app)           |                                                                                  |
-| **Main Test Website**      | [MIbnEKhalid.github.io/test](https://github.com/MIbnEKhalid/MIbnEKhalid.github.io/tree/test)               | [test.mbktechstudio.com](https://test.mbktechstudio.com)                               | Main Website Test Page                                                           |
-|                            |                                                                                                            | [test-mbktechstudio.netlify.app](https://test-mbktechstudio.netlify.app)               |                                                                                  |
-| **Privacy Policy Website** | [Privacy.MIbnEKhalid.github.io](https://github.com/MIbnEKhalid/Privacy.MIbnEKhalid.github.io)              | [privacy.mbktechstudio.com](https://Privacy.mbktechstudio.com)                         | Website for Privacy Policy                                                       |
-|                            |                                                                                                            | [privacy-mbktechstudio.netlify.app](https://privacy-mbktechstudio.netlify.app)         |                                                                                  |
-| **Docs Website**           | [Docs.MIbnEKhalid.github.io](https://github.com/MIbnEKhalid/Docs.MIbnEKhalid.github.io)                    | [Docs.mbktechstudio.com](https://docs.mbktechstudio.com)                               | Website for documentation of MBK Tech Studio's Projects, Products and apps (etc) |
-|                            |                                                                                                            | [project.mbktechstudio.com](https://Project.mbktechstudio.com)                         |                                                                                  |
-|                            |                                                                                                            | [docs-mbktechstudio.netlify.app](https://docs-mbktechstudio.netlify.app)               |                                                                                  |
-| **Portal Website**         | [Portal.MIbnEKhalid.github.io](https://github.com/MIbnEKhalid/Portal.MIbnEKhalid.github.io)                | [portal.mbktechstudio.com](https://portal.mbktechstudio.com)                           | Website For Admins and Test Users                                                |
-|                            |                                                                                                            | [portal-mbktechstudio.netlify.app](https://portal-mbktechstudio.netlify.app)           |                                                                                  |
-| **Portfolio Website**      | [Portfolio.MIbnEKhalid.github.io](https://github.com/MIbnEKhalid/Portal.MIbnEKhalid.github.io)             | [portfolio.mbktechstudio.com](https://portfolio.mbktechstudio.com)                     | My Personal Portfolio Website                                                    |
-|                            |                                                                                                            | [ibnekhalid.me](https://ibnekhalid.me)                                                 |                                                                                  |
-|                            |                                                                                                            | [portfolio-mbktechstudio.netlify.app](https://portfolio-mbktechstudio.netlify.app)     |                                                                                  |
-| **Uni Library Website**    | [Unilib.MIbnEKhalid.github.io](https://github.com/MIbnEKhalid/Unilib.MIbnEKhalid.github.io)                | [unilib.mbktechstudio.com](https://unilib.mbktechstudio.com)                           | Website For My Uni Classmates                                                    |
-|                            |                                                                                                            | [unilib-mbktechstudio.netlify.app](https://unilib-mbktechstudio.netlify.app)           |                                                                                  |
-| **Blog Website**           | [Blog.MIbnEKhalid.github.io](https://github.com/MIbnEKhalid/Blog.MIbnEKhalid.github.io)                    | [blog.mbktechstudio.com](https://blog.mbktechstudio.com)                               | Blog Website of MBK Tech Studio                                                  |
-|                            |                                                                                                            | [blog-mbktechstudio.netlify.app](https://blog-mbktechstudio.netlify.app)               |                                                                                  |
+**Development:**
+```bash
+npm start
+```
 
-**Note:** `mibnekhalid.github.io`, `privacy-mbktechstudio.netlify.app`, `docs-mbktechstudio.netlify.app`, `portal-mbktechstudio.netlify.app`, `portfolio-mbktechstudio.netlify.app`, `unilib-mbktechstudio.netlify.app`, `test-mbktechstudio.netlify.app`, `domain-mbktechstudio.netlify.app` and `maintenance-mbktechstudio.netlify.app` are original domains. The `mbktechstudio.com` domain is a custom domains with CNAME records redirecting to the original domains.
+**Generate Sitemaps:**
+Generate XML sitemaps for search engines (should be run whenever content changes):
+```bash
+npm run generate-sitemap
+```
 
-## Hosting:
+This command will:
+- Query the database for all published posts, categories, and tags
+- Generate static XML sitemap files in the `public/` directory
+- Create a sitemap index for search engines
 
-The Website (SubDomains Of MBKTechStudio) Is Hosted On Netlify.
+**Sitemaps Generated:**
+- `sitemap.xml` - Main sitemap index
+- `sitemap-posts.xml` - All published blog posts
+- `sitemap-categories.xml` - All categories
+- `sitemap-tags.xml` - All tags
 
-## License
+## SEO Features
 
-This project is licensed under the GPL 3.0- see the [LICENSE](LICENSE) file for details.
-**NOTE:** Only The Source Code Of This Website Is Covered Under The [GPL 3.0 LICENSE](LICENSE). The Project Blog Posts, Some Images, , And Other Content Are NOT Covered Under This License And Remain The Intellectual Property Of The Author.
+### ✅ Implemented
+- **robots.txt** - Guides search engine crawlers
+- **XML Sitemaps** - Automatic generation via npm script
+- **Canonical URLs** - Prevents duplicate content issues
+- **Meta Tags** - Dynamic meta descriptions and Open Graph tags
+- **Schema.org Markup** - Article, Blog, and Organization schemas
+- **Twitter Cards** - Enhanced social media sharing
+- **Structured Data** - BreadcrumbList and Author information
+- **Static Asset Caching** - Optimized performance
+- **GZIP Compression** - Faster page loads
 
-## Contact
+### 📝 Todo
+- When reply to subreply show replies disappear
+- Allow infinite sub replies
 
-For questions or contributions, please contact Muhammad Bin Khalid at [mbktechstudio.com/Support](https://mbktechstudio.com/Support/?Project=Blog.MIbnEKhalid.github.io), [support@mbktechstudio.com](mailto:support@mbktechstudio.com) or [chmuhammadbinkhalid28.com](mailto:chmuhammadbinkhalid28.com).
+## Project Structure
+
+```
+├── index.js                 # Main application entry
+├── routes/
+│   ├── blog.js             # Blog routes and logic
+│   ├── dashboard.js        # Admin dashboard routes
+│   └── pool.js             # Database connection pool
+├── views/
+│   ├── blog/               # Blog page templates
+│   ├── dashboard/          # Admin templates
+│   ├── layouts/            # Layout templates
+│   └── partial/            # Partial templates
+├── public/
+│   ├── Assets/             # Static assets
+│   ├── robots.txt          # Search engine crawler rules
+│   ├── sitemap.xml         # Generated sitemap index
+│   ├── sitemap-posts.xml   # Generated posts sitemap
+│   ├── sitemap-categories.xml # Generated categories sitemap
+│   └── sitemap-tags.xml    # Generated tags sitemap
+└── generate-sitemap.js     # Sitemap generation script
+
+```
+
+## Maintenance
+
+**Important:** After adding, updating, or deleting blog posts, run the sitemap generation:
+```bash
+npm run generate-sitemap
+```
+
+This ensures search engines have the latest content information.
+
+---
+
+**Author:** Muhammad Bin Khalid  
+**License:** Private  
+**Website:** https://www.mbktechstudio.com
