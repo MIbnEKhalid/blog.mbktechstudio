@@ -851,11 +851,15 @@
 
             <nav>
                 <ul>
-                    <li><a href="/">Home</a></li>
-                    <li><a href="/categories">Categories</a></li>
-                    <li><a href="/tags">Tags</a></li>
+                    <li><a href="/" title="Go to homepage"> <i class="fas fa-home"></i> Home</a></li>
+                    <li><a href="/categories" title="View all categories"> <i class="fas fa-folder"></i> Categories</a></li>
+                    <li><a href="/tags" title="View all tags"><i class="fas fa-tags"></i> Tags</a></li>
                     <li><a href="/bookmarks" title="View bookmarked posts"><i class="fas fa-bookmark"></i> <span>Bookmarks</span></a></li>
-
+                    {{#if user}}
+                        <li><a href="/dashboard" title="Go to dashboard"> <i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                    {{else}}
+                        <li><a href="/mbkauthe/login" title="Login to your account"> <i class="fas fa-sign-in-alt"></i> Login</a></li>
+                    {{/if}}
                 </ul>
             </nav>
 
@@ -866,15 +870,14 @@
 
         <div class="mobile-menu" id="mobileMenu">
             <ul>
-                <li><a href="/">Home</a></li>
-                <li><a href="/categories">Categories</a></li>
-                <li><a href="/tags">Tags</a></li>
-                <li><a href="/bookmarks"><i class="fas fa-bookmark"></i> Bookmarks</a></li>
+                <li><a href="/" title="Go to homepage"> <i class="fas fa-home"></i> Home</a></li>
+                <li><a href="/categories" title="View all categories"> <i class="fas fa-folder"></i> Categories</a></li>
+                <li><a href="/tags" title="View all tags"><i class="fas fa-tags"></i> Tags</a></li>
+                <li><a href="/bookmarks" title="View bookmarked posts"><i class="fas fa-bookmark"></i> <span>Bookmarks</span></a></li>
                 {{#if user}}
-                    <li><a href="/dashboard/posts/create">Create Post</a></li>
-                    <li><a onclick="logout()">Logout</a></li>
+                    <li><a href="/dashboard" title="Go to dashboard"> <i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
                 {{else}}
-                    <li><a href="/mbkauthe/login">Login</a></li>
+                    <li><a href="/mbkauthe/login" title="Login to your account"> <i class="fas fa-sign-in-alt"></i> Login</a></li>
                 {{/if}}
             </ul>
         </div>
@@ -908,9 +911,12 @@
                     <li><a href="/">Home</a></li>
                     <li><a href="/categories">Categories</a></li>
                     <li><a href="/tags">Tags</a></li>
-                    <li><a href="/bookmarks" title="View bookmarked posts"><i class="fas fa-bookmark"></i> <span>Bookmarks</span></a></li>
-                    <li><a href="/dashboard/posts/create">Create Post</a></li>
-                    <li><a href="/mbkauthe/login">Login</a></li>
+                    <li><a href="/bookmarks" title="View bookmarked posts">Bookmarks</a></li>
+                    {{#if user}}
+                        <li><a href="/dashboard">Dashboard</a></li>
+                    {{else}}
+                        <li><a href="/mbkauthe/login">Login</a></li>
+                    {{/if}}
                 </ul>
             </div>
 

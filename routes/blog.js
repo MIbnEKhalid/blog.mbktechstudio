@@ -42,14 +42,14 @@ router.get('/', async (req, res) => {
             GROUP BY p.id, u."UserName"
             ORDER BY p.created_at DESC`
         );
-        res.render('blog/index', {
+        res.render('blog/index.handlebars', {
             posts: result.rows,
             user: req.session.user,
             canonicalUrl: `${req.protocol}://${req.get('host')}/`
         });
     } catch (err) {
         console.error(err);
-        res.status(500).render('error', { message: 'Server error', code: 500 });
+        res.status(500).render('error.handlebars', { message: 'Server error', code: 500 });
     }
 });
 
@@ -74,14 +74,14 @@ router.get('/categories', async (req, res) => {
             ORDER BY c.name ASC
         `);
         
-        res.render('blog/categories', {
+        res.render('blog/categories.handlebars', {
             categories: result.rows,
             user: req.session.user,
             canonicalUrl: `${req.protocol}://${req.get('host')}/categories`
         });
     } catch (err) {
         console.error(err);
-        res.status(500).render('error', { message: 'Server error', code: 500 });
+        res.status(500).render('error.handlebars', { message: 'Server error', code: 500 });
     }
 });
 
@@ -106,14 +106,14 @@ router.get('/tags', async (req, res) => {
             ORDER BY t.name ASC
         `);
         
-        res.render('blog/tags', {
+        res.render('blog/tags.handlebars', {
             tags: result.rows,
             user: req.session.user,
             canonicalUrl: `${req.protocol}://${req.get('host')}/tags`
         });
     } catch (err) {
         console.error(err);
-        res.status(500).render('error', { message: 'Server error', code: 500 });
+        res.status(500).render('error.handlebars', { message: 'Server error', code: 500 });
     }
 });
 
@@ -144,7 +144,7 @@ router.get('/author/:username', async (req, res) => {
             [username]
         );
         
-        res.render('blog/filtered-posts', {
+        res.render('blog/filtered-posts.handlebars', {
             posts: result.rows,
             username: username,
             user: req.session.user,
@@ -152,7 +152,7 @@ router.get('/author/:username', async (req, res) => {
         });
     } catch (err) {
         console.error(err);
-        res.status(500).render('error', { message: 'Server error', code: 500 });
+        res.status(500).render('error.handlebars', { message: 'Server error', code: 500 });
     }
 });
 
@@ -166,7 +166,7 @@ router.get('/category/:categoryName', async (req, res) => {
         );
 
         if (!category.rows[0]) {
-            return res.status(404).render('error', { message: 'Category not found', code: 404 });
+            return res.status(404).render('error.handlebars', { message: 'Category not found', code: 404 });
         }
 
         let whereClause = "WHERE p.status = 'published'";
@@ -192,7 +192,7 @@ router.get('/category/:categoryName', async (req, res) => {
             [category.rows[0].id]
         );
         
-        res.render('blog/filtered-posts', {
+        res.render('blog/filtered-posts.handlebars', {
             posts: result.rows,
             category: category.rows[0],
             user: req.session.user,
@@ -200,7 +200,7 @@ router.get('/category/:categoryName', async (req, res) => {
         });
     } catch (err) {
         console.error(err);
-        res.status(500).render('error', { message: 'Server error', code: 500 });
+        res.status(500).render('error.handlebars', { message: 'Server error', code: 500 });
     }
 });
 
@@ -214,7 +214,7 @@ router.get('/tag/:tagName', async (req, res) => {
         );
 
         if (!tag.rows[0]) {
-            return res.status(404).render('error', { message: 'Tag not found', code: 404 });
+            return res.status(404).render('error.handlebars', { message: 'Tag not found', code: 404 });
         }
 
         let whereClause = "WHERE p.status = 'published'";
@@ -242,7 +242,7 @@ router.get('/tag/:tagName', async (req, res) => {
             [tag.rows[0].id]
         );
         
-        res.render('blog/filtered-posts', {
+        res.render('blog/filtered-posts.handlebars', {
             posts: result.rows,
             tag: tag.rows[0],
             user: req.session.user,
@@ -250,7 +250,7 @@ router.get('/tag/:tagName', async (req, res) => {
         });
     } catch (err) {
         console.error(err);
-        res.status(500).render('error', { message: 'Server error', code: 500 });
+        res.status(500).render('error.handlebars', { message: 'Server error', code: 500 });
     }
 });
 
@@ -274,13 +274,13 @@ router.get('/post/:slug', async (req, res) => {
         );
 
         if (!post.rows[0]) {
-            return res.status(404).render('error', { message: 'Post not found', code: 404 });
+            return res.status(404).render('error.handlebars', { message: 'Post not found', code: 404 });
         }
 
         // If post is private, only SuperAdmin can view it
         if (post.rows[0].status === 'private') {
             if (!req.session.user || req.session.user.role !== 'SuperAdmin') {
-                return res.status(403).render('error', { message: 'Access denied. Only SuperAdmin can view private posts.', code: 403 });
+                return res.status(403).render('error.handlebars', { message: 'Access denied. Only SuperAdmin can view private posts.', code: 403 });
             }
         }
 
@@ -352,7 +352,7 @@ router.get('/post/:slug', async (req, res) => {
 
         const isLogin = !!req.session.user;
 
-        res.render('blog/post', {
+        res.render('blog/post.handlebars', {
             post: post.rows[0],
             comments: comments.rows,
             user: req.session.user,
@@ -367,7 +367,7 @@ router.get('/post/:slug', async (req, res) => {
         });
     } catch (err) {
         console.error(err);
-        res.status(500).render('error', { message: 'Server error', code: 500 });
+        res.status(500).render('error.handlebars', { message: 'Server error', code: 500 });
     }
 });
 
@@ -381,7 +381,7 @@ router.post('/post/:slug/comment', validateSessionAndRole("any"), async (req, re
 
     // Validate required fields
     if (!content || !content.trim()) {
-        return res.status(400).render('error', { message: 'Comment content is required', code: 400 });
+        return res.status(400).render('error.handlebars', { message: 'Comment content is required', code: 400 });
     }
 
     try {
@@ -392,7 +392,7 @@ router.post('/post/:slug/comment', validateSessionAndRole("any"), async (req, re
         );
 
         if (!post.rows[0]) {
-            return res.status(404).render('error', { message: 'Post not found or not published', code: 404 });
+            return res.status(404).render('error.handlebars', { message: 'Post not found or not published', code: 404 });
         }
 
         const postId = post.rows[0].id;
@@ -404,7 +404,7 @@ router.post('/post/:slug/comment', validateSessionAndRole("any"), async (req, re
                 [parent_id, postId]
             );
             if (!parentComment.rows[0]) {
-                return res.status(400).render('error', { message: 'Invalid parent comment', code: 400 });
+                return res.status(400).render('error.handlebars', { message: 'Invalid parent comment', code: 400 });
             }
         }
 
@@ -421,7 +421,7 @@ router.post('/post/:slug/comment', validateSessionAndRole("any"), async (req, re
         res.redirect('/post/' + slug);
     } catch (err) {
         console.error(err);
-        res.status(500).render('error', { message: 'Error adding comment', code: 500 });
+        res.status(500).render('error.handlebars', { message: 'Error adding comment', code: 500 });
     }
 });
 
@@ -446,7 +446,7 @@ router.get('/bookmarks', async (req, res) => {
         }
         
         if (bookmarkIds.length === 0) {
-            return res.render('blog/bookmarks', {
+            return res.render('blog/bookmarks.handlebars', {
                 posts: [],
                 user: req.session.user,
                 canonicalUrl: `${req.protocol}://${req.get('host')}/bookmarks`
@@ -476,14 +476,14 @@ router.get('/bookmarks', async (req, res) => {
             [bookmarkIds]
         );
 
-        res.render('blog/bookmarks', {
+        res.render('blog/bookmarks.handlebars', {
             posts: result.rows,
             user: req.session.user,
             canonicalUrl: `${req.protocol}://${req.get('host')}/bookmarks`
         });
     } catch (err) {
         console.error(err);
-        res.status(500).render('error', { message: 'Server error', code: 500 });
+        res.status(500).render('error.handlebars', { message: 'Server error', code: 500 });
     }
 });
 

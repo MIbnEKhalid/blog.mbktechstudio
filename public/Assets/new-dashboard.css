@@ -303,21 +303,222 @@ body {
 }
 
 /* Responsive Design */
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
     .dashboard-sidebar {
-        transform: translateX(-100%);
+        --sidebar-width: 200px;
+    }
+
+    .dashboard-main {
+        margin-left: var(--sidebar-width);
+        padding: 1.5rem;
+    }
+}
+
+@media (max-width: 768px) {
+    :root {
+        --sidebar-width: 100%;
+    }
+
+    .dashboard-wrapper {
+        flex-direction: column;
+    }
+
+    .dashboard-sidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: auto;
+        max-height: 60px;
+        z-index: 1001;
+        transform: translateX(0);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
 
     .dashboard-main {
         margin-left: 0;
+        margin-top: 60px;
+        padding: 1rem;
+        min-height: calc(100vh - 60px);
+    }
+
+    .dashboard-logo {
+        display: inline-block;
+        padding: 1rem 1.5rem;
+        font-size: 1.1rem;
+        border-bottom: none;
+        border-right: 1px solid rgba(255, 255, 255, 0.1);
+        margin-bottom: 0;
+    }
+
+    .nav-menu {
+        display: none;
+        position: absolute;
+        top: 60px;
+        left: 0;
+        right: 0;
+        background: linear-gradient(180deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+        flex-direction: column;
+        padding: 1rem 0;
+        width: 100%;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .nav-menu.active {
+        display: flex;
+    }
+
+    .nav-item {
+        margin-bottom: 0;
+    }
+
+    .nav-link {
+        padding: 1rem 1.5rem;
+        border-radius: 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .nav-link:hover,
+    .nav-link.active {
+        background-color: rgba(255, 255, 255, 0.2);
     }
 
     .stats-grid {
         grid-template-columns: 1fr;
     }
 
+    .stat-card {
+        flex-direction: row;
+    }
+
+    .stat-icon {
+        min-width: 48px;
+    }
+
+    .stat-info {
+        flex: 1;
+    }
+
+    .content-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+
+    .content-title {
+        font-size: 1.25rem;
+        width: 100%;
+    }
+
+    /* Table Responsive */
     .table-container {
         overflow-x: auto;
+    }
+
+    .table {
+        font-size: 0.875rem;
+    }
+
+    .table thead th {
+        padding: 0.75rem 0.5rem;
+        font-size: 0.7rem;
+    }
+
+    .table tbody td {
+        padding: 0.75rem 0.5rem;
+    }
+
+    /* Button Responsive */
+    .btn {
+        padding: 0.5rem 0.75rem;
+        font-size: 0.875rem;
+        width: 100%;
+    }
+
+    .btn-sm {
+        padding: 0.25rem 0.5rem;
+        width: auto;
+    }
+
+    .btn-group,
+    .action-buttons {
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+
+    /* Form Responsive */
+    .form-group {
+        margin-bottom: 1rem;
+    }
+
+    .form-control {
+        font-size: 16px; /* Prevents zoom on focus on iOS */
+    }
+
+    /* Search Box */
+    .search-box {
+        width: 100%;
+    }
+
+    .search-input {
+        width: 100%;
+    }
+
+    /* Card Responsive */
+    .card {
+        padding: 1rem;
+        margin-bottom: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .dashboard-main {
+        padding: 0.75rem;
+    }
+
+    .content-title {
+        font-size: 1.1rem;
+    }
+
+    .stat-card {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .stat-icon {
+        margin-right: 0;
+        margin-bottom: 0.5rem;
+    }
+
+    .table {
+        font-size: 0.75rem;
+    }
+
+    .table thead th {
+        padding: 0.5rem 0.25rem;
+        font-size: 0.65rem;
+    }
+
+    .table tbody td {
+        padding: 0.5rem 0.25rem;
+    }
+
+    .btn {
+        padding: 0.5rem 0.5rem;
+        font-size: 0.75rem;
+    }
+
+    .btn i {
+        font-size: 0.875rem;
+    }
+
+    .card {
+        padding: 0.75rem;
+    }
+
+    .status-badge {
+        padding: 0.2rem 0.5rem;
+        font-size: 0.65rem;
     }
 }
 

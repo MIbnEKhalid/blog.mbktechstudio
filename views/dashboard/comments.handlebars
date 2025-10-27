@@ -1,4 +1,5 @@
 {{#section 'styles'}}
+<title>Dashboard - Comments</title>
 <style>
 .comment-stats {
     display: grid;
@@ -12,6 +13,7 @@
     justify-content: space-between;
     align-items: center;
     margin-bottom: 1.5rem;
+    gap: 1rem;
 }
 
 .status-badge {
@@ -75,6 +77,141 @@
 
 .btn-success:hover {
     opacity: 0.9;
+}
+
+/* Mobile Responsive */
+@media (max-width: 1024px) {
+    .comment-stats {
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    }
+}
+
+@media (max-width: 768px) {
+    .comment-stats {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+    }
+
+    .comment-header {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .comment-header .btn {
+        width: 100%;
+    }
+
+    .search-input {
+        font-size: 16px;
+        padding: 0.75rem 1rem 0.75rem 2.25rem;
+    }
+
+    .filter-options {
+        flex-direction: column !important;
+        padding: 0.75rem !important;
+        gap: 0.75rem !important;
+    }
+
+    .filter-group {
+        flex-direction: column !important;
+        align-items: stretch !important;
+        gap: 0.25rem !important;
+    }
+
+    .filter-group label {
+        font-size: 0.8rem !important;
+    }
+
+    .form-select {
+        width: 100% !important;
+        font-size: 0.85rem !important;
+    }
+
+    .table {
+        font-size: 0.85rem;
+    }
+
+    .table thead th {
+        padding: 0.75rem 0.5rem;
+        font-size: 0.7rem;
+    }
+
+    .table tbody td {
+        padding: 0.75rem 0.5rem;
+    }
+
+    .comment-content {
+        max-width: 150px;
+        font-size: 0.85rem;
+    }
+
+    .btn {
+        padding: 0.5rem 0.75rem;
+        font-size: 0.85rem;
+    }
+
+    .btn-sm {
+        padding: 0.25rem 0.4rem;
+        font-size: 0.75rem;
+    }
+
+    .status-badge {
+        padding: 0.2rem 0.5rem;
+        font-size: 0.7rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .comment-stats {
+        grid-template-columns: 1fr;
+        gap: 0.75rem;
+    }
+
+    .comment-header {
+        gap: 0.5rem;
+    }
+
+    .comment-header .btn {
+        font-size: 0.7rem;
+        padding: 0.4rem 0.6rem;
+    }
+
+    .search-input {
+        font-size: 16px;
+    }
+
+    .filter-options {
+        padding: 0.5rem !important;
+        gap: 0.5rem !important;
+    }
+
+    .table {
+        font-size: 0.75rem;
+    }
+
+    .table thead th {
+        padding: 0.5rem 0.25rem;
+        font-size: 0.65rem;
+    }
+
+    .table tbody td {
+        padding: 0.5rem 0.25rem;
+    }
+
+    .comment-content {
+        max-width: 100px;
+        font-size: 0.7rem;
+    }
+
+    .btn {
+        font-size: 0.65rem;
+        padding: 0.35rem 0.5rem;
+    }
+
+    .status-badge {
+        padding: 0.15rem 0.35rem;
+        font-size: 0.6rem;
+    }
 }
 </style>
 {{/section}}

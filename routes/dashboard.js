@@ -77,7 +77,7 @@ router.get('/', async (req, res) => {
             `)
         ]);
 
-        res.render('dashboard/index', {
+        res.render('dashboard/index.handlebars', {
             layout: 'dashboard',
             active: 'dashboard',
             postStats: postStats.rows[0],
@@ -87,7 +87,7 @@ router.get('/', async (req, res) => {
         });
     } catch (err) {
         console.error(err);
-        res.status(500).render('error', { message: 'Error loading dashboard', code: 500 });
+        res.status(500).render('error.handlebars', { message: 'Error loading dashboard', code: 500 });
     }
 });
 
@@ -114,7 +114,7 @@ router.get('/posts', async (req, res) => {
             `)
         ]);
 
-        res.render('dashboard/posts', {
+        res.render('dashboard/posts.handlebars', {
             layout: 'dashboard',
             active: 'posts',
             posts: posts.rows,
@@ -126,7 +126,7 @@ router.get('/posts', async (req, res) => {
         });
     } catch (err) {
         console.error(err);
-        res.status(500).render('error', { message: 'Error fetching posts', code: 500 });
+        res.status(500).render('error.handlebars', { message: 'Error fetching posts', code: 500 });
     }
 });
 
@@ -137,7 +137,7 @@ router.get('/posts/create', async (req, res) => {
             pool.query('SELECT * FROM Categories ORDER BY name'),
             pool.query('SELECT * FROM Tags ORDER BY name')
         ]);
-        res.render('dashboard/edit-post', {
+        res.render('dashboard/edit-post.handlebars', {
             layout: 'dashboard',
             active: 'posts',
             categories: categories.rows,
@@ -145,7 +145,7 @@ router.get('/posts/create', async (req, res) => {
         });
     } catch (err) {
         console.error(err);
-        res.status(500).render('error', { message: 'Error loading create post form', code: 500 });
+        res.status(500).render('error.handlebars', { message: 'Error loading create post form', code: 500 });
     }
 });
 
@@ -171,14 +171,14 @@ router.get('/posts/edit/:id', async (req, res) => {
         ]);
 
         if (post.rows.length === 0) {
-            return res.status(404).render('error', { message: 'Post not found', code: 404 });
+            return res.status(404).render('error.handlebars', { message: 'Post not found', code: 404 });
         }
 
         // Add tags and categories to post object
         post.rows[0].tags = postTags.rows.map(tag => tag.name);
         post.rows[0].categoryIds = postCategories.rows.map(cat => cat.id);
         
-        res.render('dashboard/edit-post', {
+        res.render('dashboard/edit-post.handlebars', {
             layout: 'dashboard',
             active: 'posts',
             post: post.rows[0],
@@ -189,7 +189,7 @@ router.get('/posts/edit/:id', async (req, res) => {
         });
     } catch (err) {
         console.error(err);
-        res.status(500).render('error', { message: 'Error loading edit post form', code: 500 });
+        res.status(500).render('error.handlebars', { message: 'Error loading edit post form', code: 500 });
     }
 });
 
@@ -212,7 +212,7 @@ router.get('/comments', async (req, res) => {
             `)
         ]);
 
-        res.render('dashboard/comments', {
+        res.render('dashboard/comments.handlebars', {
             layout: 'dashboard',
             active: 'comments',
             comments: comments.rows,
@@ -222,7 +222,7 @@ router.get('/comments', async (req, res) => {
         });
     } catch (err) {
         console.error(err);
-        res.status(500).render('error', { message: 'Error fetching comments', code: 500 } );
+        res.status(500).render('error.handlebars', { message: 'Error fetching comments', code: 500 } );
     }
 });
 
@@ -246,7 +246,7 @@ router.get('/categories', async (req, res) => {
             `)
         ]);
         
-        res.render('dashboard/categories', { 
+        res.render('dashboard/categories.handlebars', { 
             layout: 'dashboard',
             active: 'categories',
             categories: result.rows,
@@ -255,7 +255,7 @@ router.get('/categories', async (req, res) => {
         });
     } catch (err) {
         console.error(err);
-        res.status(500).render('error', { message: 'Error fetching categories', code: 500 } );
+        res.status(500).render('error.handlebars', { message: 'Error fetching categories', code: 500 } );
     }
 });
 
@@ -280,7 +280,7 @@ router.get('/tags', async (req, res) => {
             `)
         ]);
 
-        res.render('dashboard/tags', {
+        res.render('dashboard/tags.handlebars', {
             layout: 'dashboard',
             active: 'tags',
             tags: tags.rows,
@@ -290,7 +290,7 @@ router.get('/tags', async (req, res) => {
         });
     } catch (err) {
         console.error(err);
-        res.status(500).render('error', { message: 'Error fetching tags', code: 500 } );
+        res.status(500).render('error.handlebars', { message: 'Error fetching tags', code: 500 } );
     }
 });
 

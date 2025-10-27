@@ -1,10 +1,12 @@
 {{#section 'styles'}}
+<title>Dashboard - Posts</title>
 <style>
 .posts-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 2rem;
+    gap: 1rem;
 }
 
 .search-box {
@@ -46,6 +48,7 @@
     display: flex;
     gap: 0.5rem;
     align-items: center;
+    flex-wrap: wrap;
 }
 
 .post-preview-img {
@@ -97,6 +100,155 @@
     font-size: 1.5rem;
     font-weight: 600;
     margin-top: 0.5rem;
+}
+
+/* Mobile Responsive */
+@media (max-width: 1024px) {
+    .post-stats {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+    }
+
+    .search-input {
+        min-width: 150px;
+    }
+}
+
+@media (max-width: 768px) {
+    .posts-header {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .posts-header .btn {
+        width: 100%;
+    }
+
+    .post-stats {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .stat-card {
+        padding: 1rem;
+    }
+
+    .stat-card h3 {
+        font-size: 0.8rem;
+    }
+
+    .stat-card .value {
+        font-size: 1.25rem;
+    }
+
+    .search-box {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .search-input {
+        width: 100%;
+        min-width: unset;
+    }
+
+    .filter-options {
+        flex-direction: column;
+        gap: 0.5rem !important;
+    }
+
+    .filter-group {
+        flex-direction: column;
+        gap: 0.25rem !important;
+    }
+
+    .form-select {
+        width: 100% !important;
+    }
+
+    .table {
+        font-size: 0.85rem;
+    }
+
+    .table thead th {
+        padding: 0.75rem 0.5rem;
+        font-size: 0.7rem;
+    }
+
+    .table tbody td {
+        padding: 0.75rem 0.5rem;
+    }
+
+    .post-preview-img,
+    .post-preview-placeholder {
+        width: 60px;
+        height: 45px;
+    }
+
+    .post-preview-placeholder i {
+        font-size: 1.2rem;
+    }
+
+    .action-buttons {
+        gap: 0.25rem;
+    }
+
+    .btn-sm {
+        padding: 0.25rem 0.4rem;
+        font-size: 0.75rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .post-stats {
+        grid-template-columns: 1fr;
+        gap: 0.75rem;
+    }
+
+    .stat-card {
+        padding: 0.75rem;
+    }
+
+    .stat-card h3 {
+        font-size: 0.75rem;
+    }
+
+    .stat-card .value {
+        font-size: 1rem;
+    }
+
+    .table {
+        font-size: 0.75rem;
+    }
+
+    .table thead th {
+        padding: 0.5rem 0.25rem;
+        font-size: 0.65rem;
+    }
+
+    .table tbody td {
+        padding: 0.5rem 0.25rem;
+    }
+
+    .post-preview-img,
+    .post-preview-placeholder {
+        width: 45px;
+        height: 35px;
+    }
+
+    .post-preview-placeholder i {
+        font-size: 0.9rem;
+    }
+
+    .btn {
+        font-size: 0.7rem;
+        padding: 0.4rem 0.6rem;
+    }
+
+    .status-badge {
+        padding: 0.2rem 0.4rem;
+        font-size: 0.6rem;
+    }
 }
 </style>
 {{/section}}

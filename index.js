@@ -216,7 +216,7 @@ server.use(blogRouter);
 server.use('/dashboard', dashboardRouter);
 
 server.use((req, res) => {
-  res.status(404).render('error', { message: 'Page not found', code: 404 });
+  res.status(404).render('error.handlebars', { message: 'Page not found', code: 404 });
 });
 
 const port = process.env.PORT || 3065;
