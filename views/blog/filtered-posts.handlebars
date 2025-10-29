@@ -12,10 +12,12 @@
 <meta name="twitter:site" content="@ibnekhalid28">
 {{else if category}}
 <title>{{category.name}} - MBK Tech Studio Blog</title>
-<meta name="description" content="{{#if category.description}}{{category.description}}{{else}}Browse all {{category.name}} posts on MBK Tech Studio Blog{{/if}}">
+<meta name="description"
+    content="{{#if category.description}}{{category.description}}{{else}}Browse all {{category.name}} posts on MBK Tech Studio Blog{{/if}}">
 <meta name="keywords" content="{{category.name}}, blog posts, tutorials, technology">
 <meta property="og:title" content="{{category.name}} - MBK Tech Studio Blog" />
-<meta property="og:description" content="{{#if category.description}}{{category.description}}{{else}}Browse all {{category.name}} posts{{/if}}" />
+<meta property="og:description"
+    content="{{#if category.description}}{{category.description}}{{else}}Browse all {{category.name}} posts{{/if}}" />
 <meta property="og:type" content="website" />
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="{{category.name}} Posts">
@@ -36,233 +38,234 @@
 {{/section}}
 
 {{#if posts.length}}
-    <div class="section-container">
-        <div class="section-header">
-            {{#if username}}
-                <h1>Posts by {{username}}</h1>
-            {{else if category}}
-                <h1>Posts in {{category.name}}</h1>
-                {{#if category.description}}
-                    <p class="description">{{category.description}}</p>
-                {{/if}}
-            {{else}}
-                <h1>Posts tagged with "{{tag.name}}"</h1>
-            {{/if}}
-        </div>
+<div class="section-container">
+    <div class="section-header">
+        {{#if username}}
+        <h1>Posts by {{username}}</h1>
+        {{else if category}}
+        <h1>Posts in {{category.name}}</h1>
+        {{#if category.description}}
+        <p class="description">{{category.description}}</p>
+        {{/if}}
+        {{else}}
+        <h1>Posts tagged with "{{tag.name}}"</h1>
+        {{/if}}
+    </div>
 
-        <div class="posts-grid">
-            {{#each posts}}
-            <article class="post-card">
-                {{#if this.preview_image}}
-                <div class="post-image">
-                    <a href="/post/{{this.slug}}">
-                        <img src="{{this.preview_image}}" alt="{{this.title}}" loading="lazy">
-                    </a>
-                    {{#if (eq this.status 'private')}}
-                    <div class="private-badge">
-                        <i class="fas fa-lock"></i>
-                        <span>Private</span>
-                    </div>
-                    {{/if}}
+    <div class="posts-grid">
+        {{#each posts}}
+        <article class="post-card">
+            {{#if this.preview_image}}
+            <div class="post-image">
+                <a href="/post/{{this.slug}}">
+                    <img src="{{this.preview_image}}" alt="{{this.title}}" loading="lazy">
+                </a>
+                {{#if (eq this.status 'private')}}
+                <div class="private-badge">
+                    <i class="fas fa-lock"></i>
+                    <span>Private</span>
                 </div>
                 {{/if}}
-                <div class="post-meta">
-                    <div class="post-info">
-                        <span class="author">By <a href="/author/{{this.UserName}}">{{this.UserName}}</a></span>
-                        <span class="category">in {{this.categories}}</span>
-                        <span class="date">{{formatDate this.created_at}}</span>
-                    </div>
-                </div>
-                <h2 class="post-title">
-                    <a href="/post/{{this.slug}}">{{this.title}}</a>
-                </h2>
-                <div class="post-content">
-                    {{#if this.excerpt}}
-                        {{truncate (stripMarkdown this.excerpt) 150}}
-                    {{else}}
-                        {{truncate (stripMarkdown this.content_markdown) 150}}
-                    {{/if}}
-                </div>
-                <div class="post-footer">
-                    <a href="/post/{{this.slug}}" class="read-more">Read More</a>
-                    <span class="comments-count">{{this.comment_count}} comments</span>
-                </div>
-            </article>
-            {{/each}}
-        </div>
-    </div>
-{{else}}
-    <div class="section-container">
-        <div class="empty-state">
-            <h2>No posts found</h2>
-            {{#if username}}
-                <p>This user hasn't published any posts yet.</p>
-            {{else if category}}
-                <p>No posts have been published in this category yet.</p>
-            {{else}}
-                <p>No posts have been tagged with this tag yet.</p>
+            </div>
             {{/if}}
-            <a href="/" class="btn btn-primary">Back to Home</a>
-        </div>
+            <div class="post-meta">
+                <div class="post-info">
+                    <span class="author">By <a href="/author/{{this.UserName}}">{{this.UserName}}</a></span>
+                    <span class="category">in {{this.categories}}</span>
+                    <span class="date">{{formatDate this.created_at}}</span>
+                </div>
+            </div>
+            <h2 class="post-title">
+                <a href="/post/{{this.slug}}">{{this.title}}</a>
+            </h2>
+            <div class="post-content">
+                {{#if this.excerpt}}
+                {{truncate (stripMarkdown this.excerpt) 150}}
+                {{else}}
+                {{truncate (stripMarkdown this.content_markdown) 150}}
+                {{/if}}
+            </div>
+            <div class="post-footer">
+                <a href="/post/{{this.slug}}" class="read-more">Read More</a>
+                <span class="comments-count">{{this.comment_count}} comments</span>
+            </div>
+        </article>
+        {{/each}}
     </div>
+</div>
+{{else}}
+<div class="section-container">
+    <div class="empty-state">
+        <h2>No posts found</h2>
+        {{#if username}}
+        <p>This user hasn't published any posts yet.</p>
+        {{else if category}}
+        <p>No posts have been published in this category yet.</p>
+        {{else}}
+        <p>No posts have been tagged with this tag yet.</p>
+        {{/if}}
+        <a href="/" class="btn btn-primary">Back to Home</a>
+    </div>
+</div>
 {{/if}}
 
 <style>
-.section-header {
-    margin-bottom: 2rem;
-    text-align: center;
-}
-
-.section-header h1 {
-    color: var(--light);
-    margin-bottom: 1rem;
-}
-
-.description {
-    color: var(--text-light);
-    max-width: 600px;
-    margin: 0 auto;
-}
-
-.posts-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 2rem;
-}
-
-.post-card {
-    background: var(--darker);
-    border-radius: var(--border-radius);
-    padding: 1.5rem;
-    transition: var(--transition);
-    box-shadow: var(--box-shadow);
-    overflow: hidden;
-}
-
-.post-image {
-    margin: -1.5rem -1.5rem 1.5rem -1.5rem;
-    position: relative;
-    aspect-ratio: 16/9;
-    overflow: hidden;
-    background-color: var(--dark);
-}
-
-.post-image img {
-    width: 100%;
-    height: 100%;
-    object-fit: inherit;
-    transition: transform 0.3s ease;
-}
-
-.post-image:hover img {
-    transform: scale(1.05);
-}
-
-.private-badge {
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    background: linear-gradient(135deg, #ff6b6b, #ee5a6f);
-    color: white;
-    padding: 0.5rem 0.75rem;
-    border-radius: 20px;
-    font-size: 0.85rem;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    animation: slideIn 0.3s ease;
-}
-
-.private-badge i {
-    font-size: 1rem;
-}
-
-@keyframes slideIn {
-    from {
-        opacity: 0;
-        transform: translateX(-20px);
+    .section-header {
+        margin-bottom: 2rem;
+        text-align: center;
     }
-    to {
-        opacity: 1;
-        transform: translateX(0);
+
+    .section-header h1 {
+        color: var(--light);
+        margin-bottom: 1rem;
     }
-}
 
-.post-card:hover {
-    transform: translateY(-2px);
-}
+    .description {
+        color: var(--text-light);
+        max-width: 600px;
+        margin: 0 auto;
+    }
 
-.post-meta {
-    font-size: 0.9rem;
-}
+    .posts-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 2rem;
+    }
 
-.post-info {
-    color: var(--text-light);
-}
+    .post-card {
+        background: var(--darker);
+        border-radius: var(--border-radius);
+        padding: 1.5rem;
+        transition: var(--transition);
+        box-shadow: var(--box-shadow);
+        overflow: hidden;
+    }
 
-.post-info a {
-    color: var(--accent);
-    text-decoration: none;
-}
+    .post-image {
+        margin: -1.5rem -1.5rem 1.5rem -1.5rem;
+        position: relative;
+        aspect-ratio: 16/9;
+        overflow: hidden;
+        background-color: var(--dark);
+    }
 
-.post-info a:hover {
-    text-decoration: underline;
-}
+    .post-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: inherit;
+        transition: transform 0.3s ease;
+    }
 
-.post-info span:not(:last-child)::after {
-    content: "•";
-    margin: 0 0.5rem;
-    color: var(--text-light);
-}
+    .post-image:hover img {
+        transform: scale(1.05);
+    }
 
-.post-title {
-    margin: 0.5rem 0;
-}
+    .private-badge {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        background: linear-gradient(135deg, #ff6b6b, #ee5a6f);
+        color: white;
+        padding: 0.5rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        animation: slideIn 0.3s ease;
+    }
 
-.post-title a {
-    color: var(--light);
-    text-decoration: none;
-    font-size: 1.5rem;
-}
+    .private-badge i {
+        font-size: 1rem;
+    }
 
-.post-title a:hover {
-    color: var(--accent);
-}
+    @keyframes slideIn {
+        from {
+            opacity: 0;
+            transform: translateX(-20px);
+        }
 
-.post-content {
-    color: var(--text);
-    line-height: 1.6;
-}
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
 
-.post-footer {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: 1rem;
-}
+    .post-card:hover {
+        transform: translateY(-2px);
+    }
 
-.read-more {
-    color: var(--accent);
-    text-decoration: none;
-}
+    .post-meta {
+        font-size: 0.9rem;
+    }
 
-.comments-count {
-    color: var(--text-light);
-    font-size: 0.9rem;
-}
+    .post-info {
+        color: var(--text-light);
+    }
 
-.empty-state {
-    text-align: center;
-    padding: 3rem;
-    color: var(--text-light);
-}
+    .post-info a {
+        color: var(--accent);
+        text-decoration: none;
+    }
 
-.empty-state h2 {
-    color: var(--light);
-    margin-bottom: 1rem;
-}
+    .post-info a:hover {
+        text-decoration: underline;
+    }
 
-.empty-state p {
-    margin-bottom: 2rem;
-}
+    .post-info span:not(:last-child)::after {
+        content: "•";
+        margin: 0 0.5rem;
+        color: var(--text-light);
+    }
+
+    .post-title {
+        margin: 0.5rem 0;
+    }
+
+    .post-title a {
+        color: var(--light);
+        text-decoration: none;
+        font-size: 1.5rem;
+    }
+
+    .post-title a:hover {
+        color: var(--accent);
+    }
+
+    .post-content {
+        color: var(--text);
+        line-height: 1.6;
+    }
+
+    .post-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 1rem;
+    }
+
+    .read-more {
+        color: var(--accent);
+        text-decoration: none;
+    }
+
+    .comments-count {
+        color: var(--text-light);
+        font-size: 0.9rem;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 3rem;
+        color: var(--text-light);
+    }
+
+    .empty-state h2 {
+        color: var(--light);
+        margin-bottom: 1rem;
+    }
+
+    .empty-state p {
+        margin-bottom: 2rem;
+    }
 </style>

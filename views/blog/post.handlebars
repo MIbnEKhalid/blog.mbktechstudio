@@ -1,26 +1,28 @@
 {{#section 'styles'}}
 <title>{{post.title}} - Blog</title>
-    <meta name="description" content="{{post.excerpt}}">
-    <meta name="author" content="{{post.UserName}}">
-    <meta property="og:title" content="{{post.title}} - Blog">
-    <meta property="og:description" content="{{post.excerpt}}">
+<meta name="description" content="{{post.excerpt}}">
+<meta name="author" content="{{post.UserName}}">
+<meta property="og:title" content="{{post.title}} - Blog">
+<meta property="og:description" content="{{post.excerpt}}">
 {{#if post.preview_image}}
-    <meta property="og:image" content="{{post.preview_image}}">
-    <meta name="twitter:image" content="{{post.preview_image}}">
+<meta property="og:image" content="{{post.preview_image}}">
+<meta name="twitter:image" content="{{post.preview_image}}">
 {{/if}}
-    <meta property="og:type" content="article">
-    <meta property="article:published_time" content="{{post.created_at}}">
-    <meta property="article:modified_time" content="{{post.updated_at}}">
-    <meta name="date" content="{{post.created_at}}">
-    <meta name="last-modified" content="{{post.updated_at}}">
-    <meta property="article:author" content="{{post.UserName}}">
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="{{post.title}}">
-    <meta name="twitter:description" content="{{post.excerpt}}">
-    <meta name="twitter:site" content="@ibnekhalid28">
-    <meta name="keywords" content="{{#if post.tags}}{{#each post.tags}}{{this.name}}{{#unless @last}}, {{/unless}}{{/each}}{{/if}}">
-    <meta property="article:tag" content="{{#if post.tags}}{{#each post.tags}}{{this.name}}{{#unless @last}}, {{/unless}}{{/each}}{{/if}}">
-    <script type="application/ld+json">
+<meta property="og:type" content="article">
+<meta property="article:published_time" content="{{post.created_at}}">
+<meta property="article:modified_time" content="{{post.updated_at}}">
+<meta name="date" content="{{post.created_at}}">
+<meta name="last-modified" content="{{post.updated_at}}">
+<meta property="article:author" content="{{post.UserName}}">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="{{post.title}}">
+<meta name="twitter:description" content="{{post.excerpt}}">
+<meta name="twitter:site" content="@ibnekhalid28">
+<meta name="keywords"
+    content="{{#if post.tags}}{{#each post.tags}}{{this.name}}{{#unless @last}}, {{/unless}}{{/each}}{{/if}}">
+<meta property="article:tag"
+    content="{{#if post.tags}}{{#each post.tags}}{{this.name}}{{#unless @last}}, {{/unless}}{{/each}}{{/if}}">
+<script type="application/ld+json">
     {
     "@context": "https://schema.org",
     "@type": "Article",
@@ -44,7 +46,7 @@
     }
     }
     </script>
-    <script type="application/ld+json">
+<script type="application/ld+json">
     {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
@@ -76,20 +78,25 @@
         transition: opacity 0.2s;
         font-size: 0.9em;
     }
+
     .reply-toggle:hover {
         opacity: 0.8;
     }
-    .fa-caret-down, .fa-caret-right {
+
+    .fa-caret-down,
+    .fa-caret-right {
         width: 1em;
         transition: transform 0.2s;
     }
+
     .fa-caret-down {
         transform: rotate(0deg);
     }
+
     .fa-caret-right {
         transform: rotate(-90deg);
     }
-    
+
     /* Share Buttons */
     .post-actions {
         display: flex;
@@ -101,13 +108,13 @@
         border-radius: var(--border-radius);
         flex-wrap: wrap;
     }
-    
+
     .share-buttons {
         display: flex;
         gap: 0.5rem;
         align-items: center;
     }
-    
+
     .share-btn {
         display: inline-flex;
         align-items: center;
@@ -123,17 +130,17 @@
         font-size: 1rem;
         text-decoration: none;
     }
-    
+
     .share-btn:hover {
         background-color: var(--accent);
         color: var(--dark);
         transform: scale(1.1);
     }
-    
+
     .copy-link-btn {
         position: relative;
     }
-    
+
     .copy-feedback {
         position: absolute;
         top: -30px;
@@ -149,11 +156,11 @@
         transition: opacity 0.3s;
         pointer-events: none;
     }
-    
+
     .copy-link-btn.copied .copy-feedback {
         opacity: 1;
     }
-    
+
     .action-btn {
         display: inline-flex;
         align-items: center;
@@ -167,24 +174,24 @@
         transition: all 0.3s;
         font-size: 0.9rem;
     }
-    
+
     .action-btn:hover {
         background-color: var(--accent);
         color: var(--dark);
     }
-    
+
     .action-btn.bookmarked {
         background-color: var(--accent);
         color: var(--dark);
     }
-    
+
     /* Search Bar */
     .search-container {
         max-width: 600px;
         margin: 2rem auto;
         position: relative;
     }
-    
+
     .search-input {
         width: 100%;
         padding: 0.75rem 1rem;
@@ -194,12 +201,12 @@
         color: var(--text);
         font-size: 1rem;
     }
-    
+
     .search-input:focus {
         outline: none;
         box-shadow: 0 0 0 3px rgba(var(--accent-rgb), 0.1);
     }
-    
+
     .search-results {
         position: absolute;
         top: 100%;
@@ -214,33 +221,33 @@
         z-index: 100;
         display: none;
     }
-    
+
     .search-results.show {
         display: block;
     }
-    
+
     .search-result-item {
         padding: 1rem;
         cursor: pointer;
         border-bottom: 1px solid var(--border-color);
         transition: background-color 0.2s;
     }
-    
+
     .search-result-item:hover {
         background-color: var(--dark);
     }
-    
+
     .search-result-item a {
         color: var(--accent);
         text-decoration: none;
         display: block;
     }
-    
+
     .search-result-title {
         font-weight: 600;
         margin-bottom: 0.25rem;
     }
-    
+
     .search-result-meta {
         font-size: 0.8rem;
         color: var(--text-light);
@@ -249,23 +256,30 @@
 <div class="section-container" style="max-width: 800px; margin: 0 auto; padding: 5rem 0;">
     <article style="margin-bottom: 4rem; padding: 10px;">
         {{#if post.preview_image}}
-        <div style="margin: -10px -10px 2rem -10px; aspect-ratio: 21/9; overflow: hidden; border-radius: var(--border-radius);">
-            <img src="{{post.preview_image}}" alt="{{post.title}}" style="width: 100%; height: 100%; object-fit: inherit;">
+        <div
+            style="margin: -10px -10px 2rem -10px; aspect-ratio: 21/9; overflow: hidden; border-radius: var(--border-radius);">
+            <img src="{{post.preview_image}}" alt="{{post.title}}"
+                style="width: 100%; height: 100%; object-fit: inherit;">
         </div>
         {{/if}}
-        <h1 style="color: var(--light); margin-bottom: 1rem; font-size: 2.5rem;">{{post.title}} {{#if isLogin}}<i style="cursor: pointer; color: var(--accent);" onclick="location.href='/dashboard/posts/edit/{{post.id}}'" class="fas fa-edit"></i>{{/if}}</h1>
-        
+        <h1 style="color: var(--light); margin-bottom: 1rem; font-size: 2.5rem;">{{post.title}} {{#if isLogin}}<i
+                style="cursor: pointer; color: var(--accent);"
+                onclick="location.href='/dashboard/posts/edit/{{post.id}}'" class="fas fa-edit"></i>{{/if}}</h1>
+
         <!-- Post Actions (Share, Bookmark, PDF) -->
         <div class="post-actions">
             <div class="share-buttons">
                 <span style="color: var(--text-light); font-size: 0.9rem;">Share:</span>
-                <a href="https://twitter.com/intent/tweet?url=https://blog.mbktechstudio.com/post/{{post.slug}}&text={{post.title}}" target="_blank" rel="noopener noreferrer" class="share-btn" title="Share on Twitter">
+                <a href="https://twitter.com/intent/tweet?url=https://blog.mbktechstudio.com/post/{{post.slug}}&text={{post.title}}"
+                    target="_blank" rel="noopener noreferrer" class="share-btn" title="Share on Twitter">
                     <i class="fab fa-twitter"></i>
                 </a>
-                <a href="https://www.linkedin.com/sharing/share-offsite/?url=https://blog.mbktechstudio.com/post/{{post.slug}}" target="_blank" rel="noopener noreferrer" class="share-btn" title="Share on LinkedIn">
+                <a href="https://www.linkedin.com/sharing/share-offsite/?url=https://blog.mbktechstudio.com/post/{{post.slug}}"
+                    target="_blank" rel="noopener noreferrer" class="share-btn" title="Share on LinkedIn">
                     <i class="fab fa-linkedin-in"></i>
                 </a>
-                <a href="https://www.facebook.com/sharer/sharer.php?u=https://blog.mbktechstudio.com/post/{{post.slug}}" target="_blank" rel="noopener noreferrer" class="share-btn" title="Share on Facebook">
+                <a href="https://www.facebook.com/sharer/sharer.php?u=https://blog.mbktechstudio.com/post/{{post.slug}}"
+                    target="_blank" rel="noopener noreferrer" class="share-btn" title="Share on Facebook">
                     <i class="fab fa-facebook-f"></i>
                 </a>
                 <button class="share-btn copy-link-btn" onclick="copyPostLink()" title="Copy Link">
@@ -273,7 +287,8 @@
                     <span class="copy-feedback" id="copyFeedback">Copied!</span>
                 </button>
             </div>
-            <button class="action-btn" id="bookmarkBtn" onclick="toggleBookmark('{{post.id}}', '{{post.slug}}', '{{post.title}}')">
+            <button class="action-btn" id="bookmarkBtn"
+                onclick="toggleBookmark('{{post.id}}', '{{post.slug}}', '{{post.title}}')">
                 <i class="far fa-bookmark"></i>
                 <span id="bookmarkText">Bookmark</span>
             </button>
@@ -284,7 +299,8 @@
         </div>
         <div style="color: var(--text-light); margin-bottom: 2rem;">
             <div style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; margin-bottom: 0.5rem;">
-                <span>By <a href="/author/{{post.UserName}}" style="color: var(--accent); text-decoration: none;">{{post.UserName}}</a></span>
+                <span>By <a href="/author/{{post.UserName}}"
+                        style="color: var(--accent); text-decoration: none;">{{post.UserName}}</a></span>
                 <span style="color: var(--text-light); opacity: 0.7;">•</span>
                 <span>{{formatDate post.created_at}}</span>
                 <span style="color: var(--text-light); opacity: 0.7;">•</span>
@@ -295,19 +311,21 @@
             </div>
             <div style="margin-top: 0.5rem;">
                 in {{#each post.category_names as |category|}}
-                    <a href="/category/{{encodeURIComponent category}}" style="color: var(--accent); text-decoration: none;">{{trim category}}</a>{{#unless @last}}, {{/unless}}
+                <a href="/category/{{encodeURIComponent category}}"
+                    style="color: var(--accent); text-decoration: none;">{{trim category}}</a>{{#unless @last}},
+                {{/unless}}
                 {{/each}}
             </div>
             {{#if post.tags}}
             <div style="margin-top: 0.5rem;">
-                Tags: 
+                Tags:
                 {{#each post.tags}}
-                    <a href="/tag/{{this.name}}" style="color: var(--accent); text-decoration: none;">#{{this.name}}</a>
+                <a href="/tag/{{this.name}}" style="color: var(--accent); text-decoration: none;">#{{this.name}}</a>
                 {{/each}}
             </div>
             {{/if}}
         </div>
-        
+
         <div class="markdown-content" style="color: var(--text); line-height: 1.6;">
             {{{post.content_html}}}
         </div>
@@ -315,500 +333,519 @@
 
     <section style="padding-top: 2rem; border-top: 1px solid var(--text-light);">
         <h2 style="color: var(--light); margin-bottom: 2rem; font-size: 1.8rem;">Comments</h2>
-        <div style="color: var(--text-light); margin-bottom: 1.5rem; padding: 1rem; background-color: var(--darker); border-radius: var(--border-radius); border-left: 4px solid var(--accent);">
+        <div
+            style="color: var(--text-light); margin-bottom: 1.5rem; padding: 1rem; background-color: var(--darker); border-radius: var(--border-radius); border-left: 4px solid var(--accent);">
             <i class="fas fa-info-circle" style="margin-right: 0.5rem; color: var(--accent);"></i>
-            <strong>Note:</strong> Comments are currently restricted to MBK Tech Studio authorized members only. Public commenting is not available at this time.
+            <strong>Note:</strong> Comments are currently restricted to MBK Tech Studio authorized members only. Public
+            commenting is not available at this time.
         </div>
         {{#if user}}
-            <form id="commentForm" action="/post/{{post.slug}}/comment" method="POST" style="margin-bottom: 2rem;">
-                <div style="margin-bottom: 1rem;">
-                    <textarea name="content" rows="3" required placeholder="Write your comment..."
-                        style="width: 100%; padding: 0.75rem; border-radius: var(--border-radius); background-color: var(--darker); color: var(--text); border: 1px solid var(--text-light); resize: vertical;"></textarea>
-                </div>
-                <input type="hidden" name="parent_id" id="parentCommentId" value="">
-                <div id="replyingTo" style="display: none; margin-bottom: 1rem; padding: 0.5rem; background-color: var(--dark); border-radius: var(--border-radius);">
-                    <small style="color: var(--text-light);">Replying to: <span id="replyingToName"></span></small>
-                    <button type="button" onclick="cancelReply()" style="background: none; border: none; color: var(--danger); float: right; cursor: pointer;">Cancel</button>
-                </div>
-                <button type="submit" class="btn btn-primary">Submit Comment</button>
-            </form>
+        <form id="commentForm" action="/post/{{post.slug}}/comment" method="POST" style="margin-bottom: 2rem;">
+            <div style="margin-bottom: 1rem;">
+                <textarea name="content" rows="3" required placeholder="Write your comment..."
+                    style="width: 100%; padding: 0.75rem; border-radius: var(--border-radius); background-color: var(--darker); color: var(--text); border: 1px solid var(--text-light); resize: vertical;"></textarea>
+            </div>
+            <input type="hidden" name="parent_id" id="parentCommentId" value="">
+            <div id="replyingTo"
+                style="display: none; margin-bottom: 1rem; padding: 0.5rem; background-color: var(--dark); border-radius: var(--border-radius);">
+                <small style="color: var(--text-light);">Replying to: <span id="replyingToName"></span></small>
+                <button type="button" onclick="cancelReply()"
+                    style="background: none; border: none; color: var(--danger); float: right; cursor: pointer;">Cancel</button>
+            </div>
+            <button type="submit" class="btn btn-primary">Submit Comment</button>
+        </form>
         {{else}}
-            <p style="background-color: var(--darker); color: var(--text); padding: 1rem; border-radius: var(--border-radius); margin-bottom: 2rem;">
-                Please <a href="/mbkauthe/login" style="color: var(--accent); text-decoration: none;">login</a> to leave a comment.
-            </p>
+        <p
+            style="background-color: var(--darker); color: var(--text); padding: 1rem; border-radius: var(--border-radius); margin-bottom: 2rem;">
+            Please <a href="/mbkauthe/login" style="color: var(--accent); text-decoration: none;">login</a> to leave a
+            comment.
+        </p>
         {{/if}}
 
         <div style="display: flex; flex-direction: column; gap: 1.5rem;">
             {{#each comments}}
-                {{#unless this.parent_id}}
-                <div class="comment-thread">
-                    <!-- Parent comment -->
-                    <div style="background-color: var(--darker); padding: 1.5rem; border-radius: var(--border-radius);">
-                        <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
-                            <div style="display: flex; align-items: center; gap: 0.5rem;">
-                                <h6 style="color: var(--light); margin: 0;"><a href="/author/{{this.UserName}}" style="color: var(--accent); text-decoration: none;">{{this.UserName}}</a></h6>
-                                {{#unless this.is_approved}}
-                                    <span style="color: var(--warning); font-size: 0.8em;">(Pending Approval)</span>
-                                {{/unless}}
-                            </div>
-                            <small style="color: var(--text-light);">{{formatDate this.created_at}}</small>
+            {{#unless this.parent_id}}
+            <div class="comment-thread">
+                <!-- Parent comment -->
+                <div style="background-color: var(--darker); padding: 1.5rem; border-radius: var(--border-radius);">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                        <div style="display: flex; align-items: center; gap: 0.5rem;">
+                            <h6 style="color: var(--light); margin: 0;"><a href="/author/{{this.UserName}}"
+                                    style="color: var(--accent); text-decoration: none;">{{this.UserName}}</a></h6>
+                            {{#unless this.is_approved}}
+                            <span style="color: var(--warning); font-size: 0.8em;">(Pending Approval)</span>
+                            {{/unless}}
                         </div>
-                        <p style="color: var(--text); margin: 0;">{{this.content}}</p>
-                        {{#if ../user}}
-                            {{#if (eq ../user.username this.UserName)}}
-                                {{#unless this.is_approved}}
-                                    <div style="margin-top: 0.5rem; color: var(--warning); font-size: 0.9em;">
-                                        <i class="fas fa-clock"></i> Your comment is pending approval
-                                    </div>
-                                {{/unless}}
-                            {{/if}}
-                            {{#if ../isSuperAdmin}}
-                                <div style="margin-top: 1rem; display: flex; gap: 0.5rem;">
+                        <small style="color: var(--text-light);">{{formatDate this.created_at}}</small>
+                    </div>
+                    <p style="color: var(--text); margin: 0;">{{this.content}}</p>
+                    {{#if ../user}}
+                    {{#if (eq ../user.username this.UserName)}}
+                    {{#unless this.is_approved}}
+                    <div style="margin-top: 0.5rem; color: var(--warning); font-size: 0.9em;">
+                        <i class="fas fa-clock"></i> Your comment is pending approval
+                    </div>
+                    {{/unless}}
+                    {{/if}}
+                    {{#if ../isSuperAdmin}}
+                    <div style="margin-top: 1rem; display: flex; gap: 0.5rem;">
+                        {{#unless this.is_approved}}
+                        <button onclick="approveComment('{{this.id}}')" class="btn btn-success btn-sm">
+                            <i class="fas fa-check"></i> Approve
+                        </button>
+                        {{/unless}}
+                        <button onclick="deleteComment('{{this.id}}')" class="btn btn-danger btn-sm">
+                            <i class="fas fa-trash"></i> Delete
+                        </button>
+                    </div>
+                    {{/if}}
+                    <button onclick="replyToComment('{{this.id}}', '{{this.UserName}}')"
+                        style="background: none; border: none; color: var(--accent); margin-top: 0.5rem; cursor: pointer; padding: 0;">
+                        <i class="fas fa-reply"></i> Reply
+                    </button>
+                    {{/if}}
+                </div>
+
+                <!-- Nested replies -->
+                {{#each ../comments as |reply|}}
+                {{#if (eq reply.parent_id ../this.id)}}
+                {{#if @first}}
+                <div class="reply-toggle"
+                    style="margin-left: 3rem; margin-top: 0.5rem; cursor: pointer; color: var(--accent);"
+                    onclick="toggleReplies({{../this.id}})">
+                    <i class="fas fa-caret-right" id="caret-{{../this.id}}"></i>
+                    <span id="reply-count-{{../this.id}}">Show replies ({{../this.replyCount}})</span>
+                </div>
+                {{/if}}
+                {{/if}}
+                {{/each}}
+                <div id="replies-{{this.id}}" class="replies-container" style="display: none;">
+                    {{#each ../comments}}
+                    {{#if (eq this.parent_id ../this.id)}}
+                    <div
+                        style="margin-left: 3rem; margin-top: 0.5rem; padding-left: 1rem; border-left: 2px solid var(--accent);">
+                        <div
+                            style="background-color: var(--darker); padding: 1.5rem; border-radius: var(--border-radius);">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                    <h6 style="color: var(--light); margin: 0;"><a href="/author/{{this.UserName}}"
+                                            style="color: var(--accent); text-decoration: none;">{{this.UserName}}</a>
+                                    </h6>
                                     {{#unless this.is_approved}}
-                                        <button onclick="approveComment('{{this.id}}')" class="btn btn-success btn-sm">
-                                            <i class="fas fa-check"></i> Approve
-                                        </button>
+                                    <span style="color: var(--warning); font-size: 0.8em;">(Pending Approval)</span>
                                     {{/unless}}
-                                    <button onclick="deleteComment('{{this.id}}')" class="btn btn-danger btn-sm">
-                                        <i class="fas fa-trash"></i> Delete
-                                    </button>
                                 </div>
+                                <small style="color: var(--text-light);">{{formatDate this.created_at}}</small>
+                            </div>
+                            <p style="color: var(--text); margin: 0;">{{this.content}}</p>
+                            {{#if ../../user}}
+                            {{#if (eq ../../user.username this.UserName)}}
+                            {{#unless this.is_approved}}
+                            <div style="margin-top: 0.5rem; color: var(--warning); font-size: 0.9em;">
+                                <i class="fas fa-clock"></i> Your comment is pending approval
+                            </div>
+                            {{/unless}}
                             {{/if}}
-                            <button onclick="replyToComment('{{this.id}}', '{{this.UserName}}')" 
-                                    style="background: none; border: none; color: var(--accent); margin-top: 0.5rem; cursor: pointer; padding: 0;">
+                            {{#if ../../isSuperAdmin}}
+                            <div style="margin-top: 1rem; display: flex; gap: 0.5rem;">
+                                {{#unless this.is_approved}}
+                                <button onclick="approveComment('{{this.id}}')" class="btn btn-success btn-sm">
+                                    <i class="fas fa-check"></i> Approve
+                                </button>
+                                {{/unless}}
+                                <button onclick="deleteComment('{{this.id}}')" class="btn btn-danger btn-sm">
+                                    <i class="fas fa-trash"></i> Delete
+                                </button>
+                            </div>
+                            {{/if}}
+                            <button onclick="replyToComment('{{this.id}}', '{{this.UserName}}')"
+                                style="background: none; border: none; color: var(--accent); margin-top: 0.5rem; cursor: pointer; padding: 0;">
                                 <i class="fas fa-reply"></i> Reply
                             </button>
-                        {{/if}}
-                    </div>
-                    
-                    <!-- Nested replies -->
-                    {{#each ../comments as |reply|}}
-                        {{#if (eq reply.parent_id ../this.id)}}
-                            {{#if @first}}
-                            <div class="reply-toggle" style="margin-left: 3rem; margin-top: 0.5rem; cursor: pointer; color: var(--accent);" 
-                                 onclick="toggleReplies({{../this.id}})">
-                                <i class="fas fa-caret-right" id="caret-{{../this.id}}"></i>
-                                <span id="reply-count-{{../this.id}}">Show replies ({{../this.replyCount}})</span>
-                            </div>
                             {{/if}}
-                        {{/if}}
-                    {{/each}}
-                    <div id="replies-{{this.id}}" class="replies-container" style="display: none;">
-                    {{#each ../comments}}
-                        {{#if (eq this.parent_id ../this.id)}}
-                            <div style="margin-left: 3rem; margin-top: 0.5rem; padding-left: 1rem; border-left: 2px solid var(--accent);">
-                                <div style="background-color: var(--darker); padding: 1.5rem; border-radius: var(--border-radius);">
+                        </div>
+                        {{#if this.replyCount}}
+                        <div class="reply-toggle"
+                            style="margin-left: 0; margin-top: 0.5rem; cursor: pointer; color: var(--accent);"
+                            onclick="toggleReplies('{{this.id}}-sub')">
+                            <i class="fas fa-caret-right" id="caret-{{this.id}}-sub"></i>
+                            <span id="reply-count-{{this.id}}-sub">Show replies ({{this.replyCount}})</span>
+                        </div>
+                        <div id="replies-{{this.id}}-sub" class="replies-container" style="display: none;">
+                            {{#each ../../comments}}
+                            {{#if (eq this.parent_id ../this.id)}}
+                            <div
+                                style="margin-left: 3rem; margin-top: 0.5rem; padding-left: 1rem; border-left: 2px solid var(--accent);">
+                                <div
+                                    style="background-color: var(--darker); padding: 1.5rem; border-radius: var(--border-radius);">
                                     <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
                                         <div style="display: flex; align-items: center; gap: 0.5rem;">
-                                            <h6 style="color: var(--light); margin: 0;"><a href="/author/{{this.UserName}}" style="color: var(--accent); text-decoration: none;">{{this.UserName}}</a></h6>
+                                            <h6 style="color: var(--light); margin: 0;"><a
+                                                    href="/author/{{this.UserName}}"
+                                                    style="color: var(--accent); text-decoration: none;">{{this.UserName}}</a>
+                                            </h6>
                                             {{#unless this.is_approved}}
-                                                <span style="color: var(--warning); font-size: 0.8em;">(Pending Approval)</span>
+                                            <span style="color: var(--warning); font-size: 0.8em;">(Pending
+                                                Approval)</span>
                                             {{/unless}}
                                         </div>
                                         <small style="color: var(--text-light);">{{formatDate this.created_at}}</small>
                                     </div>
                                     <p style="color: var(--text); margin: 0;">{{this.content}}</p>
-                                    {{#if ../../user}}
-                                        {{#if (eq ../../user.username this.UserName)}}
-                                            {{#unless this.is_approved}}
-                                                <div style="margin-top: 0.5rem; color: var(--warning); font-size: 0.9em;">
-                                                    <i class="fas fa-clock"></i> Your comment is pending approval
-                                                </div>
-                                            {{/unless}}
-                                        {{/if}}
-                                        {{#if ../../isSuperAdmin}}
-                                            <div style="margin-top: 1rem; display: flex; gap: 0.5rem;">
-                                                {{#unless this.is_approved}}
-                                                    <button onclick="approveComment('{{this.id}}')" class="btn btn-success btn-sm">
-                                                        <i class="fas fa-check"></i> Approve
-                                                    </button>
-                                                {{/unless}}
-                                                <button onclick="deleteComment('{{this.id}}')" class="btn btn-danger btn-sm">
-                                                    <i class="fas fa-trash"></i> Delete
-                                                </button>
-                                            </div>
-                                        {{/if}}
-                                        <button onclick="replyToComment('{{this.id}}', '{{this.UserName}}')" 
-                                                style="background: none; border: none; color: var(--accent); margin-top: 0.5rem; cursor: pointer; padding: 0;">
-                                            <i class="fas fa-reply"></i> Reply
+                                    {{#if ../../../user}}
+                                    {{#if (eq ../../../user.username this.UserName)}}
+                                    {{#unless this.is_approved}}
+                                    <div style="margin-top: 0.5rem; color: var(--warning); font-size: 0.9em;">
+                                        <i class="fas fa-clock"></i> Your comment is pending approval
+                                    </div>
+                                    {{/unless}}
+                                    {{/if}}
+                                    {{#if ../../../isSuperAdmin}}
+                                    <div style="margin-top: 1rem; display: flex; gap: 0.5rem;">
+                                        {{#unless this.is_approved}}
+                                        <button onclick="approveComment('{{this.id}}')" class="btn btn-success btn-sm">
+                                            <i class="fas fa-check"></i> Approve
                                         </button>
+                                        {{/unless}}
+                                        <button onclick="deleteComment('{{this.id}}')" class="btn btn-danger btn-sm">
+                                            <i class="fas fa-trash"></i> Delete
+                                        </button>
+                                    </div>
+                                    {{/if}}
+                                    <button onclick="replyToComment('{{this.id}}', '{{this.UserName}}')"
+                                        style="background: none; border: none; color: var(--accent); margin-top: 0.5rem; cursor: pointer; padding: 0;">
+                                        <i class="fas fa-reply"></i> Reply
+                                    </button>
                                     {{/if}}
                                 </div>
-                                {{#if this.replyCount}}
-                                    <div class="reply-toggle" style="margin-left: 0; margin-top: 0.5rem; cursor: pointer; color: var(--accent);" 
-                                         onclick="toggleReplies('{{this.id}}-sub')">
-                                        <i class="fas fa-caret-right" id="caret-{{this.id}}-sub"></i>
-                                        <span id="reply-count-{{this.id}}-sub">Show replies ({{this.replyCount}})</span>
-                                    </div>
-                                    <div id="replies-{{this.id}}-sub" class="replies-container" style="display: none;">
-                                        {{#each ../../comments}}
-                                            {{#if (eq this.parent_id ../this.id)}}
-                                                <div style="margin-left: 3rem; margin-top: 0.5rem; padding-left: 1rem; border-left: 2px solid var(--accent);">
-                                                    <div style="background-color: var(--darker); padding: 1.5rem; border-radius: var(--border-radius);">
-                                                        <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
-                                                            <div style="display: flex; align-items: center; gap: 0.5rem;">
-                                                                <h6 style="color: var(--light); margin: 0;"><a href="/author/{{this.UserName}}" style="color: var(--accent); text-decoration: none;">{{this.UserName}}</a></h6>
-                                                                {{#unless this.is_approved}}
-                                                                    <span style="color: var(--warning); font-size: 0.8em;">(Pending Approval)</span>
-                                                                {{/unless}}
-                                                            </div>
-                                                            <small style="color: var(--text-light);">{{formatDate this.created_at}}</small>
-                                                        </div>
-                                                        <p style="color: var(--text); margin: 0;">{{this.content}}</p>
-                                                        {{#if ../../../user}}
-                                                            {{#if (eq ../../../user.username this.UserName)}}
-                                                                {{#unless this.is_approved}}
-                                                                    <div style="margin-top: 0.5rem; color: var(--warning); font-size: 0.9em;">
-                                                                        <i class="fas fa-clock"></i> Your comment is pending approval
-                                                                    </div>
-                                                                {{/unless}}
-                                                            {{/if}}
-                                                            {{#if ../../../isSuperAdmin}}
-                                                                <div style="margin-top: 1rem; display: flex; gap: 0.5rem;">
-                                                                    {{#unless this.is_approved}}
-                                                                        <button onclick="approveComment('{{this.id}}')" class="btn btn-success btn-sm">
-                                                                            <i class="fas fa-check"></i> Approve
-                                                                        </button>
-                                                                    {{/unless}}
-                                                                    <button onclick="deleteComment('{{this.id}}')" class="btn btn-danger btn-sm">
-                                                                        <i class="fas fa-trash"></i> Delete
-                                                                    </button>
-                                                                </div>
-                                                            {{/if}}
-                                                            <button onclick="replyToComment('{{this.id}}', '{{this.UserName}}')" 
-                                                                    style="background: none; border: none; color: var(--accent); margin-top: 0.5rem; cursor: pointer; padding: 0;">
-                                                                <i class="fas fa-reply"></i> Reply
-                                                            </button>
-                                                        {{/if}}
-                                                    </div>
-                                                </div>
-                                            {{/if}}
-                                        {{/each}}
-                                    </div>
-                                {{/if}}
                             </div>
+                            {{/if}}
+                            {{/each}}
+                        </div>
                         {{/if}}
-                    {{/each}}
                     </div>
+                    {{/if}}
+                    {{/each}}
                 </div>
-                {{/unless}}
+            </div>
+            {{/unless}}
             {{else}}
-                <p style="color: var(--text); text-align: center;">No comments yet.</p>
+            <p style="color: var(--text); text-align: center;">No comments yet.</p>
             {{/each}}
         </div>
-        </div>
-    </section>
+</div>
+</section>
 </div>
 
 <script>
-function replyToComment(commentId, authorName) {
-    document.getElementById('parentCommentId').value = commentId;
-    document.getElementById('replyingToName').textContent = authorName;
-    document.getElementById('replyingTo').style.display = 'block';
-    document.querySelector('textarea[name="content"]').focus();
-    document.querySelector('textarea[name="content"]').placeholder = `Reply to ${authorName}...`;
-    // Scroll to comment form
-    document.getElementById('commentForm').scrollIntoView({ behavior: 'smooth' });
-}
+    function replyToComment(commentId, authorName) {
+        document.getElementById('parentCommentId').value = commentId;
+        document.getElementById('replyingToName').textContent = authorName;
+        document.getElementById('replyingTo').style.display = 'block';
+        document.querySelector('textarea[name="content"]').focus();
+        document.querySelector('textarea[name="content"]').placeholder = `Reply to ${authorName}...`;
+        // Scroll to comment form
+        document.getElementById('commentForm').scrollIntoView({ behavior: 'smooth' });
+    }
 
-function cancelReply() {
-    document.getElementById('parentCommentId').value = '';
-    document.getElementById('replyingTo').style.display = 'none';
-    document.querySelector('textarea[name="content"]').placeholder = 'Write your comment...';
-}
+    function cancelReply() {
+        document.getElementById('parentCommentId').value = '';
+        document.getElementById('replyingTo').style.display = 'none';
+        document.querySelector('textarea[name="content"]').placeholder = 'Write your comment...';
+    }
 
-// Add copy buttons to code blocks
-document.addEventListener('DOMContentLoaded', function() {
-    const codeBlocks = document.querySelectorAll('.markdown-content pre[class*="language-"]');
-    
-    codeBlocks.forEach(function(codeBlock) {
-        // Create copy button
-        const copyButton = document.createElement('button');
-        copyButton.className = 'copy-button';
-        copyButton.textContent = 'Copy';
-        copyButton.setAttribute('aria-label', 'Copy code to clipboard');
-        
-        // Add click event listener
-        copyButton.addEventListener('click', function() {
-            const code = codeBlock.querySelector('code');
-            const textToCopy = code ? code.textContent : codeBlock.textContent;
-            
-            // Use the Clipboard API if available
-            if (navigator.clipboard && window.isSecureContext) {
-                navigator.clipboard.writeText(textToCopy).then(function() {
-                    showCopySuccess(copyButton);
-                }).catch(function(err) {
-                    console.error('Failed to copy: ', err);
+    // Add copy buttons to code blocks
+    document.addEventListener('DOMContentLoaded', function () {
+        const codeBlocks = document.querySelectorAll('.markdown-content pre[class*="language-"]');
+
+        codeBlocks.forEach(function (codeBlock) {
+            // Create copy button
+            const copyButton = document.createElement('button');
+            copyButton.className = 'copy-button';
+            copyButton.textContent = 'Copy';
+            copyButton.setAttribute('aria-label', 'Copy code to clipboard');
+
+            // Add click event listener
+            copyButton.addEventListener('click', function () {
+                const code = codeBlock.querySelector('code');
+                const textToCopy = code ? code.textContent : codeBlock.textContent;
+
+                // Use the Clipboard API if available
+                if (navigator.clipboard && window.isSecureContext) {
+                    navigator.clipboard.writeText(textToCopy).then(function () {
+                        showCopySuccess(copyButton);
+                    }).catch(function (err) {
+                        console.error('Failed to copy: ', err);
+                        fallbackCopyTextToClipboard(textToCopy, copyButton);
+                    });
+                } else {
+                    // Fallback for older browsers
                     fallbackCopyTextToClipboard(textToCopy, copyButton);
-                });
-            } else {
-                // Fallback for older browsers
-                fallbackCopyTextToClipboard(textToCopy, copyButton);
-            }
-        });
-        
-        // Add button to code block
-        codeBlock.style.position = 'relative';
-        codeBlock.appendChild(copyButton);
-    });
-});
+                }
+            });
 
-// Fallback copy function for older browsers
-function fallbackCopyTextToClipboard(text, button) {
-    const textArea = document.createElement('textarea');
-    textArea.value = text;
-    
-    // Avoid scrolling to bottom
-    textArea.style.top = '0';
-    textArea.style.left = '0';
-    textArea.style.position = 'fixed';
-    
-    document.body.appendChild(textArea);
-    textArea.focus();
-    textArea.select();
-    
-    try {
-        const successful = document.execCommand('copy');
-        if (successful) {
-            showCopySuccess(button);
-        } else {
-            console.error('Fallback: Copying text command was unsuccessful');
+            // Add button to code block
+            codeBlock.style.position = 'relative';
+            codeBlock.appendChild(copyButton);
+        });
+    });
+
+    // Fallback copy function for older browsers
+    function fallbackCopyTextToClipboard(text, button) {
+        const textArea = document.createElement('textarea');
+        textArea.value = text;
+
+        // Avoid scrolling to bottom
+        textArea.style.top = '0';
+        textArea.style.left = '0';
+        textArea.style.position = 'fixed';
+
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+
+        try {
+            const successful = document.execCommand('copy');
+            if (successful) {
+                showCopySuccess(button);
+            } else {
+                console.error('Fallback: Copying text command was unsuccessful');
+            }
+        } catch (err) {
+            console.error('Fallback: Oops, unable to copy', err);
         }
-    } catch (err) {
-        console.error('Fallback: Oops, unable to copy', err);
+
+        document.body.removeChild(textArea);
     }
-    
-    document.body.removeChild(textArea);
-}
 
-// Show copy success feedback
-function showCopySuccess(button) {
-    button.classList.add('copied');
-    
-    setTimeout(function() {
-        button.classList.remove('copied');
-    }, 2000);
-}
+    // Show copy success feedback
+    function showCopySuccess(button) {
+        button.classList.add('copied');
 
-// Comment reply toggle function
-function toggleReplies(commentId) {
-    const container = document.getElementById(`replies-${commentId}`);
-    const caret = document.getElementById(`caret-${commentId}`);
-    const replyCount = document.getElementById(`reply-count-${commentId}`);
-    const count = replyCount.textContent.match(/\d+/)[0]; // Extract number from text
-    
-    if (container.style.display === 'none') {
-        container.style.display = 'block';
-        caret.classList.remove('fa-caret-right');
-        caret.classList.add('fa-caret-down');
-        replyCount.textContent = `Hide replies (${count})`;
-    } else {
-        container.style.display = 'none';
-        caret.classList.remove('fa-caret-down');
-        caret.classList.add('fa-caret-right');
-        replyCount.textContent = `Show replies (${count})`;
-    }
-}
-
-// Initialize reply containers
-document.addEventListener('DOMContentLoaded', function() {
-    const replyContainers = document.querySelectorAll('.replies-container');
-    replyContainers.forEach(container => {
-        container.style.display = 'none';
-    });
-});
-
-// Comment moderation functions
-function approveComment(commentId) {
-    if (confirm('Are you sure you want to approve this comment?')) {
-        fetch(`/dashboard/api/comments/${commentId}/approve`, {
-            method: 'PUT'
-        })
-        .then(response => {
-            if (response.ok) {
-                location.reload();
-            } else {
-                alert('Failed to approve comment. Please try again.');
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert('An error occurred while approving the comment.');
-        });
-    }
-}
-
-function deleteComment(commentId) {
-    if (confirm('Are you sure you want to delete this comment? This action cannot be undone.')) {
-        fetch(`/dashboard/api/comments/${commentId}`, {
-            method: 'DELETE'
-        })
-        .then(response => {
-            if (response.ok) {
-                location.reload();
-            } else {
-                alert('Failed to delete comment. Please try again.');
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert('An error occurred while deleting the comment.');
-        });
-    }
-}
-
-// Share Button Functions
-function copyPostLink() {
-    const url = 'https://blog.mbktechstudio.com/post/{{post.slug}}';
-    
-    if (navigator.clipboard && window.isSecureContext) {
-        navigator.clipboard.writeText(url).then(() => {
-            showCopyFeedback();
-        }).catch(() => {
-            fallbackCopyLink(url);
-        });
-    } else {
-        fallbackCopyLink(url);
-    }
-}
-
-function fallbackCopyLink(url) {
-    const textArea = document.createElement('textarea');
-    textArea.value = url;
-    textArea.style.position = 'fixed';
-    textArea.style.left = '-999999px';
-    document.body.appendChild(textArea);
-    textArea.select();
-    try {
-        document.execCommand('copy');
-        showCopyFeedback();
-    } catch (err) {
-        console.error('Failed to copy link:', err);
-        alert('Failed to copy link to clipboard');
-    }
-    document.body.removeChild(textArea);
-}
-
-function showCopyFeedback() {
-    const btn = document.querySelector('.copy-link-btn');
-    const feedback = document.querySelector('.copy-feedback');
-    
-    if (feedback && btn) {
-        // Add the 'copied' class to show feedback
-        btn.classList.add('copied');
-        feedback.textContent = 'Link Copied!';
-        
-        // Remove the class after 2 seconds
-        setTimeout(() => {
-            btn.classList.remove('copied');
+        setTimeout(function () {
+            button.classList.remove('copied');
         }, 2000);
     }
-}
 
-// Bookmark Functions
-function toggleBookmark(postId, slug, title) {
-    const bookmarkBtn = document.getElementById('bookmarkBtn');
-    const bookmarkText = document.getElementById('bookmarkText');
-    const bookmarkIcon = bookmarkBtn.querySelector('i');
-    
-    // Get existing bookmarks from localStorage
-    let bookmarks = JSON.parse(localStorage.getItem('bookmarkedPosts')) || [];
-    
-    // Check if post is already bookmarked
-    const isBookmarked = bookmarks.some(post => post.id === postId);
-    
-    if (isBookmarked) {
-        // Remove bookmark
-        bookmarks = bookmarks.filter(post => post.id !== postId);
-        bookmarkBtn.classList.remove('bookmarked');
-        bookmarkText.textContent = 'Bookmark';
-        bookmarkIcon.classList.remove('fas');
-        bookmarkIcon.classList.add('far');
-    } else {
-        // Add bookmark
-        bookmarks.push({ id: postId, slug: slug, title: title, bookmarkedAt: new Date().toISOString() });
-        bookmarkBtn.classList.add('bookmarked');
-        bookmarkText.textContent = 'Bookmarked';
-        bookmarkIcon.classList.remove('far');
-        bookmarkIcon.classList.add('fas');
-    }
-    
-    // Save to localStorage
-    localStorage.setItem('bookmarkedPosts', JSON.stringify(bookmarks));
-}
+    // Comment reply toggle function
+    function toggleReplies(commentId) {
+        const container = document.getElementById(`replies-${commentId}`);
+        const caret = document.getElementById(`caret-${commentId}`);
+        const replyCount = document.getElementById(`reply-count-${commentId}`);
+        const count = replyCount.textContent.match(/\d+/)[0]; // Extract number from text
 
-// Check if post is already bookmarked when page loads
-function checkBookmarkStatus() {
-    const postId = '{{post.id}}';
-    const bookmarkBtn = document.getElementById('bookmarkBtn');
-    const bookmarkText = document.getElementById('bookmarkText');
-    
-    if (bookmarkBtn && bookmarkText) {
-        const bookmarks = JSON.parse(localStorage.getItem('bookmarkedPosts')) || [];
-        const isBookmarked = bookmarks.some(post => post.id === postId);
-        
-        if (isBookmarked) {
-            bookmarkBtn.classList.add('bookmarked');
-            bookmarkText.textContent = 'Bookmarked';
-            bookmarkBtn.querySelector('i').classList.remove('far');
-            bookmarkBtn.querySelector('i').classList.add('fas');
+        if (container.style.display === 'none') {
+            container.style.display = 'block';
+            caret.classList.remove('fa-caret-right');
+            caret.classList.add('fa-caret-down');
+            replyCount.textContent = `Hide replies (${count})`;
+        } else {
+            container.style.display = 'none';
+            caret.classList.remove('fa-caret-down');
+            caret.classList.add('fa-caret-right');
+            replyCount.textContent = `Show replies (${count})`;
         }
     }
-}
 
-// PDF Export Function
-function exportPostAsPDF() {
-    const element = document.querySelector('.markdown-content');
-    
-    if (!element) {
-        alert('Could not find post content');
-        return;
+    // Initialize reply containers
+    document.addEventListener('DOMContentLoaded', function () {
+        const replyContainers = document.querySelectorAll('.replies-container');
+        replyContainers.forEach(container => {
+            container.style.display = 'none';
+        });
+    });
+
+    // Comment moderation functions
+    function approveComment(commentId) {
+        if (confirm('Are you sure you want to approve this comment?')) {
+            fetch(`/dashboard/api/comments/${commentId}/approve`, {
+                method: 'PUT'
+            })
+                .then(response => {
+                    if (response.ok) {
+                        location.reload();
+                    } else {
+                        alert('Failed to approve comment. Please try again.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('An error occurred while approving the comment.');
+                });
+        }
     }
-    
-    // Check if html2pdf library is loaded
-    if (typeof html2pdf === 'undefined') {
-        // Load html2pdf library from CDN if not already loaded
-        const script = document.createElement('script');
-        script.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js';
-        script.onload = () => {
+
+    function deleteComment(commentId) {
+        if (confirm('Are you sure you want to delete this comment? This action cannot be undone.')) {
+            fetch(`/dashboard/api/comments/${commentId}`, {
+                method: 'DELETE'
+            })
+                .then(response => {
+                    if (response.ok) {
+                        location.reload();
+                    } else {
+                        alert('Failed to delete comment. Please try again.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('An error occurred while deleting the comment.');
+                });
+        }
+    }
+
+    // Share Button Functions
+    function copyPostLink() {
+        const url = 'https://blog.mbktechstudio.com/post/{{post.slug}}';
+
+        if (navigator.clipboard && window.isSecureContext) {
+            navigator.clipboard.writeText(url).then(() => {
+                showCopyFeedback();
+            }).catch(() => {
+                fallbackCopyLink(url);
+            });
+        } else {
+            fallbackCopyLink(url);
+        }
+    }
+
+    function fallbackCopyLink(url) {
+        const textArea = document.createElement('textarea');
+        textArea.value = url;
+        textArea.style.position = 'fixed';
+        textArea.style.left = '-999999px';
+        document.body.appendChild(textArea);
+        textArea.select();
+        try {
+            document.execCommand('copy');
+            showCopyFeedback();
+        } catch (err) {
+            console.error('Failed to copy link:', err);
+            alert('Failed to copy link to clipboard');
+        }
+        document.body.removeChild(textArea);
+    }
+
+    function showCopyFeedback() {
+        const btn = document.querySelector('.copy-link-btn');
+        const feedback = document.querySelector('.copy-feedback');
+
+        if (feedback && btn) {
+            // Add the 'copied' class to show feedback
+            btn.classList.add('copied');
+            feedback.textContent = 'Link Copied!';
+
+            // Remove the class after 2 seconds
+            setTimeout(() => {
+                btn.classList.remove('copied');
+            }, 2000);
+        }
+    }
+
+    // Bookmark Functions
+    function toggleBookmark(postId, slug, title) {
+        const bookmarkBtn = document.getElementById('bookmarkBtn');
+        const bookmarkText = document.getElementById('bookmarkText');
+        const bookmarkIcon = bookmarkBtn.querySelector('i');
+
+        // Get existing bookmarks from localStorage
+        let bookmarks = JSON.parse(localStorage.getItem('bookmarkedPosts')) || [];
+
+        // Check if post is already bookmarked
+        const isBookmarked = bookmarks.some(post => post.id === postId);
+
+        if (isBookmarked) {
+            // Remove bookmark
+            bookmarks = bookmarks.filter(post => post.id !== postId);
+            bookmarkBtn.classList.remove('bookmarked');
+            bookmarkText.textContent = 'Bookmark';
+            bookmarkIcon.classList.remove('fas');
+            bookmarkIcon.classList.add('far');
+        } else {
+            // Add bookmark
+            bookmarks.push({ id: postId, slug: slug, title: title, bookmarkedAt: new Date().toISOString() });
+            bookmarkBtn.classList.add('bookmarked');
+            bookmarkText.textContent = 'Bookmarked';
+            bookmarkIcon.classList.remove('far');
+            bookmarkIcon.classList.add('fas');
+        }
+
+        // Save to localStorage
+        localStorage.setItem('bookmarkedPosts', JSON.stringify(bookmarks));
+    }
+
+    // Check if post is already bookmarked when page loads
+    function checkBookmarkStatus() {
+        const postId = '{{post.id}}';
+        const bookmarkBtn = document.getElementById('bookmarkBtn');
+        const bookmarkText = document.getElementById('bookmarkText');
+
+        if (bookmarkBtn && bookmarkText) {
+            const bookmarks = JSON.parse(localStorage.getItem('bookmarkedPosts')) || [];
+            const isBookmarked = bookmarks.some(post => post.id === postId);
+
+            if (isBookmarked) {
+                bookmarkBtn.classList.add('bookmarked');
+                bookmarkText.textContent = 'Bookmarked';
+                bookmarkBtn.querySelector('i').classList.remove('far');
+                bookmarkBtn.querySelector('i').classList.add('fas');
+            }
+        }
+    }
+
+    // PDF Export Function
+    function exportPostAsPDF() {
+        const element = document.querySelector('.markdown-content');
+
+        if (!element) {
+            alert('Could not find post content');
+            return;
+        }
+
+        // Check if html2pdf library is loaded
+        if (typeof html2pdf === 'undefined') {
+            // Load html2pdf library from CDN if not already loaded
+            const script = document.createElement('script');
+            script.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js';
+            script.onload = () => {
+                generatePDF(element);
+            };
+            script.onerror = () => {
+                alert('Failed to load PDF library. Please try again later.');
+            };
+            document.head.appendChild(script);
+        } else {
             generatePDF(element);
-        };
-        script.onerror = () => {
-            alert('Failed to load PDF library. Please try again later.');
-        };
-        document.head.appendChild(script);
-    } else {
-        generatePDF(element);
+        }
     }
-}
 
-function generatePDF(element) {
-    const postTitle = '{{post.title}}';
-    const author = '{{post.UserName}}';
-    const date = new Date('{{post.created_at}}').toLocaleDateString();
-    
-    const options = {
-        margin: 10,
-        filename: '{{post.slug}}.pdf',
-        image: { type: 'jpeg', quality: 0.98 },
-        html2canvas: { scale: 2 },
-        jsPDF: { orientation: 'portrait', unit: 'mm', format: 'a4' }
-    };
-    
-    // Create a new div with post title, author, and date
-    const tempDiv = document.createElement('div');
-    tempDiv.innerHTML = `
+    function generatePDF(element) {
+        const postTitle = '{{post.title}}';
+        const author = '{{post.UserName}}';
+        const date = new Date('{{post.created_at}}').toLocaleDateString();
+
+        const options = {
+            margin: 10,
+            filename: '{{post.slug}}.pdf',
+            image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: { scale: 2 },
+            jsPDF: { orientation: 'portrait', unit: 'mm', format: 'a4' }
+        };
+
+        // Create a new div with post title, author, and date
+        const tempDiv = document.createElement('div');
+        tempDiv.innerHTML = `
         <h1>${postTitle}</h1>
         <p><strong>By ${author}</strong> | ${date}</p>
         <hr>
         ${element.innerHTML}
     `;
-    
-    html2pdf().set(options).from(tempDiv).save();
-}
 
-// Initialize on page load
-document.addEventListener('DOMContentLoaded', function() {
-    checkBookmarkStatus();
-});
+        html2pdf().set(options).from(tempDiv).save();
+    }
+
+    // Initialize on page load
+    document.addEventListener('DOMContentLoaded', function () {
+        checkBookmarkStatus();
+    });
 </script>

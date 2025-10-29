@@ -9,7 +9,7 @@ const upload = multer();
 
 // Configure marked with syntax highlighting
 marked.setOptions({
-    highlight: function(code, lang) {
+    highlight: function (code, lang) {
         if (Prism.languages[lang]) {
             return Prism.highlight(code, Prism.languages[lang], lang);
         }
@@ -25,7 +25,7 @@ router.use(upload.none());
 
 // Middleware to check if user is authenticated and is an admin
 const isAdmin = (req, res, next) => {
-next();
+    next();
 };
 
 // Apply admin middleware to all dashboard routes
@@ -177,7 +177,7 @@ router.get('/posts/edit/:id', async (req, res) => {
         // Add tags and categories to post object
         post.rows[0].tags = postTags.rows.map(tag => tag.name);
         post.rows[0].categoryIds = postCategories.rows.map(cat => cat.id);
-        
+
         res.render('dashboard/edit-post.handlebars', {
             layout: 'dashboard',
             active: 'posts',
@@ -222,7 +222,7 @@ router.get('/comments', async (req, res) => {
         });
     } catch (err) {
         console.error(err);
-        res.status(500).render('error.handlebars', { message: 'Error fetching comments', code: 500 } );
+        res.status(500).render('error.handlebars', { message: 'Error fetching comments', code: 500 });
     }
 });
 
@@ -245,8 +245,8 @@ router.get('/categories', async (req, res) => {
                 FROM categories
             `)
         ]);
-        
-        res.render('dashboard/categories.handlebars', { 
+
+        res.render('dashboard/categories.handlebars', {
             layout: 'dashboard',
             active: 'categories',
             categories: result.rows,
@@ -255,7 +255,7 @@ router.get('/categories', async (req, res) => {
         });
     } catch (err) {
         console.error(err);
-        res.status(500).render('error.handlebars', { message: 'Error fetching categories', code: 500 } );
+        res.status(500).render('error.handlebars', { message: 'Error fetching categories', code: 500 });
     }
 });
 
@@ -290,7 +290,7 @@ router.get('/tags', async (req, res) => {
         });
     } catch (err) {
         console.error(err);
-        res.status(500).render('error.handlebars', { message: 'Error fetching tags', code: 500 } );
+        res.status(500).render('error.handlebars', { message: 'Error fetching tags', code: 500 });
     }
 });
 
@@ -303,13 +303,13 @@ router.post('/api/posts', async (req, res) => {
         await client.query('BEGIN');
 
         const { title, content, excerpt, categories, tags, status, preview_image } = req.body;
-        
+
         // Validate required fields
         if (!title || !content) {
             await client.query('ROLLBACK');
             return res.status(400).json({ message: 'Title and content are required' });
         }
-        
+
         // Validate categories
         let categoryIds = [];
         if (categories) {
@@ -324,12 +324,12 @@ router.post('/api/posts', async (req, res) => {
                 return res.status(400).json({ message: 'Invalid categories format' });
             }
         }
-        
+
         if (!categoryIds || categoryIds.length === 0) {
             await client.query('ROLLBACK');
             return res.status(400).json({ message: 'At least one category is required' });
         }
-        
+
         const slug = title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 
         // Insert post
@@ -357,7 +357,7 @@ router.post('/api/posts', async (req, res) => {
                     'SELECT id FROM Tags WHERE name = $1',
                     [tagName]
                 );
-                
+
                 if (tagResult.rows.length === 0) {
                     tagResult = await client.query(
                         'INSERT INTO Tags (name) VALUES ($1) RETURNING id',
@@ -388,15 +388,15 @@ router.put('/api/posts/:id', async (req, res) => {
     const client = await pool.connect();
     try {
         await client.query('BEGIN');
-        
+
         const { title, content, excerpt, categories, tags, status, preview_image } = req.body;
-        
+
         // Validate required fields
         if (!title || !content) {
             await client.query('ROLLBACK');
             return res.status(400).json({ message: 'Title and content are required' });
         }
-        
+
         // Validate categories
         let categoryIds = [];
         if (categories) {
@@ -411,12 +411,12 @@ router.put('/api/posts/:id', async (req, res) => {
                 return res.status(400).json({ message: 'Invalid categories format' });
             }
         }
-        
+
         if (!categoryIds || categoryIds.length === 0) {
             await client.query('ROLLBACK');
             return res.status(400).json({ message: 'At least one category is required' });
         }
-        
+
         const slug = title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 
         // Update post
@@ -452,7 +452,7 @@ router.put('/api/posts/:id', async (req, res) => {
                     'SELECT id FROM Tags WHERE name = $1',
                     [tagName]
                 );
-                
+
                 if (tagResult.rows.length === 0) {
                     tagResult = await client.query(
                         'INSERT INTO Tags (name) VALUES ($1) RETURNING id',
@@ -527,7 +527,7 @@ router.delete('/api/comments/:id', async (req, res) => {
 router.post('/api/categories', async (req, res) => {
     try {
         await pool.query(
-            'INSERT INTO categories (name, description) VALUES ($1, $2)', 
+            'INSERT INTO categories (name, description) VALUES ($1, $2)',
             [req.body.name, req.body.description]
         );
         res.json({ success: true });
@@ -574,7 +574,7 @@ router.post('/api/markdown-preview', (req, res) => {
         if (!markdown) {
             return res.status(400).json({ error: 'Markdown content is required' });
         }
-        
+
         const html = marked(markdown);
         res.json({ html });
     } catch (err) {

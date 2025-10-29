@@ -7,7 +7,7 @@ import Prism from 'prismjs';
 
 // Configure marked with syntax highlighting
 marked.setOptions({
-    highlight: function(code, lang) {
+    highlight: function (code, lang) {
         if (Prism.languages[lang]) {
             return Prism.highlight(code, Prism.languages[lang], lang);
         }
@@ -23,7 +23,7 @@ const router = express.Router();
 router.get('/', async (req, res) => {
     try {
         let whereClause = "WHERE p.status = 'published'";
-        
+
         // If user is SuperAdmin, also show private posts
         if (req.session.user && req.session.user.role === 'SuperAdmin') {
             whereClause = "WHERE p.status IN ('published', 'private')";
@@ -57,7 +57,7 @@ router.get('/', async (req, res) => {
 router.get('/categories', async (req, res) => {
     try {
         let statusFilter = "AND p.status = 'published'";
-        
+
         // If user is SuperAdmin, also include private posts
         if (req.session.user && req.session.user.role === 'SuperAdmin') {
             statusFilter = "AND p.status IN ('published', 'private')";
@@ -73,7 +73,7 @@ router.get('/categories', async (req, res) => {
             GROUP BY c.id
             ORDER BY c.name ASC
         `);
-        
+
         res.render('blog/categories.handlebars', {
             categories: result.rows,
             user: req.session.user,
@@ -89,7 +89,7 @@ router.get('/categories', async (req, res) => {
 router.get('/tags', async (req, res) => {
     try {
         let statusFilter = "AND p.status = 'published'";
-        
+
         // If user is SuperAdmin, also include private posts
         if (req.session.user && req.session.user.role === 'SuperAdmin') {
             statusFilter = "AND p.status IN ('published', 'private')";
@@ -105,7 +105,7 @@ router.get('/tags', async (req, res) => {
             GROUP BY t.id
             ORDER BY t.name ASC
         `);
-        
+
         res.render('blog/tags.handlebars', {
             tags: result.rows,
             user: req.session.user,
@@ -123,7 +123,7 @@ router.get('/author/:username', async (req, res) => {
     try {
         const { username } = req.params;
         let whereClause = "WHERE p.status = 'published' AND p.\"UserName\" = $1";
-        
+
         // If user is SuperAdmin, also show private posts
         if (req.session.user && req.session.user.role === 'SuperAdmin') {
             whereClause = "WHERE p.status IN ('published', 'private') AND p.\"UserName\" = $1";
@@ -143,7 +143,7 @@ router.get('/author/:username', async (req, res) => {
             ORDER BY p.created_at DESC`,
             [username]
         );
-        
+
         res.render('blog/filtered-posts.handlebars', {
             posts: result.rows,
             username: username,
@@ -170,7 +170,7 @@ router.get('/category/:categoryName', async (req, res) => {
         }
 
         let whereClause = "WHERE p.status = 'published'";
-        
+
         // If user is SuperAdmin, also show private posts
         if (req.session.user && req.session.user.role === 'SuperAdmin') {
             whereClause = "WHERE p.status IN ('published', 'private')";
@@ -191,7 +191,7 @@ router.get('/category/:categoryName', async (req, res) => {
             ORDER BY p.created_at DESC`,
             [category.rows[0].id]
         );
-        
+
         res.render('blog/filtered-posts.handlebars', {
             posts: result.rows,
             category: category.rows[0],
@@ -218,7 +218,7 @@ router.get('/tag/:tagName', async (req, res) => {
         }
 
         let whereClause = "WHERE p.status = 'published'";
-        
+
         // If user is SuperAdmin, also show private posts
         if (req.session.user && req.session.user.role === 'SuperAdmin') {
             whereClause = "WHERE p.status IN ('published', 'private')";
@@ -241,7 +241,7 @@ router.get('/tag/:tagName', async (req, res) => {
             ORDER BY p.created_at DESC`,
             [tag.rows[0].id]
         );
-        
+
         res.render('blog/filtered-posts.handlebars', {
             posts: result.rows,
             tag: tag.rows[0],
@@ -345,7 +345,7 @@ router.get('/post/:slug', async (req, res) => {
         }
 
         const comments = await pool.query(commentsQuery, queryParams);
-        
+
         comments.rows.forEach(comment => {
             comment.replyCount = comments.rows.filter(reply => reply.parent_id === comment.id).length;
         });
@@ -360,7 +360,7 @@ router.get('/post/:slug', async (req, res) => {
             isSuperAdmin: req.session.user?.role === 'SuperAdmin',
             canonicalUrl: `${req.protocol}://${req.get('host')}/post/${req.params.slug}`,
             helpers: {
-                getReplies: function(comments, parentId) {
+                getReplies: function (comments, parentId) {
                     return comments.filter(comment => comment.parent_id === parentId);
                 }
             }
@@ -430,7 +430,7 @@ router.get('/bookmarks', async (req, res) => {
     try {
         // Get post IDs from query parameter (JSON array)
         let bookmarkIds = [];
-        
+
         if (req.query.ids) {
             try {
                 bookmarkIds = JSON.parse(req.query.ids);
@@ -444,7 +444,7 @@ router.get('/bookmarks', async (req, res) => {
                 bookmarkIds = [];
             }
         }
-        
+
         if (bookmarkIds.length === 0) {
             return res.render('blog/bookmarks.handlebars', {
                 posts: [],
@@ -454,7 +454,7 @@ router.get('/bookmarks', async (req, res) => {
         }
 
         let whereClause = "p.status = 'published' AND p.id = ANY($1::int[])";
-        
+
         // If user is SuperAdmin, also show private posts
         if (req.session.user && req.session.user.role === 'SuperAdmin') {
             whereClause = "p.status IN ('published', 'private') AND p.id = ANY($1::int[])";

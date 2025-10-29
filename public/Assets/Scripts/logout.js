@@ -72,7 +72,7 @@ async function nuclearCacheClear() {
     document.cookie.split(';').forEach(cookie => {
       const eqPos = cookie.indexOf('=');
       const name = eqPos > -1 ? cookie.substr(0, eqPos).trim() : cookie.trim();
-      
+
       // Skip cookies you want to preserve (add conditions as needed)
       if (!name.startsWith('preserve_')) {  // Example condition
         document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/; domain=${window.location.hostname}`;

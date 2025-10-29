@@ -4,30 +4,30 @@
 {{/section}}
 
 <div class="section-container"></div>
-    <div style="text-align: center; max-width: 600px; margin: 0 auto;">
-        <div style="font-size: 4rem; color: var(--accent); margin-bottom: 1rem;">
-            <i class="fas fa-exclamation-triangle"></i>
-        </div>
-        
-        <h1 style="color: var(--light); margin-bottom: 1rem; font-size: 2.5rem;">
-            {{#if code}}{{code}}{{else}}Error{{/if}}
-        </h1>
-        
-        <p style="color: var(--text); font-size: 1.2rem; margin-bottom: 2rem;">
-            {{#if message}}
-                {{message}}
-            {{else}}
-                Sorry, something went wrong. Please try again later.
-            {{/if}}
-        </p>
-        
-        <div style="margin-top: 2rem;">
-            <a href="/" class="btn btn-primary" style="margin-right: 1rem;">
-                Go Home
-            </a>
-            <button onclick="history.back()" class="btn btn-outline">
-                Go Back
-            </button>
-        </div>
+<div style="text-align: center; max-width: 600px; margin: 0 auto; margin-bottom: 3rem;">
+    <div style="font-size: 4rem; color: var(--accent); margin-bottom: 1rem;">
+        <i class="fas fa-exclamation-triangle"></i>
     </div>
+
+    <h1 style="color: var(--light); margin-bottom: 1rem; font-size: 2.5rem;">
+        {{#if code}}{{code}}{{else}}Error{{/if}}
+    </h1>
+
+    <p style="color: var(--text); font-size: 1.2rem; margin-bottom: 2rem;">
+        {{#if message}}
+        {{message}}
+        {{else}}
+        Sorry, something went wrong. Please try again later.
+        {{/if}}
+    </p>
+
+    <div style="margin-top: 2rem;">
+        <a href="/" class="btn btn-primary" style="margin-right: 1rem;">
+            Go Home
+        </a>
+        <button onclick="history.back()" class="btn btn-outline">
+            Go Back
+        </button>
+    </div>
+</div>
 </div>

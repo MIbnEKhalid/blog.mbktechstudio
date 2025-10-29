@@ -4,7 +4,9 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    {{#if canonicalUrl}}<link rel="canonical" href="{{canonicalUrl}}" />{{/if}}
+    {{#if canonicalUrl}}
+    <link rel="canonical" href="{{canonicalUrl}}" />
+    {{/if}}
     <link rel="icon" type="image/x-icon" href="/Assets/Images/Icon/dgicon.svg">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
@@ -852,13 +854,17 @@
             <nav>
                 <ul>
                     <li><a href="/" title="Go to homepage"> <i class="fas fa-home"></i> Home</a></li>
-                    <li><a href="/categories" title="View all categories"> <i class="fas fa-folder"></i> Categories</a></li>
+                    <li><a href="/categories" title="View all categories"> <i class="fas fa-folder"></i> Categories</a>
+                    </li>
                     <li><a href="/tags" title="View all tags"><i class="fas fa-tags"></i> Tags</a></li>
-                    <li><a href="/bookmarks" title="View bookmarked posts"><i class="fas fa-bookmark"></i> <span>Bookmarks</span></a></li>
+                    <li><a href="/bookmarks" title="View bookmarked posts"><i class="fas fa-bookmark"></i>
+                            <span>Bookmarks</span></a></li>
                     {{#if user}}
-                        <li><a href="/dashboard" title="Go to dashboard"> <i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                    <li><a href="/dashboard" title="Go to dashboard"> <i class="fas fa-tachometer-alt"></i>
+                            Dashboard</a></li>
                     {{else}}
-                        <li><a href="/mbkauthe/login" title="Login to your account"> <i class="fas fa-sign-in-alt"></i> Login</a></li>
+                    <li><a href="/mbkauthe/login" title="Login to your account"> <i class="fas fa-sign-in-alt"></i>
+                            Login</a></li>
                     {{/if}}
                 </ul>
             </nav>
@@ -873,11 +879,14 @@
                 <li><a href="/" title="Go to homepage"> <i class="fas fa-home"></i> Home</a></li>
                 <li><a href="/categories" title="View all categories"> <i class="fas fa-folder"></i> Categories</a></li>
                 <li><a href="/tags" title="View all tags"><i class="fas fa-tags"></i> Tags</a></li>
-                <li><a href="/bookmarks" title="View bookmarked posts"><i class="fas fa-bookmark"></i> <span>Bookmarks</span></a></li>
+                <li><a href="/bookmarks" title="View bookmarked posts"><i class="fas fa-bookmark"></i>
+                        <span>Bookmarks</span></a></li>
                 {{#if user}}
-                    <li><a href="/dashboard" title="Go to dashboard"> <i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                <li><a href="/dashboard" title="Go to dashboard"> <i class="fas fa-tachometer-alt"></i> Dashboard</a>
+                </li>
                 {{else}}
-                    <li><a href="/mbkauthe/login" title="Login to your account"> <i class="fas fa-sign-in-alt"></i> Login</a></li>
+                <li><a href="/mbkauthe/login" title="Login to your account"> <i class="fas fa-sign-in-alt"></i>
+                        Login</a></li>
                 {{/if}}
             </ul>
         </div>
@@ -913,9 +922,9 @@
                     <li><a href="/tags">Tags</a></li>
                     <li><a href="/bookmarks" title="View bookmarked posts">Bookmarks</a></li>
                     {{#if user}}
-                        <li><a href="/dashboard">Dashboard</a></li>
+                    <li><a href="/dashboard">Dashboard</a></li>
                     {{else}}
-                        <li><a href="/mbkauthe/login">Login</a></li>
+                    <li><a href="/mbkauthe/login">Login</a></li>
                     {{/if}}
                 </ul>
             </div>
@@ -1036,10 +1045,11 @@
             });
         });
     </script>
-    
+
     <!-- Prism.js for syntax highlighting -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    <script
+        src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
 </body>
 
 </html>

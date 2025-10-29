@@ -9,6 +9,7 @@ import { engine } from "express-handlebars";
 import blogRouter from './routes/blog.js';
 import dashboardRouter from './routes/dashboard.js';
 import compression from "compression";
+import rateLimit from 'express-rate-limit';
 
 dotenv.config();
 
@@ -20,37 +21,59 @@ server.set('trust proxy', 1);
 
 server.use(compression());
 
+// Rate limiting: general limiter for typical browsing/API usage and a stricter
+// limiter for dashboard (admin) routes.
+const generalLimiter = rateLimit({
+  windowMs: 2 * 60 * 1000, // 2 minutes
+  max: 150, // limit each IP to 150 requests per windowMs
+  standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
+  legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+  handler: (req, res) => {
+    res.status(429).render('error.handlebars', { message: 'Too many requests from your IP. Try again later.', code: 429 });
+  }
+});
+
+const dashboardLimiter = rateLimit({
+  windowMs: 1 * 60 * 1000, // 1 minute
+  max: 100, // stricter for admin/dashboard related routes
+  standardHeaders: true,
+  legacyHeaders: false,
+  handler: (req, res) => {
+    res.status(429).render('error.handlebars', { message: 'Too many requests from your IP. Try again later.', code: 429 });
+  }
+});
+
 server.use("/Assets", express.static(path.join(__dirname, "public/Assets"), {
-    maxAge: "7d",
-    setHeaders: (res, path) => {
-        if (path.endsWith(".css")) {
-            res.setHeader("Content-Type", "text/css");
-        }
-        res.setHeader("Access-Control-Allow-Origin", "*");
-        res.setHeader("Cross-Origin-Resource-Policy", "cross-origin");
-        if (
-            path.endsWith(".js") ||
-            path.endsWith(".css") ||
-            path.endsWith(".png") ||
-            path.endsWith(".jpg") ||
-            path.endsWith(".svg")
-        ) {
-            res.setHeader("Cache-Control", "public, max-age=604800");
-        } else {
-            res.setHeader("Cache-Control", "public, max-age=86400");
-        }
-    },
+  maxAge: "7d",
+  setHeaders: (res, path) => {
+    if (path.endsWith(".css")) {
+      res.setHeader("Content-Type", "text/css");
+    }
+    res.setHeader("Access-Control-Allow-Origin", "*");
+    res.setHeader("Cross-Origin-Resource-Policy", "cross-origin");
+    if (
+      path.endsWith(".js") ||
+      path.endsWith(".css") ||
+      path.endsWith(".png") ||
+      path.endsWith(".jpg") ||
+      path.endsWith(".svg")
+    ) {
+      res.setHeader("Cache-Control", "public, max-age=604800");
+    } else {
+      res.setHeader("Cache-Control", "public, max-age=86400");
+    }
+  },
 })
 );
 
 // Serve static sitemaps from public directory
 server.use("/", express.static(path.join(__dirname, "public"), {
-    setHeaders: (res, filePath) => {
-        if (filePath.endsWith(".xml")) {
-            res.setHeader("Content-Type", "application/xml; charset=utf-8");
-            res.setHeader("Cache-Control", "public, max-age=86400");
-        }
+  setHeaders: (res, filePath) => {
+    if (filePath.endsWith(".xml")) {
+      res.setHeader("Content-Type", "application/xml; charset=utf-8");
+      res.setHeader("Cache-Control", "public, max-age=86400");
     }
+  }
 }));
 
 server.use(express.json());
@@ -68,8 +91,8 @@ server.engine("handlebars", engine({
     path.join(__dirname, "node_modules/mbkauthe/views"),
   ],
   cache: process.env.NODE_ENV === "production",
-    helpers: {
-      formatDate: (date) => {
+  helpers: {
+    formatDate: (date) => {
       return new Date(date).toLocaleString('en-US', {
         year: 'numeric',
         month: 'long',
@@ -80,14 +103,14 @@ server.engine("handlebars", engine({
         hour12: true
       });
     },
-    in: function(value, list) {
+    in: function (value, list) {
       if (!list || !Array.isArray(list)) return false;
       return list.includes(parseInt(value) || value);
     },
-    trim: function(str) {
+    trim: function (str) {
       return str ? str.trim() : '';
     },
-    split: function(value, separator) {
+    split: function (value, separator) {
       // Return an array of category strings.
       // Accepts: an array, a JSON-encoded array string, or a comma-separated string.
       if (!value && value !== 0) return [];
@@ -184,20 +207,20 @@ server.engine("handlebars", engine({
       }
       return `${minutes} min read`;
     },
-    section: function(name, options) {
+    section: function (name, options) {
       if (!this._sections) this._sections = {};
       this._sections[name] = options.fn(this);
       return null;
     },
-    getCanonicalUrl: function(req, path) {
+    getCanonicalUrl: function (req, path) {
       const protocol = req.protocol || 'https';
       const host = req.get('host') || 'blog.mbktechstudio.com';
       return `${protocol}://${host}${path}`;
     },
-    index: function(array, idx) {
+    index: function (array, idx) {
       return array ? array[idx] : null;
     },
-    getCategory: function(categories, categoryId) {
+    getCategory: function (categories, categoryId) {
       if (!categories || !Array.isArray(categories)) return '';
       const category = categories.find(c => c.id === categoryId);
       return category ? category.name : '';
@@ -212,8 +235,14 @@ server.set("views", [
 ]);
 
 server.use(mbkauthe);
+
+// Apply general limiter to application routes (after static assets are served)
+server.use(generalLimiter);
+
 server.use(blogRouter);
-server.use('/dashboard', dashboardRouter);
+
+// Apply a stricter limiter for dashboard routes
+server.use('/dashboard', dashboardLimiter, dashboardRouter);
 
 server.use((req, res) => {
   res.status(404).render('error.handlebars', { message: 'Page not found', code: 404 });
