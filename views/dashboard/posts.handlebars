@@ -48,22 +48,32 @@
     }
 
     .stat-card {
-        background: white;
+        background: rgba(255, 255, 255, 0.05);
         padding: 1.5rem;
         border-radius: 8px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 4px 20px rgba(33, 150, 243, 0.15);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(5px);
+        transition: all 0.3s cubic-bezier(.4, 0, .2, 1);
+    }
+
+    .stat-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 24px rgba(33, 150, 243, 0.2);
+        background: rgba(255, 255, 255, 0.08);
     }
 
     .stat-card h3 {
         margin: 0;
         font-size: 0.875rem;
-        color: #666;
+        color: var(--text-light);
     }
 
     .stat-card .value {
         font-size: 1.5rem;
         font-weight: 600;
         margin-top: 0.5rem;
+        color: var(--light);
     }
 
     /* Mobile Responsive */
@@ -158,7 +168,7 @@
 
 <div class="stats-grid">
     <div class="stat-card">
-        <div class="stat-icon" style="background: rgba(67, 97, 238, 0.1); color: var(--primary-color);">
+        <div class="stat-icon" style="background: rgba(33, 150, 243, 0.2); color: var(--primary);">
             <i class="fas fa-newspaper"></i>
         </div>
         <div class="stat-info">
@@ -167,7 +177,7 @@
         </div>
     </div>
     <div class="stat-card">
-        <div class="stat-icon" style="background: rgba(76, 175, 80, 0.1); color: var(--success-color);">
+        <div class="stat-icon" style="background: rgba(67, 233, 123, 0.2); color: var(--success);">
             <i class="fas fa-check-circle"></i>
         </div>
         <div class="stat-info">
@@ -176,7 +186,7 @@
         </div>
     </div>
     <div class="stat-card">
-        <div class="stat-icon" style="background: rgba(255, 152, 0, 0.1); color: var(--warning-color);">
+        <div class="stat-icon" style="background: rgba(255, 209, 102, 0.2); color: var(--warning);">
             <i class="fas fa-edit"></i>
         </div>
         <div class="stat-info">
@@ -185,7 +195,7 @@
         </div>
     </div>
     <div class="stat-card">
-        <div class="stat-icon" style="background: rgba(33, 150, 243, 0.1); color: var(--info-color);">
+        <div class="stat-icon" style="background: rgba(0, 184, 148, 0.2); color: var(--accent);">
             <i class="fas fa-folder"></i>
         </div>
         <div class="stat-info">
@@ -259,8 +269,8 @@
                         {{/if}}
                     </td>
                     <td style="min-width: 300px;">
-                        <div style="font-weight: 500;">{{title}}</div>
-                        <div style="font-size: 0.875rem; color: #666; margin-top: 0.25rem;">{{#if excerpt}}{{truncate
+                        <div style="font-weight: 500; color: var(--light);">{{title}}</div>
+                        <div style="font-size: 0.875rem; color: var(--text-light); margin-top: 0.25rem;">{{#if excerpt}}{{truncate
                             (stripMarkdown excerpt) 120}}{{else}}{{truncate (stripMarkdown content_markdown)
                             120}}{{/if}}</div>
                     </td>
@@ -269,20 +279,20 @@
                             {{#if categories}}
                             {{#each (split categories ',') as |category|}}
                             <span
-                                style="background: #e9ecef; padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.875rem;">
+                                style="background: rgba(0, 184, 148, 0.2); color: var(--accent); padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.875rem; font-weight: 500;">
                                 {{trim category}}
                             </span>
                             {{/each}}
                             {{else}}
-                            <span style="color: #666; font-style: italic; font-size: 0.875rem;">No category</span>
+                            <span style="color: var(--text-light); font-style: italic; font-size: 0.875rem;">No category</span>
                             {{/if}}
                         </div>
                     </td>
                     <td>
-                        <div style="font-size: 0.875rem;">{{formatDate created_at}}</div>
+                        <div style="font-size: 0.875rem; color: var(--text);">{{formatDate created_at}}</div>
                     </td>
                     <td>
-                        <div style="font-size: 0.875rem;">{{author_name}}</div>
+                        <div style="font-size: 0.875rem; color: var(--text);">{{author_name}}</div>
                     </td>
                     <td>
                         <span
@@ -313,10 +323,10 @@
         {{else}}
         <div style="text-align: center; padding: 3rem;">
             <div style="margin-bottom: 1rem;">
-                <i class="fas fa-newspaper" style="font-size: 3rem; color: #ddd;"></i>
+                <i class="fas fa-newspaper" style="font-size: 3rem; color: var(--text-light); opacity: 0.5;"></i>
             </div>
-            <h3 style="color: #666; margin-bottom: 1rem;">No posts found</h3>
-            <p style="color: #888; margin-bottom: 2rem;">Create your first post to get started!</p>
+            <h3 style="color: var(--light); margin-bottom: 1rem;">No posts found</h3>
+            <p style="color: var(--text-light); margin-bottom: 2rem;">Create your first post to get started!</p>
             <a href="/dashboard/posts/create" class="btn btn-primary">
                 <i class="fas fa-plus"></i> Create New Post
             </a>

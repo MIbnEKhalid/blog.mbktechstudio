@@ -1,26 +1,59 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" dir="ltr">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/Assets/dashboard.css">
     <link rel="icon" type="image/x-icon" href="/Assets/Images/Icon/dgicon.svg">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/Assets/dashboard.css">
     <link rel="stylesheet" href="/Assets/post-card.css">
     <script src="/Assets/Scripts/logout.js" defer></script>
     {{{_sections.styles}}}
     <style>
+        /* Base Styles - Matching Main Blog Theme */
+        :root {
+            --primary: #2196f3;
+            --primary-dark: #1769aa;
+            --secondary: #43e97b;
+            --accent: #00b894;
+            --dark: #101c1c;
+            --darker: #0a1414;
+            --light: #eaf6fb;
+            --text: #e0f7fa;
+            --text-light: #b2dfdb;
+            --text-dark: #1a2a2a;
+            --success: #43e97b;
+            --warning: #ffd166;
+            --danger: #ff7675;
+            --border-radius: 8px;
+            --box-shadow: 0 4px 20px rgba(33, 150, 243, 0.15);
+            --transition: all 0.3s cubic-bezier(.4, 0, .2, 1);
+            --sidebar-width: 250px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--dark);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
         @media (max-width: 768px) {
             .dashboard-menu-toggle {
                 display: flex;
                 position: fixed;
                 top: 0.5rem;
                 right: 1rem;
-                background: transparent;
+                background: rgba(0, 0, 0, 0.3);
                 color: white;
-                border: none;
+                border: 1px solid rgba(255, 255, 255, 0.2);
                 padding: 0.75rem 1rem;
                 border-radius: 8px;
                 cursor: pointer;
@@ -28,10 +61,12 @@
                 align-items: center;
                 gap: 0.5rem;
                 font-size: 1rem;
+                backdrop-filter: blur(10px);
             }
 
             .dashboard-menu-toggle:hover {
-                background: var(--secondary-color);
+                background: rgba(0, 184, 148, 0.3);
+                border-color: var(--accent);
             }
 
             .nav-menu.active .nav-item:last-child {
@@ -84,6 +119,11 @@
                     <li class="nav-item">
                         <a href="/dashboard/comments" class="nav-link {{#if (eq active 'comments')}}active{{/if}}">
                             <i class="fas fa-comments"></i> Comments
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/" class="nav-link">
+                            <i class="fas fa-home"></i> Back to Blog
                         </a>
                     </li>
                     <li class="nav-item">
