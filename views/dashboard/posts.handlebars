@@ -15,42 +15,6 @@
         align-items: center;
     }
 
-    .search-input {
-        padding: 0.5rem;
-        border: 1px solid #ddd;
-        border-radius: 4px;
-        min-width: 250px;
-    }
-
-    .status-badge {
-        padding: 0.25rem 0.5rem;
-        border-radius: 12px;
-        font-size: 0.75rem;
-        font-weight: 500;
-    }
-
-    .status-published {
-        background-color: #e1f7e7;
-        color: #27ae60;
-    }
-
-    .status-draft {
-        background-color: #ffeaa7;
-        color: #d35400;
-    }
-
-    .status-private {
-        background-color: #dfe6e9;
-        color: #636e72;
-    }
-
-    .action-buttons {
-        display: flex;
-        gap: 0.5rem;
-        align-items: center;
-        flex-wrap: wrap;
-    }
-
     .post-preview-img {
         width: 80px;
         height: 60px;
@@ -108,10 +72,6 @@
             grid-template-columns: repeat(2, 1fr);
             gap: 1rem;
         }
-
-        .search-input {
-            min-width: 150px;
-        }
     }
 
     @media (max-width: 768px) {
@@ -147,38 +107,6 @@
             align-items: stretch;
         }
 
-        .search-input {
-            width: 100%;
-            min-width: unset;
-        }
-
-        .filter-options {
-            flex-direction: column;
-            gap: 0.5rem !important;
-        }
-
-        .filter-group {
-            flex-direction: column;
-            gap: 0.25rem !important;
-        }
-
-        .form-select {
-            width: 100% !important;
-        }
-
-        .table {
-            font-size: 0.85rem;
-        }
-
-        .table thead th {
-            padding: 0.75rem 0.5rem;
-            font-size: 0.7rem;
-        }
-
-        .table tbody td {
-            padding: 0.75rem 0.5rem;
-        }
-
         .post-preview-img,
         .post-preview-placeholder {
             width: 60px;
@@ -187,15 +115,6 @@
 
         .post-preview-placeholder i {
             font-size: 1.2rem;
-        }
-
-        .action-buttons {
-            gap: 0.25rem;
-        }
-
-        .btn-sm {
-            padding: 0.25rem 0.4rem;
-            font-size: 0.75rem;
         }
     }
 
@@ -217,19 +136,6 @@
             font-size: 1rem;
         }
 
-        .table {
-            font-size: 0.75rem;
-        }
-
-        .table thead th {
-            padding: 0.5rem 0.25rem;
-            font-size: 0.65rem;
-        }
-
-        .table tbody td {
-            padding: 0.5rem 0.25rem;
-        }
-
         .post-preview-img,
         .post-preview-placeholder {
             width: 45px;
@@ -238,16 +144,6 @@
 
         .post-preview-placeholder i {
             font-size: 0.9rem;
-        }
-
-        .btn {
-            font-size: 0.7rem;
-            padding: 0.4rem 0.6rem;
-        }
-
-        .status-badge {
-            padding: 0.2rem 0.4rem;
-            font-size: 0.6rem;
         }
     }
 </style>
@@ -330,8 +226,6 @@
                 <select id="sortFilter" class="form-select">
                     <option value="date-desc">Date (Newest)</option>
                     <option value="date-asc">Date (Oldest)</option>
-                    <option value="views-desc">Views (High to Low)</option>
-                    <option value="views-asc">Views (Low to High)</option>
                     <option value="title">Title</option>
                 </select>
             </div>
@@ -347,14 +241,14 @@
                     <th>Post Details</th>
                     <th>Category</th>
                     <th>Created</th>
+                    <th>Author</th>
                     <th>Status</th>
-                    <th>Views</th>
                     <th>Actions</th>
                 </tr>
             </thead>
             <tbody>
                 {{#each posts}}
-                <tr>
+                <tr data-created-at="{{created_at}}">
                     <td style="width: 100px;">
                         {{#if preview_image}}
                         <img src="{{preview_image}}" alt="Preview" class="post-preview-img">
@@ -388,6 +282,9 @@
                         <div style="font-size: 0.875rem;">{{formatDate created_at}}</div>
                     </td>
                     <td>
+                        <div style="font-size: 0.875rem;">{{author_name}}</div>
+                    </td>
+                    <td>
                         <span
                             class="status-badge {{#if (eq status 'published')}}status-published{{else if (eq status 'draft')}}status-draft{{else}}status-private{{/if}}">
                             <i
@@ -395,10 +292,6 @@
                             {{#if (eq status 'published')}}Published{{else if (eq status
                             'draft')}}Draft{{else}}Private{{/if}}
                         </span>
-                    </td>
-                    <td>
-                        <div style="font-weight: 500;">{{views}}</div>
-                        <div style="font-size: 0.75rem; color: #666;">views</div>
                     </td>
                     <td>
                         <div class="action-buttons">
@@ -459,23 +352,19 @@
 
         // Sort visible rows
         const visibleRows = rows.filter(row => row.style.display !== 'none');
+        const hiddenRows = rows.filter(row => row.style.display === 'none');
+        
         visibleRows.sort((a, b) => {
             switch (sortFilter) {
                 case 'date-desc':
                 case 'date-asc': {
-                    const aDate = new Date(a.querySelector('td:nth-child(3)').textContent);
-                    const bDate = new Date(b.querySelector('td:nth-child(3)').textContent);
+                    const aDate = new Date(a.getAttribute('data-created-at'));
+                    const bDate = new Date(b.getAttribute('data-created-at'));
                     return sortFilter === 'date-desc' ? bDate - aDate : aDate - bDate;
                 }
-                case 'views-desc':
-                case 'views-asc': {
-                    const aViews = parseInt(a.querySelector('td:nth-child(5)').textContent);
-                    const bViews = parseInt(b.querySelector('td:nth-child(5)').textContent);
-                    return sortFilter === 'views-desc' ? bViews - aViews : aViews - bViews;
-                }
                 case 'title': {
-                    const aTitle = a.querySelector('td:first-child').textContent.toLowerCase();
-                    const bTitle = b.querySelector('td:first-child').textContent.toLowerCase();
+                    const aTitle = a.querySelector('td:nth-child(2) div:first-child').textContent.trim().toLowerCase();
+                    const bTitle = b.querySelector('td:nth-child(2) div:first-child').textContent.trim().toLowerCase();
                     return aTitle.localeCompare(bTitle);
                 }
                 default:
@@ -483,8 +372,10 @@
             }
         });
 
-        // Update the DOM
+        // Clear tbody and append sorted visible rows first, then hidden rows
+        tbody.innerHTML = '';
         visibleRows.forEach(row => tbody.appendChild(row));
+        hiddenRows.forEach(row => tbody.appendChild(row));
     }
 
     // Add event listeners for all filter controls
@@ -495,7 +386,7 @@
 
     function deletePost(id) {
         if (confirm('Are you sure you want to delete this post? This action cannot be undone.')) {
-            fetch(`/api/posts/${id}`, {
+            fetch(`/dashboard/api/posts/${id}`, {
                 method: 'DELETE'
             })
                 .then(response => response.json())
@@ -509,24 +400,6 @@
                 .catch(error => {
                     console.error('Error:', error);
                     alert('An error occurred while deleting the post.');
-                });
-        }
-    }
-</script>
-
-<script>
-    function deletePost(id) {
-        if (confirm('Are you sure you want to delete this post?')) {
-            fetch(`/api/posts/${id}`, {
-                method: 'DELETE',
-            })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        window.location.reload();
-                    } else {
-                        alert('Failed to delete post');
-                    }
                 });
         }
     }

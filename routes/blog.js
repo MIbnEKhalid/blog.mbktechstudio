@@ -74,10 +74,11 @@ router.get('/categories', async (req, res) => {
             ORDER BY c.name ASC
         `);
 
-        res.render('blog/categories.handlebars', {
+        res.render('blog/archive.handlebars', {
             categories: result.rows,
             user: req.session.user,
-            canonicalUrl: `${req.protocol}://${req.get('host')}/categories`
+            canonicalUrl: `${req.protocol}://${req.get('host')}/categories`,
+            pageType: 'categories'
         });
     } catch (err) {
         console.error(err);
@@ -106,10 +107,11 @@ router.get('/tags', async (req, res) => {
             ORDER BY t.name ASC
         `);
 
-        res.render('blog/tags.handlebars', {
+        res.render('blog/archive.handlebars', {
             tags: result.rows,
             user: req.session.user,
-            canonicalUrl: `${req.protocol}://${req.get('host')}/tags`
+            canonicalUrl: `${req.protocol}://${req.get('host')}/tags`,
+            pageType: 'tags'
         });
     } catch (err) {
         console.error(err);
@@ -144,11 +146,12 @@ router.get('/author/:username', async (req, res) => {
             [username]
         );
 
-        res.render('blog/filtered-posts.handlebars', {
+        res.render('blog/archive.handlebars', {
             posts: result.rows,
             username: username,
             user: req.session.user,
-            canonicalUrl: `${req.protocol}://${req.get('host')}/author/${username}`
+            canonicalUrl: `${req.protocol}://${req.get('host')}/author/${username}`,
+            pageType: 'posts'
         });
     } catch (err) {
         console.error(err);
@@ -192,11 +195,12 @@ router.get('/category/:categoryName', async (req, res) => {
             [category.rows[0].id]
         );
 
-        res.render('blog/filtered-posts.handlebars', {
+        res.render('blog/archive.handlebars', {
             posts: result.rows,
             category: category.rows[0],
             user: req.session.user,
-            canonicalUrl: `${req.protocol}://${req.get('host')}/category/${encodeURIComponent(category.rows[0].name)}`
+            canonicalUrl: `${req.protocol}://${req.get('host')}/category/${encodeURIComponent(category.rows[0].name)}`,
+            pageType: 'posts'
         });
     } catch (err) {
         console.error(err);
@@ -242,11 +246,12 @@ router.get('/tag/:tagName', async (req, res) => {
             [tag.rows[0].id]
         );
 
-        res.render('blog/filtered-posts.handlebars', {
+        res.render('blog/archive.handlebars', {
             posts: result.rows,
             tag: tag.rows[0],
             user: req.session.user,
-            canonicalUrl: `${req.protocol}://${req.get('host')}/tag/${encodeURIComponent(tag.rows[0].name)}`
+            canonicalUrl: `${req.protocol}://${req.get('host')}/tag/${encodeURIComponent(tag.rows[0].name)}`,
+            pageType: 'posts'
         });
     } catch (err) {
         console.error(err);

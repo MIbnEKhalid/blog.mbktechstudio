@@ -94,9 +94,9 @@ router.get('/', async (req, res) => {
 // Dashboard home - Posts management
 router.get('/posts', async (req, res) => {
     try {
-        const [posts, stats] = await Promise.all([
+        const [posts, stats, categories] = await Promise.all([
             pool.query(
-                `SELECT p.*, STRING_AGG(DISTINCT c.name, ', ') as categories 
+                `SELECT p.*, p."UserName" as author_name, STRING_AGG(DISTINCT c.name, ', ') as categories 
                 FROM Posts p 
                 LEFT JOIN Post_Categories pc ON p.id = pc.post_id 
                 LEFT JOIN Categories c ON pc.category_id = c.id 
@@ -111,13 +111,15 @@ router.get('/posts', async (req, res) => {
                     COUNT(CASE WHEN status = 'private' THEN 1 END) as private_posts,
                     (SELECT COUNT(*) FROM Categories) as total_categories
                 FROM Posts
-            `)
+            `),
+            pool.query('SELECT * FROM Categories ORDER BY name')
         ]);
 
         res.render('dashboard/posts.handlebars', {
             layout: 'dashboard',
             active: 'posts',
             posts: posts.rows,
+            categories: categories.rows,
             totalPosts: stats.rows[0].total_posts,
             publishedPosts: stats.rows[0].published_posts,
             draftPosts: stats.rows[0].draft_posts,

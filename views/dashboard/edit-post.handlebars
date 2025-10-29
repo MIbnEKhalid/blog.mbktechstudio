@@ -12,7 +12,7 @@
     }
 
     .edit-post-form {
-        max-width: 1000px;
+        max-width: 1200px;
         margin: 0 auto;
         padding: 2rem;
         background: var(--dark);
@@ -453,6 +453,27 @@
         color: var(--primary-color);
     }
 
+    .editor-controls {
+        display: flex;
+        gap: 0.5rem;
+        align-items: center;
+        flex-wrap: wrap;
+        margin-bottom: 0.75rem;
+    }
+
+    .editor-wrapper {
+        position: relative;
+    }
+
+    .editor-wrapper .editor-controls {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        z-index: 10;
+        margin-bottom: 0;
+        max-width: calc(100% - 20px);
+    }
+
     #previewBtn {
         background-color: var(--darker);
         border: 2px solid var(--border-color);
@@ -461,10 +482,37 @@
         padding: 0.5rem 1rem;
         border-radius: 4px;
         transition: all 0.2s;
-        z-index: 10;
+        white-space: nowrap;
     }
 
     #previewBtn:hover {
+        border-color: var(--primary-color);
+        color: var(--primary-color);
+    }
+
+    #previewBtn.active {
+        background-color: var(--primary-color);
+        border-color: var(--primary-color);
+        color: white;
+    }
+
+    .toolbar-btn {
+        background-color: var(--darker);
+        border: 2px solid var(--border-color);
+        color: var(--text-light);
+        font-size: 0.9rem;
+        padding: 0.5rem;
+        border-radius: 4px;
+        transition: all 0.2s;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 36px;
+        height: 36px;
+    }
+
+    .toolbar-btn:hover {
         border-color: var(--primary-color);
         color: var(--primary-color);
     }
@@ -475,7 +523,136 @@
         border-radius: 6px;
         padding: 1.5rem;
         margin-top: 1rem;
-        line-height: 1.6;
+        line-height: 1.8;
+        min-height: 300px;
+        max-height: 600px;
+        overflow-y: auto;
+    }
+
+    #markdownPreview.fullscreen {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        max-height: 100vh;
+        margin: 0;
+        border-radius: 0;
+        z-index: 1000;
+        padding: 3rem;
+    }
+
+    .split-view {
+        display: flex;
+        gap: 1rem;
+        flex-direction: row;
+    }
+
+    .split-view #editorContainer {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .split-view #content {
+        width: 100%;
+    }
+
+    .split-view #markdownPreview {
+        flex: 1;
+        margin-top: 0;
+        min-width: 0;
+    }
+
+    /* Mobile Responsive for Editor */
+    @media (max-width: 768px) {
+        .editor-wrapper .editor-controls {
+            position: relative;
+            top: 0;
+            right: 0;
+            margin-bottom: 0.75rem;
+            gap: 0.35rem;
+            justify-content: flex-start;
+            max-width: 100%;
+        }
+
+        .toolbar-btn {
+            min-width: 32px;
+            height: 32px;
+            padding: 0.4rem;
+            font-size: 0.85rem;
+        }
+
+        #previewBtn {
+            padding: 0.4rem 0.75rem;
+            font-size: 0.85rem;
+        }
+
+        #previewBtn i {
+            display: none;
+        }
+
+        #previewBtn::after {
+            content: 'Preview';
+        }
+
+        #previewBtn.active::after {
+            content: 'Edit';
+        }
+
+        .split-view {
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .split-view #markdownPreview {
+            max-height: 300px;
+        }
+
+        #markdownPreview {
+            padding: 1rem;
+            min-height: 200px;
+            max-height: 400px;
+        }
+
+        #content {
+            font-size: 13px;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .editor-controls {
+            gap: 0.25rem;
+        }
+
+        .toolbar-btn {
+            min-width: 28px;
+            height: 28px;
+            padding: 0.3rem;
+            font-size: 0.75rem;
+            border-width: 1px;
+        }
+
+        #previewBtn {
+            padding: 0.3rem 0.6rem;
+            font-size: 0.75rem;
+            border-width: 1px;
+        }
+
+        #markdownPreview {
+            padding: 0.75rem;
+            font-size: 0.9rem;
+            min-height: 150px;
+            max-height: 300px;
+        }
+
+        #content {
+            font-size: 12px;
+            padding: 0.6rem;
+        }
+
+        .split-view #markdownPreview {
+            max-height: 200px;
+        }
     }
 
     .toggle-switch {
@@ -569,17 +746,50 @@
 
         <div class="form-group">
             <label class="form-label" for="content">Content (Markdown)</label>
+            <div class="editor-controls">
+                <button type="button" class="toolbar-btn" title="Bold (Ctrl+B)" onclick="insertMarkdown('**', '**')">
+                    <i class="fas fa-bold"></i>
+                </button>
+                <button type="button" class="toolbar-btn" title="Italic (Ctrl+I)" onclick="insertMarkdown('*', '*')">
+                    <i class="fas fa-italic"></i>
+                </button>
+                <button type="button" class="toolbar-btn" title="Heading" onclick="insertMarkdown('## ', '')">
+                    <i class="fas fa-heading"></i>
+                </button>
+                <button type="button" class="toolbar-btn" title="Link" onclick="insertLink()">
+                    <i class="fas fa-link"></i>
+                </button>
+                <button type="button" class="toolbar-btn" title="Code Block" onclick="insertCodeBlock()">
+                    <i class="fas fa-code"></i>
+                </button>
+                <button type="button" class="toolbar-btn" title="Unordered List" onclick="insertMarkdown('- ', '')">
+                    <i class="fas fa-list-ul"></i>
+                </button>
+                <button type="button" class="toolbar-btn" title="Ordered List" onclick="insertMarkdown('1. ', '')">
+                    <i class="fas fa-list-ol"></i>
+                </button>
+                <button type="button" class="toolbar-btn" title="Quote" onclick="insertMarkdown('> ', '')">
+                    <i class="fas fa-quote-right"></i>
+                </button>
+                <button type="button" class="toolbar-btn" title="Split View" id="splitViewBtn" onclick="toggleSplitView()">
+                    <i class="fas fa-columns"></i>
+                </button>
+                <button type="button" id="previewBtn" class="btn btn-secondary" onclick="togglePreview()">
+                    <i class="fas fa-eye"></i> Preview
+                </button>
+            </div>
             <div style="position: relative;">
-                <textarea class="form-control" id="content" name="content" rows="10"
-                    style="font-family: 'Courier New', monospace;">{{#if post.content_markdown}}{{post.content_markdown}}{{else}}{{post.content}}{{/if}}</textarea>
-                <button type="button" id="previewBtn" class="btn btn-secondary"
-                    style="position: absolute; top: 10px; right: 10px;">Preview</button>
+                <div id="editorContainer">
+                    <textarea class="form-control" id="content" name="content" rows="15"
+                        style="font-family: 'Courier New', monospace; font-size: 14px;">{{#if post.content_markdown}}{{post.content_markdown}}{{else}}{{post.content}}{{/if}}</textarea>
+                </div>
+                <div id="markdownPreview" class="markdown-content" style="display: none;">
+                </div>
             </div>
-            <div id="markdownPreview"
-                style="display: none; margin-top: 1rem; padding: 1rem; border: 1px solid #ddd; border-radius: 4px;">
-            </div>
-            <small style="color: #6c757d; margin-top: 0.5rem; display: block;">Write your content in Markdown format. It
-                will be converted to HTML when displayed.</small>
+            <small style="color: #6c757d; margin-top: 0.5rem; display: block;">
+                <i class="fas fa-info-circle"></i> Write your content in Markdown format. 
+                Use the toolbar for quick formatting or keyboard shortcuts (Ctrl+B for bold, Ctrl+I for italic).
+            </small>
         </div>
 
         <div class="form-group">
@@ -893,44 +1103,168 @@
         const previewBtn = document.getElementById('previewBtn');
         const markdownPreview = document.getElementById('markdownPreview');
         const contentTextarea = document.getElementById('content');
+        const editorContainer = document.getElementById('editorContainer');
+        let isPreviewMode = false;
+        let isSplitView = false;
+        let previewUpdateTimeout;
 
-        if (previewBtn && markdownPreview && contentTextarea) {
-            let isPreviewMode = false;
+        // Markdown toolbar functions
+        window.insertMarkdown = function (before, after) {
+            const textarea = contentTextarea;
+            const start = textarea.selectionStart;
+            const end = textarea.selectionEnd;
+            const selectedText = textarea.value.substring(start, end);
+            const replacement = before + selectedText + after;
 
-            previewBtn.addEventListener('click', async () => {
-                try {
-                    isPreviewMode = !isPreviewMode;
-
-                    if (isPreviewMode) {
-                        const content = contentTextarea.value;
-                        const response = await fetch('/dashboard/api/markdown-preview', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json'
-                            },
-                            body: JSON.stringify({ markdown: content })
-                        });
-
-                        if (response.ok) {
-                            const { html } = await response.json();
-                            markdownPreview.innerHTML = html;
-                            markdownPreview.style.display = 'block';
-                            contentTextarea.style.display = 'none';
-                            previewBtn.textContent = 'Edit';
-                        } else {
-                            throw new Error('Failed to generate preview');
-                        }
-                    } else {
-                        markdownPreview.style.display = 'none';
-                        contentTextarea.style.display = 'block';
-                        previewBtn.textContent = 'Preview';
-                    }
-                } catch (err) {
-                    console.error('Error generating preview:', err);
-                    alert('Failed to generate preview');
+            // Use document.execCommand to preserve undo history
+            textarea.focus();
+            
+            // For modern browsers, use execCommand which maintains undo stack
+            if (document.execCommand) {
+                // First, delete the selected text if any
+                if (start !== end) {
+                    textarea.setSelectionRange(start, end);
+                    document.execCommand('delete', false);
                 }
-            });
+                
+                // Then insert the new text
+                document.execCommand('insertText', false, replacement);
+                
+                // Set cursor position after the inserted text
+                const newPosition = start + replacement.length;
+                textarea.setSelectionRange(newPosition, newPosition);
+            } else {
+                // Fallback for browsers that don't support execCommand
+                textarea.setRangeText(replacement, start, end, 'end');
+            }
+
+            // Update preview if in split view
+            if (isSplitView) {
+                updatePreview();
+            }
+        };
+
+        window.insertLink = function () {
+            const url = prompt('Enter URL:');
+            if (url) {
+                const text = prompt('Enter link text:', 'link text');
+                if (text) {
+                    insertMarkdown(`[${text}](${url})`, '');
+                }
+            }
+        };
+
+        window.insertCodeBlock = function () {
+            const language = prompt('Enter language (e.g., javascript, python):', 'javascript');
+            if (language !== null) {
+                insertMarkdown(`\n\`\`\`${language}\n`, '\n\`\`\`\n');
+            }
+        };
+
+        window.togglePreview = async function () {
+            if (isSplitView) {
+                // If in split view, exit split view first
+                toggleSplitView();
+                return;
+            }
+
+            isPreviewMode = !isPreviewMode;
+
+            if (isPreviewMode) {
+                await updatePreview();
+                markdownPreview.style.display = 'block';
+                editorContainer.style.display = 'none';
+                previewBtn.innerHTML = '<i class="fas fa-edit"></i> Edit';
+                previewBtn.classList.add('active');
+            } else {
+                markdownPreview.style.display = 'none';
+                editorContainer.style.display = 'block';
+                previewBtn.innerHTML = '<i class="fas fa-eye"></i> Preview';
+                previewBtn.classList.remove('active');
+            }
+        };
+
+        window.toggleSplitView = function () {
+            isSplitView = !isSplitView;
+            const splitViewBtn = document.getElementById('splitViewBtn');
+            const parent = editorContainer.parentElement;
+
+            if (isSplitView) {
+                // Exit preview mode if active
+                if (isPreviewMode) {
+                    isPreviewMode = false;
+                    previewBtn.innerHTML = '<i class="fas fa-eye"></i> Preview';
+                    previewBtn.classList.remove('active');
+                }
+
+                parent.classList.add('split-view');
+                editorContainer.style.display = 'block';
+                markdownPreview.style.display = 'block';
+                splitViewBtn.style.color = 'var(--primary-color)';
+                updatePreview();
+
+                // Add live preview update
+                contentTextarea.addEventListener('input', handleLivePreview);
+            } else {
+                parent.classList.remove('split-view');
+                markdownPreview.style.display = 'none';
+                splitViewBtn.style.color = '';
+                contentTextarea.removeEventListener('input', handleLivePreview);
+            }
+        };
+
+        function handleLivePreview() {
+            clearTimeout(previewUpdateTimeout);
+            previewUpdateTimeout = setTimeout(updatePreview, 500);
         }
+
+        async function updatePreview() {
+            try {
+                const content = contentTextarea.value;
+                const response = await fetch('/dashboard/api/markdown-preview', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ markdown: content })
+                });
+
+                if (response.ok) {
+                    const { html } = await response.json();
+                    markdownPreview.innerHTML = html;
+
+                    // Initialize markdown enhancer features
+                    if (typeof window.initializeMarkdownFeatures === 'function') {
+                        window.initializeMarkdownFeatures(markdownPreview);
+                    }
+                } else {
+                    throw new Error('Failed to generate preview');
+                }
+            } catch (err) {
+                console.error('Error generating preview:', err);
+                markdownPreview.innerHTML = '<p style="color: var(--danger-color);">Failed to generate preview. Please check your markdown syntax.</p>';
+            }
+        }
+
+        // Keyboard shortcuts
+        contentTextarea.addEventListener('keydown', (e) => {
+            if (e.ctrlKey || e.metaKey) {
+                switch (e.key.toLowerCase()) {
+                    case 'b':
+                        e.preventDefault();
+                        insertMarkdown('**', '**');
+                        break;
+                    case 'i':
+                        e.preventDefault();
+                        insertMarkdown('*', '*');
+                        break;
+                    case 'k':
+                        e.preventDefault();
+                        insertLink();
+                        break;
+                }
+            }
+        });
 
         if (form) {
             form.addEventListener('submit', async (e) => {
