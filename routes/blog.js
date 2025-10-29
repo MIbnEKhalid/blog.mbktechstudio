@@ -42,8 +42,26 @@ router.get('/', async (req, res) => {
             GROUP BY p.id, u."UserName"
             ORDER BY p.created_at DESC`
         );
+
+        // Get unique authors
+        const uniqueAuthors = [...new Set(result.rows.map(post => post.UserName))].filter(Boolean).sort();
+
+        // Get unique categories
+        const categoriesSet = new Set();
+        result.rows.forEach(post => {
+            if (post.categories) {
+                post.categories.split(',').forEach(cat => {
+                    const trimmedCat = cat.trim();
+                    if (trimmedCat) categoriesSet.add(trimmedCat);
+                });
+            }
+        });
+        const uniqueCategories = Array.from(categoriesSet).sort();
+
         res.render('blog/index.handlebars', {
             posts: result.rows,
+            uniqueAuthors: uniqueAuthors,
+            uniqueCategories: uniqueCategories,
             user: req.session.user,
             canonicalUrl: `${req.protocol}://${req.get('host')}/`
         });
@@ -134,7 +152,7 @@ router.get('/author/:username', async (req, res) => {
         const result = await pool.query(
             `SELECT p.*, 
             STRING_AGG(DISTINCT c.name, ', ') as categories,
-            COUNT(*) OVER (PARTITION BY p.id) as comment_count,
+            (SELECT COUNT(*) FROM Comments WHERE post_id = p.id) as comment_count,
             u."UserName"
             FROM Posts p
             LEFT JOIN Post_Categories pc ON p.id = pc.post_id
@@ -146,9 +164,22 @@ router.get('/author/:username', async (req, res) => {
             [username]
         );
 
+        // Get unique categories from filtered posts
+        const categoriesSet = new Set();
+        result.rows.forEach(post => {
+            if (post.categories) {
+                post.categories.split(',').forEach(cat => {
+                    const trimmedCat = cat.trim();
+                    if (trimmedCat) categoriesSet.add(trimmedCat);
+                });
+            }
+        });
+        const uniqueCategories = Array.from(categoriesSet).sort();
+
         res.render('blog/archive.handlebars', {
             posts: result.rows,
             username: username,
+            uniqueCategories: uniqueCategories,
             user: req.session.user,
             canonicalUrl: `${req.protocol}://${req.get('host')}/author/${username}`,
             pageType: 'posts'
@@ -195,9 +226,13 @@ router.get('/category/:categoryName', async (req, res) => {
             [category.rows[0].id]
         );
 
+        // Get unique authors from filtered posts
+        const uniqueAuthors = [...new Set(result.rows.map(post => post.UserName))].filter(Boolean).sort();
+
         res.render('blog/archive.handlebars', {
             posts: result.rows,
             category: category.rows[0],
+            uniqueAuthors: uniqueAuthors,
             user: req.session.user,
             canonicalUrl: `${req.protocol}://${req.get('host')}/category/${encodeURIComponent(category.rows[0].name)}`,
             pageType: 'posts'
@@ -246,9 +281,26 @@ router.get('/tag/:tagName', async (req, res) => {
             [tag.rows[0].id]
         );
 
+        // Get unique authors from filtered posts
+        const uniqueAuthors = [...new Set(result.rows.map(post => post.UserName))].filter(Boolean).sort();
+
+        // Get unique categories from filtered posts
+        const categoriesSet = new Set();
+        result.rows.forEach(post => {
+            if (post.categories) {
+                post.categories.split(',').forEach(cat => {
+                    const trimmedCat = cat.trim();
+                    if (trimmedCat) categoriesSet.add(trimmedCat);
+                });
+            }
+        });
+        const uniqueCategories = Array.from(categoriesSet).sort();
+
         res.render('blog/archive.handlebars', {
             posts: result.rows,
             tag: tag.rows[0],
+            uniqueAuthors: uniqueAuthors,
+            uniqueCategories: uniqueCategories,
             user: req.session.user,
             canonicalUrl: `${req.protocol}://${req.get('host')}/tag/${encodeURIComponent(tag.rows[0].name)}`,
             pageType: 'posts'

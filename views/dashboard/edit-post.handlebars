@@ -970,7 +970,8 @@
         const categoryResults = document.getElementById('categoryResults');
         const addCategoryBtn = document.getElementById('addCategory');
         const categoryContainer = document.getElementById('categoryContainer');
-        const categories = `{{{ jsonStringify categories }}}`;
+        const categoriesJson = `{{{ jsonStringify categories }}}`;
+        const categories = JSON.parse(categoriesJson);
 
         // Store all available categories
         const allCategories = Array.from(categorySelect.options)
