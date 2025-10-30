@@ -19,15 +19,30 @@ marked.setOptions({
 
 const router = express.Router();
 
+const limit = 10; // Posts per page
+
 // Get all published posts (and private posts for SuperAdmin)
 router.get('/', async (req, res) => {
     try {
+        const page = parseInt(req.query.page) || 1;
+        
+        const offset = (page - 1) * limit;
+
         let whereClause = "WHERE p.status = 'published'";
 
         // If user is SuperAdmin, also show private posts
         if (req.session.user && req.session.user.role === 'SuperAdmin') {
             whereClause = "WHERE p.status IN ('published', 'private')";
         }
+
+        // Get total count for pagination
+        const countResult = await pool.query(
+            `SELECT COUNT(DISTINCT p.id) as total
+            FROM Posts p
+            ${whereClause}`
+        );
+        const totalPosts = parseInt(countResult.rows[0].total);
+        const totalPages = Math.ceil(totalPosts / limit);
 
         const result = await pool.query(
             `SELECT p.*, 
@@ -40,7 +55,9 @@ router.get('/', async (req, res) => {
             LEFT JOIN "Users" u ON p."UserName" = u."UserName"
             ${whereClause}
             GROUP BY p.id, u."UserName"
-            ORDER BY p.created_at DESC`
+            ORDER BY p.created_at DESC
+            LIMIT $1 OFFSET $2`,
+            [limit, offset]
         );
 
         // Get unique authors
@@ -63,7 +80,14 @@ router.get('/', async (req, res) => {
             uniqueAuthors: uniqueAuthors,
             uniqueCategories: uniqueCategories,
             user: req.session.user,
-            canonicalUrl: `${req.protocol}://${req.get('host')}/`
+            canonicalUrl: `${req.protocol}://${req.get('host')}/`,
+            pagination: {
+                page: page,
+                totalPages: totalPages,
+                totalPosts: totalPosts,
+                hasNext: page < totalPages,
+                hasPrev: page > 1
+            }
         });
     } catch (err) {
         console.error(err);
@@ -142,12 +166,26 @@ router.get('/tags', async (req, res) => {
 router.get('/author/:username', async (req, res) => {
     try {
         const { username } = req.params;
+        const page = parseInt(req.query.page) || 1;
+        
+        const offset = (page - 1) * limit;
+
         let whereClause = "WHERE p.status = 'published' AND p.\"UserName\" = $1";
 
         // If user is SuperAdmin, also show private posts
         if (req.session.user && req.session.user.role === 'SuperAdmin') {
             whereClause = "WHERE p.status IN ('published', 'private') AND p.\"UserName\" = $1";
         }
+
+        // Get total count for pagination
+        const countResult = await pool.query(
+            `SELECT COUNT(DISTINCT p.id) as total
+            FROM Posts p
+            ${whereClause}`,
+            [username]
+        );
+        const totalPosts = parseInt(countResult.rows[0].total);
+        const totalPages = Math.ceil(totalPosts / limit);
 
         const result = await pool.query(
             `SELECT p.*, 
@@ -160,8 +198,9 @@ router.get('/author/:username', async (req, res) => {
             LEFT JOIN "Users" u ON p."UserName" = u."UserName"
             ${whereClause}
             GROUP BY p.id, u."UserName"
-            ORDER BY p.created_at DESC`,
-            [username]
+            ORDER BY p.created_at DESC
+            LIMIT $2 OFFSET $3`,
+            [username, limit, offset]
         );
 
         // Get unique categories from filtered posts
@@ -182,7 +221,15 @@ router.get('/author/:username', async (req, res) => {
             uniqueCategories: uniqueCategories,
             user: req.session.user,
             canonicalUrl: `${req.protocol}://${req.get('host')}/author/${username}`,
-            pageType: 'posts'
+            pageType: 'posts',
+            pagination: {
+                page: page,
+                totalPages: totalPages,
+                totalPosts: totalPosts,
+                hasNext: page < totalPages,
+                hasPrev: page > 1,
+                baseUrl: `/author/${username}`
+            }
         });
     } catch (err) {
         console.error(err);
@@ -194,6 +241,10 @@ router.get('/author/:username', async (req, res) => {
 router.get('/category/:categoryName', async (req, res) => {
     try {
         const { categoryName } = req.params;
+        const page = parseInt(req.query.page) || 1;
+        
+        const offset = (page - 1) * limit;
+
         const category = await pool.query(
             'SELECT * FROM Categories WHERE name = $1',
             [categoryName]
@@ -210,6 +261,17 @@ router.get('/category/:categoryName', async (req, res) => {
             whereClause = "WHERE p.status IN ('published', 'private')";
         }
 
+        // Get total count for pagination
+        const countResult = await pool.query(
+            `SELECT COUNT(DISTINCT p.id) as total
+            FROM Posts p
+            INNER JOIN Post_Categories pc ON p.id = pc.post_id AND pc.category_id = $1
+            ${whereClause}`,
+            [category.rows[0].id]
+        );
+        const totalPosts = parseInt(countResult.rows[0].total);
+        const totalPages = Math.ceil(totalPosts / limit);
+
         const result = await pool.query(
             `SELECT p.*, 
             STRING_AGG(DISTINCT c2.name, ', ') as categories,
@@ -222,8 +284,9 @@ router.get('/category/:categoryName', async (req, res) => {
             LEFT JOIN "Users" u ON p."UserName" = u."UserName"
             ${whereClause}
             GROUP BY p.id, u."UserName"
-            ORDER BY p.created_at DESC`,
-            [category.rows[0].id]
+            ORDER BY p.created_at DESC
+            LIMIT $2 OFFSET $3`,
+            [category.rows[0].id, limit, offset]
         );
 
         // Get unique authors from filtered posts
@@ -235,7 +298,15 @@ router.get('/category/:categoryName', async (req, res) => {
             uniqueAuthors: uniqueAuthors,
             user: req.session.user,
             canonicalUrl: `${req.protocol}://${req.get('host')}/category/${encodeURIComponent(category.rows[0].name)}`,
-            pageType: 'posts'
+            pageType: 'posts',
+            pagination: {
+                page: page,
+                totalPages: totalPages,
+                totalPosts: totalPosts,
+                hasNext: page < totalPages,
+                hasPrev: page > 1,
+                baseUrl: `/category/${encodeURIComponent(categoryName)}`
+            }
         });
     } catch (err) {
         console.error(err);
@@ -247,6 +318,10 @@ router.get('/category/:categoryName', async (req, res) => {
 router.get('/tag/:tagName', async (req, res) => {
     try {
         const { tagName } = req.params;
+        const page = parseInt(req.query.page) || 1;
+        
+        const offset = (page - 1) * limit;
+
         const tag = await pool.query(
             'SELECT * FROM Tags WHERE name = $1',
             [tagName]
@@ -263,6 +338,17 @@ router.get('/tag/:tagName', async (req, res) => {
             whereClause = "WHERE p.status IN ('published', 'private')";
         }
 
+        // Get total count for pagination
+        const countResult = await pool.query(
+            `SELECT COUNT(DISTINCT p.id) as total
+            FROM Posts p
+            INNER JOIN Post_Tags pt ON p.id = pt.post_id AND pt.tag_id = $1
+            ${whereClause}`,
+            [tag.rows[0].id]
+        );
+        const totalPosts = parseInt(countResult.rows[0].total);
+        const totalPages = Math.ceil(totalPosts / limit);
+
         const result = await pool.query(
             `SELECT p.*, 
             STRING_AGG(DISTINCT c.name, ', ') as categories,
@@ -277,8 +363,9 @@ router.get('/tag/:tagName', async (req, res) => {
             LEFT JOIN Tags t ON pt.tag_id = t.id
             ${whereClause}
             GROUP BY p.id, u."UserName", t.id
-            ORDER BY p.created_at DESC`,
-            [tag.rows[0].id]
+            ORDER BY p.created_at DESC
+            LIMIT $2 OFFSET $3`,
+            [tag.rows[0].id, limit, offset]
         );
 
         // Get unique authors from filtered posts
@@ -303,7 +390,15 @@ router.get('/tag/:tagName', async (req, res) => {
             uniqueCategories: uniqueCategories,
             user: req.session.user,
             canonicalUrl: `${req.protocol}://${req.get('host')}/tag/${encodeURIComponent(tag.rows[0].name)}`,
-            pageType: 'posts'
+            pageType: 'posts',
+            pagination: {
+                page: page,
+                totalPages: totalPages,
+                totalPosts: totalPosts,
+                hasNext: page < totalPages,
+                hasPrev: page > 1,
+                baseUrl: `/tag/${encodeURIComponent(tagName)}`
+            }
         });
     } catch (err) {
         console.error(err);

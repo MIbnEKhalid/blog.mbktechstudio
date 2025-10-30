@@ -88,6 +88,7 @@ server.engine("handlebars", engine({
     path.join(__dirname, "views/templates"),
     path.join(__dirname, "views/templates/notice"),
     path.join(__dirname, "views"),
+    path.join(__dirname, "views/partial"),
     path.join(__dirname, "node_modules/mbkauthe/views"),
   ],
   cache: process.env.NODE_ENV === "production",
@@ -224,6 +225,34 @@ server.engine("handlebars", engine({
       if (!categories || !Array.isArray(categories)) return '';
       const category = categories.find(c => c.id === categoryId);
       return category ? category.name : '';
+    },
+    add: function (a, b) {
+      return Number(a) + Number(b);
+    },
+    subtract: function (a, b) {
+      return Number(a) - Number(b);
+    },
+    gt: function (a, b) {
+      return Number(a) > Number(b);
+    },
+    gte: function (a, b) {
+      return Number(a) >= Number(b);
+    },
+    lte: function (a, b) {
+      return Number(a) <= Number(b);
+    },
+    and: function () {
+      return Array.prototype.slice.call(arguments, 0, -1).every(Boolean);
+    },
+    or: function () {
+      return Array.prototype.slice.call(arguments, 0, -1).some(Boolean);
+    },
+    range: function (start, end) {
+      const result = [];
+      for (let i = start; i < end; i++) {
+        result.push(i);
+      }
+      return result;
     }
   }
 }));
