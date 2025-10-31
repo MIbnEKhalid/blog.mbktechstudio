@@ -3,6 +3,7 @@ import { pool } from './pool.js';
 import { marked } from 'marked';
 import Prism from 'prismjs';
 import multer from 'multer';
+import { validateSessionAndRole } from 'mbkauthe';
 
 // Configure multer for form data parsing
 const upload = multer();
@@ -19,6 +20,8 @@ marked.setOptions({
     gfm: true
 });
 const router = express.Router();
+
+router.use(validateSessionAndRole('SuperAdmin'));
 
 // Middleware to parse FormData for all routes in this module
 router.use(upload.none());

@@ -24,12 +24,10 @@ Crawl-delay: 1
 User-agent: Googlebot
 Allow: /
 Crawl-delay: 0.5
-Request-rate: 10/1s
 
 User-agent: Bingbot
 Allow: /
 Crawl-delay: 1
-Request-rate: 5/1s
 
 User-agent: Slurp
 Allow: /
