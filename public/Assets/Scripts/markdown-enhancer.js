@@ -157,13 +157,37 @@ function generateTableOfContents(container) {
 
     if (headings.length < 3) return; // Only generate TOC if there are enough headings
 
+    // Remove any existing table of contents
+    const existingToc = container.querySelector('.table-of-contents');
+    if (existingToc) {
+        existingToc.remove();
+    }
+
     const toc = document.createElement('nav');
     toc.className = 'table-of-contents';
     toc.setAttribute('role', 'navigation');
     toc.setAttribute('aria-label', 'Table of Contents');
-    toc.innerHTML = '<h3>📑 Table of Contents</h3><ul></ul>';
+    
+    const tocHeader = document.createElement('div');
+    tocHeader.className = 'toc-header';
+    
+    const tocTitle = document.createElement('h3');
+    tocTitle.textContent = '📑 Table of Contents';
+    tocHeader.appendChild(tocTitle);
+    
+    const toggleBtn = document.createElement('button');
+    toggleBtn.className = 'toc-toggle';
+    toggleBtn.innerHTML = '<i class="fas fa-chevron-up"></i>';
+    toggleBtn.setAttribute('aria-label', 'Toggle table of contents');
+    tocHeader.appendChild(toggleBtn);
+    
+    toc.appendChild(tocHeader);
 
-    const tocList = toc.querySelector('ul');
+    const tocList = document.createElement('ul');
+    tocList.style.display = 'flex';
+    tocList.style.flexDirection = 'column';
+    tocList.style.gap = '0.5rem';
+    toc.appendChild(tocList);
 
     headings.forEach((heading, index) => {
         const id = heading.id || `heading-${index}`;
@@ -171,22 +195,47 @@ function generateTableOfContents(container) {
 
         const listItem = document.createElement('li');
         listItem.className = `toc-${heading.tagName.toLowerCase()}`;
+        listItem.style.display = 'block';
+        listItem.style.width = '100%';
 
         const link = document.createElement('a');
         link.href = `#${id}`;
         link.textContent = heading.textContent.replace(/^[📚📖📄🔗]\s*/, ''); // Remove emoji prefixes
+        link.style.display = 'block';
 
         listItem.appendChild(link);
         tocList.appendChild(listItem);
     });
 
-    // Insert TOC after the first paragraph or at the beginning
-    const firstParagraph = container.querySelector('p');
-    if (firstParagraph) {
-        firstParagraph.parentNode.insertBefore(toc, firstParagraph.nextSibling);
-    } else {
-        container.insertBefore(toc, container.firstChild);
+    // Toggle functionality
+    const toggleToc = () => {
+        toc.classList.toggle('collapsed');
+        toggleBtn.innerHTML = toc.classList.contains('collapsed') 
+            ? '<i class="fas fa-chevron-down"></i>' 
+            : '<i class="fas fa-chevron-up"></i>';
+    };
+
+    // Make both the toggle button and header clickable
+    toggleBtn.addEventListener('click', toggleToc);
+    tocHeader.addEventListener('click', (e) => {
+        // Only toggle if clicking the header itself or the button
+        if (e.target === tocHeader || e.target === tocTitle || e.target.closest('.toc-toggle')) {
+            toggleToc();
+        }
+    });
+
+    // Add cursor pointer to header
+    tocHeader.style.cursor = 'pointer';
+    tocTitle.style.cursor = 'pointer';
+
+    // Check if mobile and collapse by default
+    if (window.innerWidth <= 768) {
+        toc.classList.add('collapsed');
+        toggleBtn.innerHTML = '<i class="fas fa-chevron-down"></i>';
     }
+
+    // Always insert TOC at the beginning of the container
+    container.insertBefore(toc, container.firstChild);
 }
 
 function addSmoothScrolling(container) {
@@ -197,9 +246,13 @@ function addSmoothScrolling(container) {
             const targetElement = document.getElementById(targetId);
 
             if (targetElement) {
-                targetElement.scrollIntoView({
-                    behavior: 'smooth',
-                    block: 'start'
+                const headerOffset = 80; // Adjust this value based on your header height
+                const elementPosition = targetElement.getBoundingClientRect().top;
+                const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+
+                window.scrollTo({
+                    top: offsetPosition,
+                    behavior: 'smooth'
                 });
 
                 // Add focus outline for accessibility
