@@ -8,6 +8,12 @@ import { JSDOM } from 'jsdom';
 import DOMPurify from 'dompurify';
 import { downloadFile } from './pool.js';
 import rateLimit from 'express-rate-limit';
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // Configure marked with syntax highlighting
 marked.setOptions({
@@ -416,6 +422,33 @@ router.get('/tag/:tagName', async (req, res) => {
 // Get single post by slug
 router.get('/post/:slug', async (req, res) => {
     try {
+        // Check for cached post data to reduce CPU usage
+        const cachedDataPath = path.join(__dirname, '..', 'public', 'posts', `${req.params.slug}.json`);
+        if (fs.existsSync(cachedDataPath)) {
+            try {
+                const cachedData = JSON.parse(fs.readFileSync(cachedDataPath, 'utf-8'));
+                
+                // Render with cached data but current user session
+                const isLogin = !!req.session.user;
+                return res.render('blog/post.handlebars', {
+                    post: cachedData.post,
+                    comments: cachedData.comments,
+                    user: req.session.user,
+                    isLogin: isLogin,
+                    isSuperAdmin: req.session.user?.role === 'SuperAdmin',
+                    canonicalUrl: `${req.protocol}://${req.get('host')}/post/${req.params.slug}`,
+                    helpers: {
+                        getReplies: function (comments, parentId) {
+                            return comments.filter(comment => comment.parent_id === parentId);
+                        }
+                    }
+                });
+            } catch (cacheErr) {
+                console.error('Error reading cached post data:', cacheErr);
+                // Fall through to dynamic rendering
+            }
+        }
+
         // Get post details with optimized query
         const post = await pool.query(
             `SELECT p.*, 

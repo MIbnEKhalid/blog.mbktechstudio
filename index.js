@@ -34,7 +34,75 @@ server.use((req, res, next) => {
     next();
 });
 
+// Security headers to prevent crawling/scraping
+server.use((req, res, next) => {
+    res.setHeader('X-Robots-Tag', 'noai, noimageai, noarchive, nosnippet');
+    res.setHeader('Permissions-Policy', 'browsing-topics=()');
+    res.setHeader('X-Content-Type-Options', 'nosniff');
+    next();
+});
+
 server.use(compression());
+
+// AI and Bot blocking middleware
+const blockedUserAgents = [
+  'GPTBot', 'Google-Extended', 'CCBot', 'anthropic-ai', 'Claude-Web',
+  'ChatGPT-User', 'OpenAI', 'PerplexityBot', 'YouBot', 'Meta-ExternalAgent',
+  'FacebookBot', 'Applebot', 'Bytespider', 'TikTok', 'MJ12bot',
+  'AhrefsBot', 'SemrushBot', 'MauiBot', 'SiteAuditBot', 'ScreamingFrogSEOSpider',
+  'Screaming Frog SEO Spider', 'DotBot', 'MegaIndex', 'SearchmetricsBot',
+  'LinkpadBot', 'ZoominfoBot', 'bot', 'crawler', 'scraper', 'spider'
+];
+
+server.use((req, res, next) => {
+  const userAgent = req.get('User-Agent') || '';
+  const acceptHeader = req.get('Accept') || '';
+  
+  // Block known bot user agents
+  const isBlocked = blockedUserAgents.some(blockedAgent => 
+    userAgent.toLowerCase().includes(blockedAgent.toLowerCase())
+  );
+  
+  // Detect suspicious patterns typical of AI crawlers
+  const suspiciousPatterns = [
+    !userAgent, // No user agent
+    userAgent.length < 10, // Too short user agent
+    !acceptHeader.includes('text/html'), // Doesn't accept HTML
+    userAgent.includes('python'), // Python requests
+    userAgent.includes('curl'), // Command line tools
+    userAgent.includes('wget'), // Download tools
+    userAgent.includes('scrapy'), // Scraping frameworks
+    /^[a-f0-9-]{36}$/i.test(userAgent), // UUID-like user agents
+  ];
+  
+  const isSuspicious = suspiciousPatterns.some(pattern => pattern === true);
+  
+  if (isBlocked || isSuspicious) {
+    console.log(`Blocked ${isSuspicious ? 'suspicious' : 'bot'} attempt: ${userAgent} from IP: ${req.ip}`);
+    return res.status(403).send('Access denied for automated crawlers');
+  }
+  next();
+});
+
+// Strict rate limiting for potential bots
+const botLimiter = rateLimit({
+  windowMs: 1 * 60 * 1000, // 1 minute
+  max: 2, // Very strict for suspicious patterns
+  standardHeaders: false,
+  legacyHeaders: false,
+  skip: (req) => {
+    const userAgent = req.get('User-Agent') || '';
+    // Apply strict limits to suspicious user agents
+    return !userAgent.toLowerCase().includes('bot') && 
+           !userAgent.toLowerCase().includes('crawler') &&
+           !userAgent.toLowerCase().includes('scraper');
+  },
+  handler: (req, res) => {
+    res.status(429).send('Rate limited');
+  }
+});
+
+server.use(botLimiter);
 
 // Rate limiting: general limiter for typical browsing/API usage and a stricter
 // limiter for dashboard (admin) routes.

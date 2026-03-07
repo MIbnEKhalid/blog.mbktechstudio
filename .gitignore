@@ -136,3 +136,6 @@ package-lock.json
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
+
+# Disable caching for now
+public/posts/

@@ -1,43 +1,55 @@
-# MBKTech.org Blog - Search Engine Crawler Instructions
-# Generated for optimal SEO and crawler guidance
+# MBKTech.org Blog - STRICT BOT BLOCKING
+# AI and automated crawlers are PROHIBITED
 
+# DEFAULT: BLOCK ALL BOTS
 User-agent: *
-Allow: /
-Allow: /categories
-Allow: /tags
-Allow: /author/
-Allow: /post/
-Allow: /Assets/
+Disallow: /
+Crawl-delay: 86400
 
-# Disallow admin and private areas
-Disallow: /dashboard/
-Disallow: /admin/
-Disallow: /api/
-Disallow: /mbkauthe/
-Disallow: */edit
-Disallow: */delete
+# STRICTLY PROHIBITED AI CRAWLERS & TRAINING BOTS
+User-agent: GPTBot
+Disallow: /
 
-# Crawl delay for all bots (in seconds)
-Crawl-delay: 1
+User-agent: Google-Extended
+Disallow: /
 
-# Specific bot rules
-User-agent: Googlebot
-Allow: /
-Crawl-delay: 0.5
+User-agent: CCBot
+Disallow: /
 
-User-agent: Bingbot
-Allow: /
-Crawl-delay: 1
+User-agent: anthropic-ai
+Disallow: /
 
-User-agent: Slurp
-Allow: /
-Crawl-delay: 1
+User-agent: Claude-Web
+Disallow: /
 
-User-agent: DuckDuckBot
-Allow: /
-Crawl-delay: 1
+User-agent: ChatGPT-User
+Disallow: /
 
-# Disallow bad bots
+User-agent: OpenAI
+Disallow: /
+
+User-agent: PerplexityBot
+Disallow: /
+
+User-agent: YouBot
+Disallow: /
+
+User-agent: Meta-ExternalAgent
+Disallow: /
+
+User-agent: FacebookBot
+Disallow: /
+
+User-agent: Applebot
+Disallow: /
+
+User-agent: Bytespider
+Disallow: /
+
+User-agent: TikTok
+Disallow: /
+
+# SCRAPING & SEO BOTS
 User-agent: MJ12bot
 Disallow: /
 
@@ -46,6 +58,56 @@ Disallow: /
 
 User-agent: SemrushBot
 Disallow: /
+
+User-agent: MauiBot
+Disallow: /
+
+User-agent: SiteAuditBot
+Disallow: /
+
+User-agent: ScreamingFrogSEOSpider
+Disallow: /
+
+User-agent: Screaming Frog SEO Spider
+Disallow: /
+
+User-agent: DotBot
+Disallow: /
+
+User-agent: MegaIndex
+Disallow: /
+
+User-agent: SearchmetricsBot
+Disallow: /
+
+User-agent: LinkpadBot
+Disallow: /
+
+User-agent: ZoominfoBot
+Disallow: /
+
+# ALLOW ONLY ESSENTIAL SEARCH ENGINES (LIMITED ACCESS)
+User-agent: Googlebot
+Allow: /
+Allow: /categories
+Allow: /tags
+Crawl-delay: 2
+
+User-agent: Bingbot
+Allow: /
+Allow: /categories
+Allow: /tags
+Crawl-delay: 3
+
+# BLOCK ALL ADMIN AREAS
+User-agent: *
+Disallow: /dashboard/
+Disallow: /admin/
+Disallow: /api/
+Disallow: /mbkauthe/
+Disallow: */edit
+Disallow: */delete
+Disallow: /Assets/Scripts/
 
 # Sitemap locations
 Sitemap: https://blog.mbktech.org/sitemap.xml
