@@ -1,0 +1,119 @@
+{{#section 'styles'}}
+<title>Activity & Audit Log - MBK Admin</title>
+<style>
+    .activity-timeline {
+        display: flex;
+        flex-direction: column;
+        gap: 1.25rem;
+    }
+    .activity-card {
+        background: var(--bg-surface);
+        border: 1px solid var(--border-subtle);
+        border-radius: var(--radius-md);
+        padding: 1.25rem;
+        display: flex;
+        align-items: flex-start;
+        gap: 1rem;
+        transition: var(--transition);
+    }
+    .activity-card:hover {
+        border-color: var(--border-hover);
+        box-shadow: var(--shadow-sm);
+    }
+    .activity-icon-badge {
+        width: 38px;
+        height: 38px;
+        border-radius: var(--radius-full);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1rem;
+        flex-shrink: 0;
+    }
+</style>
+{{/section}}
+
+<!-- Header -->
+<div class="page-header">
+    <div>
+        <h1 class="page-title">Activity Audit Log</h1>
+        <p class="page-subtitle">Track admin actions, editorial events, and moderation history.</p>
+    </div>
+</div>
+
+<!-- Filters -->
+<div class="filter-toolbar">
+    <form action="/dashboard/activity" method="GET" style="display: flex; gap: 0.75rem; flex: 1; flex-wrap: wrap;">
+        <select name="entity" class="form-select" style="max-width: 180px;" onchange="this.form.submit()">
+            <option value="all">All Event Types</option>
+            <option value="post" {{#if (eq filters.entity 'post')}}selected{{/if}}>Posts</option>
+            <option value="comment" {{#if (eq filters.entity 'comment')}}selected{{/if}}>Comments</option>
+            <option value="category" {{#if (eq filters.entity 'category')}}selected{{/if}}>Categories</option>
+            <option value="tag" {{#if (eq filters.entity 'tag')}}selected{{/if}}>Tags</option>
+            <option value="seo" {{#if (eq filters.entity 'seo')}}selected{{/if}}>SEO</option>
+            <option value="settings" {{#if (eq filters.entity 'settings')}}selected{{/if}}>Settings</option>
+        </select>
+
+        <div class="search-input-wrap">
+            <i class="fas fa-search"></i>
+            <input type="text" name="search" class="form-input" placeholder="Search activity..." value="{{filters.search}}">
+        </div>
+    </form>
+</div>
+
+<!-- Timeline List -->
+<div class="activity-timeline">
+    {{#if activities.length}}
+    {{#each activities}}
+    <div class="activity-card">
+        <div class="activity-icon-badge" style="background: var(--primary-light); color: var(--primary);">
+            <i class="fas fa-history"></i>
+        </div>
+        <div style="flex: 1;">
+            <div style="display: flex; justify-content: space-between; align-items: center; gap: 1rem; flex-wrap: wrap;">
+                <div style="font-weight: 700; font-size: 0.95rem; color: var(--text-primary);">
+                    {{this.action}}
+                    {{#if this.entity_title}}
+                    <span style="font-weight: 500; color: var(--text-secondary);"> &mdash; "{{this.entity_title}}"</span>
+                    {{/if}}
+                </div>
+                <span style="font-size: 0.75rem; color: var(--text-faint);">{{timeAgo this.created_at}} &bull; {{formatDateShort this.created_at}}</span>
+            </div>
+
+            {{#if this.details}}
+            <div style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.35rem;">
+                {{this.details}}
+            </div>
+            {{/if}}
+
+            <div style="display: flex; align-items: center; gap: 0.5rem; margin-top: 0.5rem; font-size: 0.75rem; color: var(--text-faint);">
+                <span class="badge" style="background: var(--bg-base); border: 1px solid var(--border-subtle); text-transform: uppercase;">{{this.entity_type}}</span>
+                <span>Performed by <strong>{{coalesce this.UserName 'admin'}}</strong></span>
+            </div>
+        </div>
+    </div>
+    {{/each}}
+    {{else}}
+    <div class="card-panel" style="text-align: center; padding: 3rem; color: var(--text-muted);">
+        <i class="fas fa-history" style="font-size: 2.5rem; opacity: 0.4; display: block; margin-bottom: 0.75rem;"></i>
+        No activity logs recorded yet.
+    </div>
+    {{/if}}
+</div>
+
+<!-- Pagination -->
+{{#if (gt pagination.totalPages 1)}}
+<div style="display: flex; justify-content: space-between; align-items: center; margin-top: 2rem;">
+    <span style="color: var(--text-muted); font-size: 0.85rem;">
+        Page <strong>{{pagination.page}}</strong> of <strong>{{pagination.totalPages}}</strong>
+    </span>
+    <div style="display: flex; gap: 0.5rem;">
+        {{#if pagination.hasPrev}}
+        <a href="/dashboard/activity?entity={{filters.entity}}&search={{filters.search}}&page={{pagination.prevPage}}" class="btn btn-secondary btn-sm">&larr; Previous</a>
+        {{/if}}
+        {{#if pagination.hasNext}}
+        <a href="/dashboard/activity?entity={{filters.entity}}&search={{filters.search}}&page={{pagination.nextPage}}" class="btn btn-secondary btn-sm">Next &rarr;</a>
+        {{/if}}
+    </div>
+</div>
+{{/if}}

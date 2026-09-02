@@ -1,14 +1,18 @@
 document.addEventListener('DOMContentLoaded', () => {
     const assetsToPreload = [
         // CSS Files
-        '/Assets/dashboard.css',
+        '/Assets/blog-main.css',
         '/Assets/markdown.css',
         '/Assets/post-card.css',
         '/Assets/search-filter.css',
+        '/Assets/post-detail.css',
+        '/Assets/blog-archive.css',
         '/Assets/table-of-contents.css',
 
         // JS Files
-        '/Assets/Scripts/markdown-enhancer.js'
+        '/Assets/Scripts/blog-main.js',
+        '/Assets/Scripts/markdown-enhancer.js',
+        '/Assets/Scripts/post-detail.js'
     ];
 
     window.addEventListener('load', () => {

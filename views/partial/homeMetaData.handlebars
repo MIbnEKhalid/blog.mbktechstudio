@@ -2,7 +2,11 @@
 <title>MBK Tech Blog | Tech Insights & Tutorials</title>
 <meta name="description" content="MBK Tech Blog - Insights on Technology, Development, and Innovation">
 <meta name="keywords" content="Tech Blog, Software Development Blog, Programming Tutorials, Tech Industry News, MBK Tech">
+{{#if uniqueAuthors.length}}
+<meta name="author" content="{{#each uniqueAuthors}}{{this}}{{#unless @last}}, {{/unless}}{{/each}}">
+{{else}}
 <meta name="author" content="MBK Tech">
+{{/if}}
 <meta property="og:title" content="MBK Tech Blog | Tech Insights & Tutorials" />
 <meta property="og:description" content="Discover in-depth articles, tutorials, and insights about software development, technology trends, and innovation." />
 <meta property="og:image" content="/Assets/Images/Icon/logo.png" />
@@ -12,7 +16,6 @@
 <meta name="twitter:title" content="MBK Tech Blog | Tech Insights & Tutorials">
 <meta name="twitter:description" content="Discover in-depth articles, tutorials, and insights about software development, technology trends, and innovation.">
 <meta name="twitter:image" content="/Assets/Images/Icon/logo.png">
-<meta name="twitter:site" content="@ibnekhalid28">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -31,16 +34,26 @@
     },
     "sameAs": [
       "https://github.com/MIbnEKhalid",
-      "https://www.linkedin.com/in/muhammad-bin-khalid-89711b25b",
-      "https://x.com/ibnekhalid28",
       "https://youtube.com/@mibnekhalid"
     ]
   },
-  "author": {
-    "@type": "Person",
-    "name": "Muhammad Bin Khalid",
-    "url": "https://www.mbktech.org"
-  }
+  "author": [
+    {{#if uniqueAuthors.length}}
+      {{#each uniqueAuthors}}
+      {
+        "@type": "Person",
+        "name": "{{this}}",
+        "url": "https://blog.mbktech.org/author/{{this}}"
+      }{{#unless @last}},{{/unless}}
+      {{/each}}
+    {{else}}
+      {
+        "@type": "Person",
+        "name": "MBK Tech Authors",
+        "url": "https://blog.mbktech.org"
+      }
+    {{/if}}
+  ]
 }
 </script>
 {{/section}}

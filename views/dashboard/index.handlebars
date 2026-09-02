@@ -1,733 +1,350 @@
 {{#section 'styles'}}
-<title>Dashboard - Overview</title>
+<title>Dashboard Overview - MBK Admin</title>
 <style>
-    /* Page Header */
-    .page-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding-bottom: 1.5rem;
-        border-bottom: 2px solid rgba(255, 255, 255, 0.1);
-    }
-
-    .page-title {
-        font-size: 2rem;
+    .attention-badge {
+        font-size: 0.7rem;
         font-weight: 700;
-        color: var(--light);
-        margin: 0;
+        padding: 0.2rem 0.5rem;
+        border-radius: var(--radius-full);
+        background: var(--warning-bg);
+        color: var(--warning);
+        border: 1px solid rgba(245, 158, 11, 0.3);
     }
-
-    .page-subtitle {
-        color: var(--text-light);
-        font-size: 0.9rem;
-        opacity: 0.8;
-        margin-top: 0.25rem;
-    }
-
-    /* Stats Grid */
-    .stats-grid {
+    .action-tile-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-        gap: 1.5rem;
-        margin-bottom: 3rem;
-    }
-
-    .stat-card {
-        position: relative;
-        padding: 1.75rem;
-        border-radius: var(--border-radius);
-        display: flex;
-        flex-direction: column;
-        overflow: hidden;
-        background: rgba(255, 255, 255, 0.05);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        box-shadow: var(--box-shadow);
-        transition: var(--transition);
-        backdrop-filter: blur(5px);
-    }
-
-    .stat-card:hover {
-        box-shadow: 0 8px 24px rgba(33, 150, 243, 0.25);
-        transform: translateY(-2px);
-        border-color: var(--accent);
-        background: rgba(255, 255, 255, 0.08);
-    }
-
-    .stat-card-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: flex-start;
-        margin-bottom: 1rem;
-    }
-
-    .stat-icon {
-        width: 48px;
-        height: 48px;
-        border-radius: 12px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 1.5rem;
-    }
-
-    .stat-icon.primary {
-        background: rgba(33, 150, 243, 0.2);
-        color: var(--primary);
-    }
-
-    .stat-icon.success {
-        background: rgba(67, 233, 123, 0.2);
-        color: var(--success);
-    }
-
-    .stat-label {
-        font-size: 0.8rem;
-        text-transform: uppercase;
-        letter-spacing: 0.05em;
-        color: var(--text-light);
-        font-weight: 600;
-        margin-bottom: 0.5rem;
-    }
-
-    .stat-value {
-        font-size: 2.5rem;
-        font-weight: 700;
-        color: var(--light);
-        line-height: 1;
-        margin-bottom: 0.75rem;
-    }
-
-    .stat-details {
-        font-size: 0.85rem;
-        color: var(--text-light);
-        display: flex;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
         gap: 1rem;
-        flex-wrap: wrap;
-    }
-
-    .stat-detail-item {
-        display: flex;
-        align-items: center;
-        gap: 0.25rem;
-    }
-
-    .stat-detail-item span {
-        font-weight: 500;
-        color: var(--text);
-    }
-
-    /* Quick Actions */
-    .quick-actions {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-        gap: 1.5rem;
-        margin-bottom: 3rem;
-    }
-
-    .action-btn {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        gap: 0.75rem;
-        padding: 1.5rem 1rem;
-        background: rgba(255, 255, 255, 0.05);
-        color: var(--text);
-        border-radius: var(--border-radius);
-        text-decoration: none;
-        transition: var(--transition);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        position: relative;
-        overflow: hidden;
-        backdrop-filter: blur(5px);
-    }
-
-    .action-btn::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: -100%;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(120deg,
-                transparent,
-                rgba(0, 184, 148, 0.1),
-                transparent);
-        transition: 0.5s;
-    }
-
-    .action-btn:hover {
-        border-color: var(--accent);
-        box-shadow: 0 8px 24px rgba(0, 184, 148, 0.25);
-        transform: translateY(-2px);
-        background: rgba(0, 184, 148, 0.08);
-    }
-
-    .action-btn:hover::before {
-        left: 100%;
-    }
-
-    .action-btn i {
-        font-size: 1.75rem;
-        color: var(--accent);
-        transition: transform 0.3s ease;
-    }
-
-    .action-btn:hover i {
-        transform: scale(1.1) rotate(5deg);
-    }
-
-    .action-btn-text {
-        font-size: 0.95rem;
-        font-weight: 600;
-        color: var(--text);
-    }
-
-    /* Content Grid */
-    .content-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
-        gap: 2rem;
         margin-bottom: 2rem;
     }
-
-    /* Content Cards */
-    .content-card {
-        background: rgba(255, 255, 255, 0.05);
-        border-radius: var(--border-radius);
-        padding: 2rem;
-        box-shadow: var(--box-shadow);
-        border: 1px solid rgba(255, 255, 255, 0.1);
+    .action-tile {
+        background: var(--bg-surface);
+        border: 1px solid var(--border-subtle);
+        border-radius: var(--radius-md);
+        padding: 1.25rem 1rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        gap: 0.75rem;
         transition: var(--transition);
-        position: relative;
-        overflow: hidden;
-        backdrop-filter: blur(5px);
     }
-
-    .content-card::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 4px;
-        background: linear-gradient(to right, var(--accent), var(--secondary));
-    }
-
-    .content-card:hover {
-        box-shadow: 0 8px 24px rgba(33, 150, 243, 0.2);
+    .action-tile:hover {
+        border-color: var(--border-hover);
         transform: translateY(-2px);
-        border-color: var(--accent);
-        background: rgba(255, 255, 255, 0.08);
+        background: var(--bg-elevated);
+        box-shadow: var(--shadow-md);
     }
-
-    .card-header {
+    .action-tile-icon {
+        width: 44px;
+        height: 44px;
+        border-radius: var(--radius-md);
         display: flex;
-        justify-content: space-between;
         align-items: center;
-        margin-bottom: 1.5rem;
+        justify-content: center;
+        font-size: 1.25rem;
+    }
+    .timeline-list {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+    .timeline-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.85rem;
         padding-bottom: 1rem;
-        border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+        border-bottom: 1px solid var(--border-subtle);
     }
-
-    .card-title {
-        font-size: 1.2rem;
-        font-weight: 600;
-        color: var(--light);
-        margin: 0;
+    .timeline-item:last-child {
+        border-bottom: none;
+        padding-bottom: 0;
     }
-
-    .card-link {
-        font-size: 0.8rem;
-        color: var(--accent);
-        text-decoration: none;
-        padding: 0.5rem 1rem;
-        border-radius: 20px;
-        background: rgba(0, 184, 148, 0.15);
-        font-weight: 600;
-        transition: var(--transition);
-    }
-
-    .card-link:hover {
-        background: rgba(0, 184, 148, 0.25);
-        transform: translateX(2px);
-    }
-
-    /* Item List */
-    .item-list {
-        display: flex;
-        flex-direction: column;
-        gap: 1rem;
-    }
-
-    .list-item {
-        display: flex;
-        flex-direction: column;
-        gap: 0.5rem;
-        padding: 1rem;
-        border-radius: 8px;
-        background: rgba(0, 0, 0, 0.2);
-        transition: var(--transition);
-        border-left: 3px solid transparent;
-    }
-
-    .list-item:hover {
-        background: rgba(0, 184, 148, 0.1);
-        border-left-color: var(--accent);
-        transform: translateX(4px);
-        box-shadow: 0 2px 8px rgba(0, 184, 148, 0.15);
-    }
-
-    .list-item-title {
-        font-size: 0.95rem;
-        font-weight: 600;
-        color: var(--light);
-        text-decoration: none;
-        transition: var(--transition);
-        display: inline-block;
-        max-width: fit-content;
-    }
-
-    .list-item-title:hover {
-        color: var(--accent);
-    }
-
-    .list-item-meta {
-        display: flex;
-        gap: 1rem;
-        flex-wrap: wrap;
-        align-items: center;
-        font-size: 0.8rem;
-        color: var(--text-light);
-    }
-
-    .meta-item {
-        display: flex;
-        align-items: center;
-        gap: 0.4rem;
-    }
-
-    .meta-item a {
-        color: var(--text-light);
-        text-decoration: none;
-        transition: color 0.2s ease;
-    }
-
-    .meta-item a:hover {
-        color: var(--accent);
-    }
-
-    .meta-item i {
-        color: var(--text-light);
-        font-size: 0.85rem;
-    }
-
-    /* Badges */
-    .badge {
-        padding: 0.35rem 0.75rem;
-        border-radius: 20px;
-        font-size: 0.7rem;
-        font-weight: 600;
-        letter-spacing: 0.02em;
-        text-transform: uppercase;
-        display: inline-flex;
-        align-items: center;
-        gap: 0.25rem;
-        white-space: nowrap;
-    }
-
-    .badge-draft {
-        background: rgba(255, 209, 102, 0.2);
-        color: var(--warning);
-    }
-
-    .badge-published {
-        background: rgba(67, 233, 123, 0.2);
-        color: var(--success);
-    }
-
-    .badge-private {
-        background: rgba(255, 118, 117, 0.2);
-        color: var(--danger);
-    }
-
-    .badge-pending {
-        background: rgba(255, 152, 0, 0.2);
-        color: #ea580c;
-    }
-
-    .badge-approved {
-        background: rgba(67, 233, 123, 0.2);
-        color: var(--success);
-    }
-
-    /* Mobile Responsive */
-    @media (max-width: 1024px) {
-        .page-header {
-            flex-direction: column;
-            align-items: flex-start;
-        }
-
-        .page-title {
-            font-size: 1.75rem;
-        }
-
-        .stats-grid {
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1rem;
-            margin-bottom: 2rem;
-        }
-
-        .stat-value {
-            font-size: 2rem;
-        }
-
-        .quick-actions {
-            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-            gap: 1rem;
-            margin-bottom: 2rem;
-        }
-
-        .action-btn {
-            padding: 1.25rem 0.75rem;
-        }
-
-        .content-grid {
-            grid-template-columns: 1fr;
-            gap: 1.5rem;
-        }
-    }
-
-    @media (max-width: 768px) {
-        .page-title {
-            font-size: 1.5rem;
-        }
-
-        .page-subtitle {
-            font-size: 0.85rem;
-        }
-
-        .stats-grid {
-            grid-template-columns: repeat(2, 1fr);
-            gap: 1rem;
-            margin-bottom: 2rem;
-        }
-
-        .stat-card {
-            padding: 1rem;
-            flex-direction: column;
-        }
-
-        .stat-card-header {
-            margin-bottom: 0.75rem;
-        }
-
-        .stat-label {
-            font-size: 0.75rem;
-        }
-
-        .stat-value {
-            font-size: 1.75rem;
-        }
-
-        .stat-details {
-            font-size: 0.75rem;
-            gap: 0.5rem;
-        }
-
-        .quick-actions {
-            grid-template-columns: repeat(2, 1fr);
-            gap: 0.75rem;
-            margin-bottom: 2rem;
-        }
-
-        .action-btn {
-            padding: 1rem 0.5rem;
-            gap: 0.5rem;
-        }
-
-        .action-btn i {
-            font-size: 1.5rem;
-        }
-
-        .action-btn-text {
-            font-size: 0.85rem;
-        }
-
-        .content-grid {
-            grid-template-columns: 1fr;
-            gap: 1.5rem;
-        }
-
-        .content-card {
-            padding: 1.5rem;
-        }
-
-        .card-header {
-            margin-bottom: 1rem;
-            padding-bottom: 0.75rem;
-        }
-
-        .card-title {
-            font-size: 1.05rem;
-        }
-
-        .card-link {
-            font-size: 0.75rem;
-            padding: 0.4rem 0.75rem;
-        }
-
-        .list-item {
-            padding: 0.75rem;
-        }
-
-        .list-item-title {
-            font-size: 0.9rem;
-        }
-
-        .list-item-meta {
-            font-size: 0.75rem;
-            gap: 0.75rem;
-        }
-
-        .badge {
-            padding: 0.3rem 0.6rem;
-            font-size: 0.65rem;
-        }
-    }
-
-    @media (max-width: 480px) {
-        .page-title {
-            font-size: 1.25rem;
-        }
-
-        .page-subtitle {
-            font-size: 0.8rem;
-        }
-
-        .stats-grid {
-            grid-template-columns: 1fr;
-            gap: 0.75rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .stat-card {
-            padding: 0.75rem;
-        }
-
-        .stat-label {
-            font-size: 0.7rem;
-        }
-
-        .stat-value {
-            font-size: 1.5rem;
-        }
-
-        .stat-details {
-            font-size: 0.7rem;
-            flex-direction: column;
-            gap: 0.25rem;
-        }
-
-        .quick-actions {
-            grid-template-columns: 1fr;
-            gap: 0.5rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .action-btn {
-            padding: 0.75rem;
-            gap: 0.4rem;
-        }
-
-        .action-btn i {
-            font-size: 1.25rem;
-        }
-
-        .action-btn-text {
-            font-size: 0.8rem;
-        }
-
-        .content-card {
-            padding: 1rem;
-        }
-
-        .card-header {
-            margin-bottom: 0.75rem;
-        }
-
-        .card-title {
-            font-size: 1rem;
-        }
-
-        .list-item {
-            padding: 0.65rem;
-            gap: 0.35rem;
-        }
-
-        .list-item-title {
-            font-size: 0.85rem;
-        }
-
-        .list-item-meta {
-            flex-direction: column;
-            font-size: 0.7rem;
-            gap: 0.25rem;
-        }
-
-        .badge {
-            padding: 0.25rem 0.5rem;
-            font-size: 0.6rem;
-        }
+    .timeline-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: var(--radius-full);
+        background: var(--primary);
+        margin-top: 0.4rem;
+        flex-shrink: 0;
+        box-shadow: 0 0 8px var(--primary);
     }
 </style>
 {{/section}}
 
-<!-- Page Header -->
+<!-- Header -->
 <div class="page-header">
     <div>
         <h1 class="page-title">Dashboard Overview</h1>
-        <p class="page-subtitle">Welcome back! Here's your blog at a glance.</p>
+        <p class="page-subtitle">Welcome back! Monitor your blog performance, editorial flow, and audience feedback.</p>
+    </div>
+    <div class="header-actions">
+        <a href="/dashboard/posts/create" class="btn btn-primary">
+            <i class="fas fa-plus"></i> Write Post
+        </a>
+        <a href="/dashboard/analytics" class="btn btn-secondary">
+            <i class="fas fa-chart-bar"></i> Analytics
+        </a>
     </div>
 </div>
 
-<!-- Stats Grid -->
+<!-- Metrics Cards -->
 <div class="stats-grid">
     <div class="stat-card">
-        <div class="stat-card-header">
-            <div class="stat-icon primary">
-                <i class="fas fa-newspaper"></i>
-            </div>
+        <div class="stat-header">
+            <span class="stat-title">Total Posts</span>
+            <div class="stat-icon-wrap primary"><i class="fas fa-newspaper"></i></div>
         </div>
-        <div class="stat-label">Total Posts</div>
-        <div class="stat-value">{{postStats.total_posts}}</div>
-        <div class="stat-details">
-            <div class="stat-detail-item">
-                <i class="fas fa-check-circle" style="color: #059669; font-size: 0.75rem;"></i>
-                <span>{{postStats.published_posts}} Published</span>
-            </div>
-            <div class="stat-detail-item">
-                <i class="fas fa-file" style="color: #d97706; font-size: 0.75rem;"></i>
-                <span>{{postStats.draft_posts}} Drafts</span>
-            </div>
+        <div class="stat-value">{{formatNumber stats.totalPosts}}</div>
+        <div class="stat-footer">
+            <span style="color: var(--success); font-weight: 600;">{{stats.publishedPosts}} Published</span>
+            <span>&bull;</span>
+            <span style="color: var(--warning); font-weight: 600;">{{stats.draftPosts}} Drafts</span>
         </div>
     </div>
 
-    <div class="stat-card">
-        <div class="stat-card-header">
-            <div class="stat-icon success">
-                <i class="fas fa-comments"></i>
-            </div>
+    <div class="stat-card cyan">
+        <div class="stat-header">
+            <span class="stat-title">Total Views</span>
+            <div class="stat-icon-wrap cyan"><i class="fas fa-eye"></i></div>
         </div>
-        <div class="stat-label">Total Comments</div>
-        <div class="stat-value">{{commentStats.total_comments}}</div>
-        <div class="stat-details">
-            <div class="stat-detail-item">
-                <i class="fas fa-check-circle" style="color: #059669; font-size: 0.75rem;"></i>
-                <span>{{commentStats.approved_comments}} Approved</span>
-            </div>
-            <div class="stat-detail-item">
-                <i class="fas fa-clock" style="color: #d97706; font-size: 0.75rem;"></i>
-                <span>{{commentStats.pending_comments}} Pending</span>
-            </div>
+        <div class="stat-value">{{formatNumber stats.totalViews}}</div>
+        <div class="stat-footer">
+            <span>Avg <strong>{{formatNumber stats.avgViews}}</strong> views per post</span>
         </div>
     </div>
-</div>
 
-<!-- Quick Actions -->
-<div class="quick-actions">
-    <a href="/dashboard/posts/create" class="action-btn">
-        <i class="fas fa-plus"></i>
-        <span class="action-btn-text">New Post</span>
-    </a>
-    <a href="/dashboard/categories" class="action-btn">
-        <i class="fas fa-folder"></i>
-        <span class="action-btn-text">Categories</span>
-    </a>
-    <a href="/dashboard/tags" class="action-btn">
-        <i class="fas fa-tags"></i>
-        <span class="action-btn-text">Tags</span>
-    </a>
-    <a href="/dashboard/comments" class="action-btn">
-        <i class="fas fa-comments"></i>
-        <span class="action-btn-text">Comments</span>
-    </a>
-</div>
-
-<!-- Content Grid -->
-<div class="content-grid">
-    <!-- Recent Posts -->
-    <div class="content-card">
-        <div class="card-header">
-            <h2 class="card-title">Recent Posts</h2>
-            <a href="/dashboard/posts" class="card-link">View All →</a>
+    <div class="stat-card emerald">
+        <div class="stat-header">
+            <span class="stat-title">Comments</span>
+            <div class="stat-icon-wrap emerald"><i class="fas fa-comments"></i></div>
         </div>
-        <div class="item-list">
-            {{#if recentPosts}}
-            {{#each recentPosts}}
-            <div class="list-item">
-                <a href="/dashboard/posts/edit/{{this.id}}" class="list-item-title">{{this.title}}</a>
-                <div class="list-item-meta">
-                    <div class="meta-item">
-                        <i class="fas fa-folder"></i>
-                        <span>{{this.category_name}}</span>
-                    </div>
-                    <div class="meta-item">
-                        {{#if (eq this.status 'published')}}
-                        <span class="badge badge-published">Published</span>
-                        {{else if (eq this.status 'draft')}}
-                        <span class="badge badge-draft">Draft</span>
-                        {{else}}
-                        <span class="badge badge-private">Private</span>
-                        {{/if}}
-                    </div>
-                </div>
-            </div>
-            {{/each}}
-            {{else}}
-            <div class="list-item" style="text-align: center; color: #999; padding: 2rem 1rem;">
-                <i class="fas fa-inbox"
-                    style="font-size: 2rem; margin-bottom: 0.5rem; display: block; opacity: 0.5;"></i>
-                <p>No posts yet. <a href="/dashboard/posts/create" style="color: var(--primary-color);">Create one
-                        now!</a></p>
-            </div>
+        <div class="stat-value">{{formatNumber stats.totalComments}}</div>
+        <div class="stat-footer">
+            <span style="color: var(--success); font-weight: 600;">{{stats.approvedComments}} Approved</span>
+            {{#if (gt stats.pendingComments 0)}}
+            <span>&bull;</span>
+            <span style="color: var(--warning); font-weight: 600;">{{stats.pendingComments}} Pending</span>
             {{/if}}
         </div>
     </div>
 
-    <!-- Recent Comments -->
-    <div class="content-card">
-        <div class="card-header">
-            <h2 class="card-title">Recent Comments</h2>
-            <a href="/dashboard/comments" class="card-link">View All →</a>
+    <div class="stat-card purple">
+        <div class="stat-header">
+            <span class="stat-title">Taxonomy</span>
+            <div class="stat-icon-wrap purple"><i class="fas fa-sitemap"></i></div>
         </div>
-        <div class="item-list">
-            {{#if recentComments}}
-            {{#each recentComments}}
-            <div class="list-item">
-                <p class="list-item-title" style="margin: 0; color: var(--dark-color);">{{truncate this.content 80}}</p>
-                <div class="list-item-meta">
-                    <div class="meta-item">
-                        <i class="fas fa-file-alt"></i>
-                        <a href="/post/{{this.post_slug}}">{{this.post_title}}</a>
-                    </div>
-                    <div class="meta-item">
-                        {{#if this.is_approved}}
-                        <span class="badge badge-approved">Approved</span>
-                        {{else}}
-                        <span class="badge badge-pending">Pending</span>
-                        {{/if}}
-                    </div>
+        <div class="stat-value">{{add stats.totalCategories stats.totalTags}}</div>
+        <div class="stat-footer">
+            <span><strong>{{stats.totalCategories}}</strong> Categories &bull; <strong>{{stats.totalTags}}</strong> Tags</span>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Actions Hub -->
+<div class="action-tile-grid">
+    <a href="/dashboard/posts/create" class="action-tile">
+        <div class="action-tile-icon" style="background: var(--primary-light); color: var(--primary);">
+            <i class="fas fa-pen-fancy"></i>
+        </div>
+        <span style="font-weight: 600; font-size: 0.9rem;">New Post</span>
+    </a>
+    <a href="/dashboard/comments?status=pending" class="action-tile">
+        <div class="action-tile-icon" style="background: var(--warning-bg); color: var(--warning);">
+            <i class="fas fa-inbox"></i>
+        </div>
+        <span style="font-weight: 600; font-size: 0.9rem;">Moderation Queue</span>
+    </a>
+    <a href="/dashboard/seo" class="action-tile">
+        <div class="action-tile-icon" style="background: var(--info-bg); color: var(--info);">
+            <i class="fas fa-search-plus"></i>
+        </div>
+        <span style="font-weight: 600; font-size: 0.9rem;">SEO Health</span>
+    </a>
+    <a href="/mbkbucket" class="action-tile">
+        <div class="action-tile-icon" style="background: rgba(168, 85, 247, 0.15); color: var(--accent-purple);">
+            <i class="fas fa-photo-video"></i>
+        </div>
+        <span style="font-weight: 600; font-size: 0.9rem;">Cloud Media</span>
+    </a>
+    <a href="/dashboard/settings" class="action-tile">
+        <div class="action-tile-icon" style="background: rgba(255, 255, 255, 0.08); color: var(--text-secondary);">
+            <i class="fas fa-sliders-h"></i>
+        </div>
+        <span style="font-weight: 600; font-size: 0.9rem;">Settings</span>
+    </a>
+</div>
+
+<!-- Content Needing Attention (if any) -->
+{{#if (or (gt stats.pendingComments 0) attentionItems.length)}}
+<div class="card-panel" style="margin-bottom: 2rem; border-color: rgba(245, 158, 11, 0.3);">
+    <div class="card-header" style="background: var(--warning-bg);">
+        <div class="card-title" style="color: var(--warning);">
+            <i class="fas fa-bell"></i>
+            <span>Content Needing Attention</span>
+        </div>
+    </div>
+    <div class="card-body">
+        <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+            {{#if (gt stats.pendingComments 0)}}
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.75rem; background: var(--bg-base); border-radius: var(--radius-md);">
+                <div style="display: flex; align-items: center; gap: 0.75rem;">
+                    <i class="fas fa-clock" style="color: var(--warning);"></i>
+                    <span><strong>{{stats.pendingComments}}</strong> pending comment(s) waiting for your review.</span>
                 </div>
-            </div>
-            {{/each}}
-            {{else}}
-            <div class="list-item" style="text-align: center; color: #999; padding: 2rem 1rem;">
-                <i class="fas fa-comments"
-                    style="font-size: 2rem; margin-bottom: 0.5rem; display: block; opacity: 0.5;"></i>
-                <p>No comments yet</p>
+                <a href="/dashboard/comments?status=pending" class="btn btn-sm btn-outline">Review Now &rarr;</a>
             </div>
             {{/if}}
+
+            {{#each attentionItems}}
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.75rem; background: var(--bg-base); border-radius: var(--radius-md);">
+                <div style="display: flex; align-items: center; gap: 0.75rem;">
+                    <i class="fas fa-image" style="color: var(--accent-rose);"></i>
+                    <span>Post <strong>"{{this.title}}"</strong> has no social cover image.</span>
+                </div>
+                <a href="/dashboard/posts/edit/{{this.id}}" class="btn btn-sm btn-outline">Fix Post &rarr;</a>
+            </div>
+            {{/each}}
+        </div>
+    </div>
+</div>
+{{/if}}
+
+<!-- Main Dashboard Grid -->
+<div class="dashboard-layout-grid">
+    <!-- Left Column: Recent Posts -->
+    <div class="card-panel">
+        <div class="card-header">
+            <div class="card-title">
+                <i class="fas fa-newspaper" style="color: var(--primary);"></i>
+                <span>Recent Posts</span>
+            </div>
+            <a href="/dashboard/posts" class="btn btn-sm btn-outline">View All</a>
+        </div>
+        <div class="table-responsive">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Category</th>
+                        <th>Status</th>
+                        <th>Views</th>
+                        <th>Date</th>
+                        <th style="text-align: right;">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#if recentPosts.length}}
+                    {{#each recentPosts}}
+                    <tr>
+                        <td>
+                            <a href="/dashboard/posts/edit/{{this.id}}" style="font-weight: 600; color: var(--text-primary);">
+                                {{truncate this.title 45}}
+                            </a>
+                        </td>
+                        <td>
+                            <span class="badge badge-category">{{coalesce this.categories 'Uncategorized'}}</span>
+                        </td>
+                        <td>
+                            <span class="badge badge-{{this.status}}">{{this.status}}</span>
+                        </td>
+                        <td>
+                            <span style="font-family: var(--font-mono); color: var(--accent-cyan); font-weight: 600;">
+                                <i class="fas fa-eye" style="font-size: 0.75rem;"></i> {{formatNumber this.views}}
+                            </span>
+                        </td>
+                        <td style="color: var(--text-muted); font-size: 0.8rem;">
+                            {{timeAgo this.created_at}}
+                        </td>
+                        <td style="text-align: right;">
+                            <a href="/dashboard/posts/edit/{{this.id}}" class="btn btn-sm btn-secondary" title="Edit">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    {{/each}}
+                    {{else}}
+                    <tr>
+                        <td colspan="6" style="text-align: center; padding: 2rem; color: var(--text-muted);">
+                            No posts found. <a href="/dashboard/posts/create" style="color: var(--primary); font-weight: 600;">Create your first post!</a>
+                        </td>
+                    </tr>
+                    {{/if}}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Right Column: Recent Comments & Activity -->
+    <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+        <!-- Recent Comments -->
+        <div class="card-panel">
+            <div class="card-header">
+                <div class="card-title">
+                    <i class="fas fa-comments" style="color: var(--accent-emerald);"></i>
+                    <span>Recent Comments</span>
+                </div>
+                <a href="/dashboard/comments" class="btn btn-sm btn-outline">Inbox</a>
+            </div>
+            <div class="card-body" style="padding: 1rem 1.25rem;">
+                {{#if recentComments.length}}
+                <div style="display: flex; flex-direction: column; gap: 1rem;">
+                    {{#each recentComments}}
+                    <div style="padding-bottom: 0.85rem; border-bottom: 1px solid var(--border-subtle); display: flex; flex-direction: column; gap: 0.35rem;">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <span style="font-weight: 600; font-size: 0.85rem; color: var(--text-primary);">
+                                <i class="fas fa-user-circle" style="color: var(--text-muted); margin-right: 0.25rem;"></i>
+                                {{coalesce this.UserName 'Anonymous'}}
+                            </span>
+                            <span style="font-size: 0.75rem; color: var(--text-faint);">{{timeAgo this.created_at}}</span>
+                        </div>
+                        <p style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.4;">{{truncate this.content 80}}</p>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 0.2rem;">
+                            <span style="font-size: 0.75rem; color: var(--text-muted);">on <em>{{truncate this.post_title 30}}</em></span>
+                            {{#if this.is_approved}}
+                            <span class="badge badge-published" style="font-size: 0.65rem;">Approved</span>
+                            {{else}}
+                            <span class="badge badge-draft" style="font-size: 0.65rem;">Pending</span>
+                            {{/if}}
+                        </div>
+                    </div>
+                    {{/each}}
+                </div>
+                {{else}}
+                <p style="color: var(--text-muted); text-align: center; padding: 1.5rem 0;">No comments yet.</p>
+                {{/if}}
+            </div>
+        </div>
+
+        <!-- Recent Activity Feed -->
+        <div class="card-panel">
+            <div class="card-header">
+                <div class="card-title">
+                    <i class="fas fa-history" style="color: var(--accent-purple);"></i>
+                    <span>Activity Audit</span>
+                </div>
+                <a href="/dashboard/activity" class="btn btn-sm btn-outline">Log</a>
+            </div>
+            <div class="card-body" style="padding: 1.25rem;">
+                {{#if recentActivity.length}}
+                <div class="timeline-list">
+                    {{#each recentActivity}}
+                    <div class="timeline-item">
+                        <div class="timeline-dot"></div>
+                        <div style="flex: 1;">
+                            <div style="font-weight: 600; font-size: 0.85rem; color: var(--text-primary);">
+                                {{this.action}} {{#if this.entity_title}}&bull; <span style="color: var(--text-muted);">{{truncate this.entity_title 35}}</span>{{/if}}
+                            </div>
+                            <div style="font-size: 0.75rem; color: var(--text-faint); margin-top: 0.15rem;">
+                                by <strong>{{this.UserName}}</strong> &bull; {{timeAgo this.created_at}}
+                            </div>
+                        </div>
+                    </div>
+                    {{/each}}
+                </div>
+                {{else}}
+                <p style="color: var(--text-muted); text-align: center; padding: 1rem 0;">No recent activity.</p>
+                {{/if}}
+            </div>
         </div>
     </div>
 </div>

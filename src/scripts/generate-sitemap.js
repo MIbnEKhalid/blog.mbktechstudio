@@ -1,14 +1,13 @@
-import { pool } from './routes/pool.js';
+import dotenv from 'dotenv';
+dotenv.config();
+
+import { pool } from '../config/db.js';
+import { PUBLIC_DIR } from '../config/constants.js';
 import fs from 'fs';
 import path from 'path';
-import { fileURLToPath } from 'url';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
 // Base URL - update this to your actual domain
 const BASE_URL = process.env.BASE_URL || 'https://blog.mbktech.org';
-const PUBLIC_DIR = path.join(__dirname, 'public');
 
 async function generateSitemaps() {
     try {

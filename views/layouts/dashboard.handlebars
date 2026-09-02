@@ -4,193 +4,207 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- STRICT BOT & AI BLOCKING -->
+    <!-- STRICT BOT & AI BLOCKING FOR ADMIN AREA -->
     <meta name="robots" content="noindex, nofollow, noai, noimageai, noarchive, nosnippet, notranslate">
     <meta name="googlebot" content="noindex, nofollow, noai, noimageai, noarchive, nosnippet">
     <meta name="bingbot" content="noindex, nofollow, noai, noimageai, noarchive, nosnippet">
     <link rel="icon" type="image/svg+xml" href="/icon.svg">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="/Assets/dashboard.css?v={{cacheBuster}}">
-    <link rel="stylesheet" href="/Assets/post-card.css?v={{cacheBuster}}">
-    <link rel="stylesheet" href="/Assets/dashboard-notifications.css?v={{cacheBuster}}">
-    <script src="/Assets/Scripts/logout.js?v={{cacheBuster}}" defer></script>
-    <script src="/Assets/Scripts/dashboard-notifications.js?v={{cacheBuster}}" defer></script>
+    <link rel="stylesheet" href="/mbkbucket/mbkbucket-helper.css">
+    <script src="/mbkbucket/mbkbucket-helper.js"></script>
+    <script src="/mbkauthe/main.js" defer></script>
+    <script src="/Assets/Scripts/dashboard-app.js?v={{cacheBuster}}" defer></script>
     {{{_sections.styles}}}
-    <style>
-        /* Base Styles - Matching Main Blog Theme */
-        :root {
-            --primary: #2196f3;
-            --primary-dark: #1769aa;
-            --secondary: #43e97b;
-            --accent: #00b894;
-            --dark: #101c1c;
-            --darker: #0a1414;
-            --light: #eaf6fb;
-            --text: #e0f7fa;
-            --text-light: #b2dfdb;
-            --text-dark: #1a2a2a;
-            --success: #43e97b;
-            --warning: #ffd166;
-            --danger: #ff7675;
-            --border-radius: 8px;
-            --box-shadow: 0 4px 20px rgba(33, 150, 243, 0.15);
-            --transition: all 0.3s cubic-bezier(.4, 0, .2, 1);
-            --sidebar-width: 250px;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-
-        body {
-            background-color: var(--dark);
-            color: var(--text);
-            line-height: 1.6;
-        }
-
-        @media (max-width: 768px) {
-            .dashboard-menu-toggle {
-                display: flex;
-                position: fixed;
-                top: 0.5rem;
-                right: 1rem;
-                background: rgba(0, 0, 0, 0.3);
-                color: white;
-                border: 1px solid rgba(255, 255, 255, 0.2);
-                padding: 0.75rem 1rem;
-                border-radius: 8px;
-                cursor: pointer;
-                z-index: 1002;
-                align-items: center;
-                gap: 0.5rem;
-                font-size: 1rem;
-                backdrop-filter: blur(10px);
-            }
-
-            .dashboard-menu-toggle:hover {
-                background: rgba(0, 184, 148, 0.3);
-                border-color: var(--accent);
-            }
-
-            .nav-menu.active .nav-item:last-child {
-                border-top: 1px solid rgba(255, 255, 255, 0.1);
-                padding-top: 1rem;
-                margin-top: 1rem;
-            }
-        }
-
-        @media (min-width: 769px) {
-            .dashboard-menu-toggle {
-                display: none !important;
-            }
-        }
-    </style>
 </head>
 
 <body>
-    <div class="dashboard-wrapper">
-        <button class="dashboard-menu-toggle" id="dashboardMenuToggle">
-            <i class="fas fa-bars"></i>
-            <span>Menu</span>
-        </button>
-        <aside class="dashboard-sidebar">
-            <div class="dashboard-logo" onclick="location.href='/'">
-                <i class="fas fa-blog"></i> MBK Blog
+    <div class="admin-shell">
+        <!-- SIDEBAR -->
+        <aside class="admin-sidebar" id="adminSidebar">
+            <div class="sidebar-header">
+                <a href="/dashboard" class="sidebar-brand">
+                    <div class="brand-icon"><i class="fas fa-layer-group"></i></div>
+                    <span>MBK Admin</span>
+                </a>
+                <span class="brand-badge">PRO</span>
             </div>
-            <nav>
-                <ul class="nav-menu" id="dashboardNavMenu">
-                    <li class="nav-item">
-                        <a href="/dashboard" class="nav-link {{#if (eq active 'dashboard')}}active{{/if}}">
-                            <span><i class="fas fa-chart-line"></i> Overview</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="/dashboard/posts" class="nav-link {{#if (eq active 'posts')}}active{{/if}}">
-                            <span><i class="fas fa-newspaper"></i> Posts</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="/dashboard/categories" class="nav-link {{#if (eq active 'categories')}}active{{/if}}">
-                            <span><i class="fas fa-folder"></i> Categories</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="/dashboard/tags" class="nav-link {{#if (eq active 'tags')}}active{{/if}}">
-                            <span><i class="fas fa-tags"></i> Tags</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="/dashboard/comments" class="nav-link {{#if (eq active 'comments')}}active{{/if}}">
-                            <span><i class="fas fa-comments"></i> Comments</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="/" class="nav-link">
-                            <span><i class="fas fa-home"></i> Back to Blog</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a onclick="downloadAllData()" class="nav-link">
-                            <span><i class="fas fa-download"></i> All Data</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a onclick="logout()" class="nav-link" style="cursor: pointer;">
-                            <span><i class="fas fa-sign-out-alt"></i> Logout</span>
-                        </a>
-                    </li>
-                </ul>
+
+            <nav class="sidebar-nav">
+                <!-- Main Group -->
+                <div class="nav-group">
+                    <div class="nav-group-title">Overview</div>
+                    <ul class="nav-list">
+                        <li>
+                            <a href="/dashboard" class="nav-link {{#if (eq active 'dashboard')}}active{{/if}}">
+                                <i class="fas fa-th-large"></i>
+                                <span>Dashboard</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/dashboard/analytics" class="nav-link {{#if (eq active 'analytics')}}active{{/if}}">
+                                <i class="fas fa-chart-line"></i>
+                                <span>Analytics</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Content Group -->
+                <div class="nav-group">
+                    <div class="nav-group-title">Content & Editorial</div>
+                    <ul class="nav-list">
+                        <li>
+                            <a href="/dashboard/posts" class="nav-link {{#if (eq active 'posts')}}active{{/if}}">
+                                <i class="fas fa-newspaper"></i>
+                                <span>Posts</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/dashboard/posts/create" class="nav-link">
+                                <i class="fas fa-pen-nib"></i>
+                                <span>Write Post</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/dashboard/comments" class="nav-link {{#if (eq active 'comments')}}active{{/if}}">
+                                <i class="fas fa-comments"></i>
+                                <span>Comments</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Taxonomy Group -->
+                <div class="nav-group">
+                    <div class="nav-group-title">Taxonomy & Media</div>
+                    <ul class="nav-list">
+                        <li>
+                            <a href="/dashboard/categories" class="nav-link {{#if (eq active 'categories')}}active{{/if}}">
+                                <i class="fas fa-folder"></i>
+                                <span>Categories</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/dashboard/tags" class="nav-link {{#if (eq active 'tags')}}active{{/if}}">
+                                <i class="fas fa-tags"></i>
+                                <span>Tags</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/mbkbucket" class="nav-link {{#if (eq active 'mbkbucket')}}active{{/if}}">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                                <span>Cloud Bucket</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- System Group -->
+                <div class="nav-group">
+                    <div class="nav-group-title">Management</div>
+                    <ul class="nav-list">
+                        <li>
+                            <a href="/dashboard/seo" class="nav-link {{#if (eq active 'seo')}}active{{/if}}">
+                                <i class="fas fa-globe"></i>
+                                <span>SEO & Sitemaps</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/dashboard/activity" class="nav-link {{#if (eq active 'activity')}}active{{/if}}">
+                                <i class="fas fa-history"></i>
+                                <span>Activity Log</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/dashboard/settings" class="nav-link {{#if (eq active 'settings')}}active{{/if}}">
+                                <i class="fas fa-cog"></i>
+                                <span>Settings</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
             </nav>
+
+            <div class="sidebar-footer">
+                <a href="/" target="_blank" class="nav-link">
+                    <i class="fas fa-external-link-alt"></i>
+                    <span>View Public Blog</span>
+                </a>
+            </div>
         </aside>
 
-        <main class="dashboard-main">
-            <div class="fade-in">
+        <!-- MAIN VIEWPORT -->
+        <div class="admin-main">
+            <!-- TOPBAR -->
+            <header class="admin-topbar">
+                <div class="topbar-left">
+                    <button class="mobile-toggle" id="mobileSidebarToggle" aria-label="Toggle Sidebar">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <!-- Global Command Palette Trigger -->
+                    <button class="cmd-palette-trigger" type="button" aria-label="Quick Search">
+                        <i class="fas fa-search"></i>
+                        <span>Search anything...</span>
+                        <span class="cmd-shortcut">Ctrl K</span>
+                    </button>
+                </div>
+
+                <div class="topbar-right">
+                    <div class="user-badge-pill">
+                        <div class="user-avatar" style="overflow: hidden; display: flex; align-items: center; justify-content: center;">
+                            {{#if profileImageUrl}}
+                            <img src="{{profileImageUrl}}" alt="{{user.username}}" style="width: 100%; height: 100%; object-fit: cover;">
+                            {{else}}
+                            <span>{{firstLetter (coalesce user.username 'Admin')}}</span>
+                            {{/if}}
+                        </div>
+                        <span class="user-name">{{coalesce user.username 'Admin'}}</span>
+                    </div>
+
+                    <button onclick="logout()" class="topbar-btn" title="Logout" aria-label="Logout">
+                        <i class="fas fa-sign-out-alt"></i>
+                    </button>
+                </div>
+            </header>
+
+            <!-- PAGE CONTENT -->
+            <main class="admin-content">
                 {{{body}}}
-            </div>
-        </main>
+            </main>
+        </div>
     </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
-    <script>
-        // Dashboard Mobile Menu Toggle
-        document.addEventListener('DOMContentLoaded', function () {
-            const menuToggle = document.getElementById('dashboardMenuToggle');
-            const navMenu = document.getElementById('dashboardNavMenu');
-            const navLinks = navMenu ? navMenu.querySelectorAll('.nav-link') : [];
+    <!-- GLOBAL COMMAND PALETTE MODAL (Ctrl+K) -->
+    <div class="cmd-palette-backdrop" id="cmdPaletteBackdrop">
+        <div class="cmd-palette-modal">
+            <div class="cmd-input-wrap">
+                <i class="fas fa-search"></i>
+                <input type="text" class="cmd-input" id="cmdPaletteInput" placeholder="Type a command or search posts, categories..." autocomplete="off">
+                <span class="cmd-shortcut">ESC</span>
+            </div>
+            <div class="cmd-results" id="cmdPaletteResults"></div>
+        </div>
+    </div>
 
-            if (menuToggle && navMenu) {
-                // Toggle menu on button click
-                menuToggle.addEventListener('click', function (e) {
-                    e.stopPropagation();
-                    navMenu.classList.toggle('active');
-                });
+    <!-- GLOBAL CONFIRMATION MODAL -->
+    <div class="confirm-backdrop" id="globalConfirmBackdrop">
+        <div class="confirm-modal">
+            <div class="confirm-icon-wrap danger" id="globalConfirmIconWrap">
+                <i class="fas fa-trash-alt"></i>
+            </div>
+            <h3 class="confirm-title" id="globalConfirmTitle">Confirm Action</h3>
+            <p class="confirm-desc" id="globalConfirmDesc">Are you sure you want to proceed?</p>
+            <div class="confirm-actions">
+                <button type="button" class="btn btn-secondary" id="globalCancelBtn">Cancel</button>
+                <button type="button" class="btn btn-danger" id="globalConfirmBtn">Confirm</button>
+            </div>
+        </div>
+    </div>
 
-                // Close menu when a link is clicked
-                navLinks.forEach(link => {
-                    link.addEventListener('click', function () {
-                        navMenu.classList.remove('active');
-                    });
-                });
+    <!-- TOAST CONTAINER -->
+    <div class="toast-container" id="toastContainer"></div>
 
-                // Close menu when clicking outside
-                document.addEventListener('click', function (e) {
-                    if (!e.target.closest('.dashboard-sidebar') &&
-                        !e.target.closest('.dashboard-menu-toggle')) {
-                        navMenu.classList.remove('active');
-                    }
-                });
-            }
-        });
-
-        function downloadAllData() {
-            if (confirm('Are you sure you want to download all data?')) {
-                window.location.href = '/dashboard/api/download-all-data';
-            }
-        }
-    </script>
     {{{_sections.scripts}}}
 </body>
 

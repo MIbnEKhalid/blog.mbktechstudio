@@ -1,1510 +1,1471 @@
 {{#section 'styles'}}
-<title>Dashboard - Edit Post</title>
+<title>{{#if isNew}}New Post{{else}}Edit: {{post.title}}{{/if}} — MBK Admin</title>
+<link rel="stylesheet" href="/mbkbucket/mbkbucket-helper.css">
 <style>
-    /* --- CORE VARIABLES --- */
-    :root {
-        --primary-color: #2196F3;
-        --primary-light: #e3f2fd;
-        --danger-color: #dc3545;
-        --success-color: #28a745;
-        --border-color: #e0e0e0;
-        --text-muted: #6c757d;
-        --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        --dark: #1e1e2d;
-        --darker: #151521;
-        --text-light: #e0e0e0;
-        --ai-gradient: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
-    }
-
-    /* --- LAYOUT & FORM STYLES --- */
-    .edit-post-form {
-        max-width: 1400px;
-        margin: 0 auto;
-        padding: 2rem;
-        background: var(--dark);
-        border-radius: 8px;
-        box-shadow: var(--box-shadow);
-        color: var(--text-light);
-    }
-
-    .form-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 2rem;
-        padding-bottom: 1rem;
-        border-bottom: 1px solid var(--border-color);
-    }
-
-    .form-header h1 { margin: 0; font-size: 1.8rem; font-weight: 600; }
-
-    .form-group { margin-bottom: 1.5rem; }
-
-    .form-label {
-        display: block;
-        margin-bottom: 0.5rem;
-        font-weight: 500;
-        color: #a1a1aa;
-        font-size: 0.9rem;
-    }
-
-    .form-control {
-        width: 100%;
-        padding: 0.8rem;
-        border: 1px solid #2d2d3b;
-        border-radius: 6px;
-        background-color: var(--darker);
-        color: var(--text-light);
-        transition: all 0.2s;
-        font-size: 1rem;
-    }
-
-    .form-control:focus {
-        border-color: var(--primary-color);
-        outline: none;
-        box-shadow: 0 0 0 2px rgba(33, 150, 243, 0.2);
-    }
-
-    textarea.form-control { resize: vertical; line-height: 1.6; }
-
-    /* --- TAG & CATEGORY MANAGEMENT (OLD FUNCTIONALITY) --- */
-    .tag-management, .category-management {
+    .editor-wrapper {
         display: flex;
         flex-direction: column;
-        gap: 0.5rem;
+        gap: 1.25rem;
     }
 
-    .tag-input, .category-input {
+    .editor-header {
         display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 1rem 1.4rem;
+        border: 1px solid rgba(255, 255, 255, 0.9);
+        border-radius: var(--radius-lg);
+        background: rgba(255, 255, 255, 0.85);
+        backdrop-filter: blur(12px);
+        box-shadow: 0 8px 24px rgba(15, 23, 42, 0.04);
+        gap: 1rem;
         flex-wrap: wrap;
-        gap: 0.5rem;
-        padding: 0.5rem;
-        border: 1px solid #2d2d3b;
-        border-radius: 6px;
-        background-color: var(--darker);
-        min-height: 46px;
-        align-items: center;
     }
 
-    .tag-selector, .category-selector {
-        display: flex;
-        gap: 0.5rem;
-        align-items: center;
-        position: relative;
-    }
-
-    .tag-selector input, .category-selector input { flex: 1; }
-
-    .search-results {
-        position: absolute;
-        top: 100%;
-        left: 0;
-        right: 0;
-        background-color: #2d2d3b;
-        border: 1px solid var(--primary-color);
-        border-top: none;
-        border-radius: 0 0 6px 6px;
-        max-height: 200px;
-        overflow-y: auto;
-        z-index: 100;
-        display: none;
-    }
-    .search-results.show { display: block; }
-
-    .search-result-item {
-        padding: 0.75rem;
-        cursor: pointer;
-        color: var(--text-light);
-        border-bottom: 1px solid #3f3f4e;
-    }
-    .search-result-item:hover { background-color: var(--primary-color); color: white; }
-
-    .tag, .category {
-        background-color: rgba(33, 150, 243, 0.15);
-        color: var(--primary-color);
-        padding: 0.3rem 0.8rem;
-        border-radius: 20px;
+    .editor-header-left {
         display: flex;
         align-items: center;
-        gap: 0.5rem;
-        font-size: 0.85rem;
-        border: 1px solid rgba(33, 150, 243, 0.3);
+        gap: 1rem;
     }
-    
-    .category { background-color: rgba(40, 167, 69, 0.15); color: #4ade80; border-color: rgba(40, 167, 69, 0.3); }
 
-    .tag button, .category button {
-        background: none;
-        border: none;
-        cursor: pointer;
-        padding: 0;
-        color: inherit;
-        font-size: 1.1rem;
-        line-height: 1;
+    .editor-stats-badge {
         display: flex;
         align-items: center;
-    }
-    .tag button:hover, .category button:hover { opacity: 0.7; }
-
-    /* --- IMAGE UPLOAD SYSTEM (OLD FUNCTIONALITY) --- */
-    .preview-image-container {
-        border: 1px solid #2d2d3b;
-        border-radius: 8px;
-        padding: 1.5rem;
-        background-color: var(--darker);
-    }
-    .preview-image {
-        max-width: 100%;
-        max-height: 300px;
-        border-radius: 8px;
-        object-fit: contain;
-        display: block;
-        margin-top: 1rem;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-    }
-    .upload-tabs {
-        display: flex;
-        border-bottom: 1px solid #2d2d3b;
-        margin-bottom: 1rem;
-    }
-    .tab-btn {
-        background: none;
-        border: none;
-        padding: 0.75rem 1.5rem;
+        gap: 1rem;
+        font-size: 12px;
         color: var(--text-muted);
-        cursor: pointer;
-        border-bottom: 2px solid transparent;
-        font-weight: 500;
-        transition: all 0.2s;
+        background: var(--light-color-ml);
+        border: 1px solid var(--border-color);
+        padding: 4px 12px;
+        border-radius: var(--radius-full);
     }
-    .tab-btn:hover { color: var(--text-light); }
-    .tab-btn.active { color: var(--primary-color); border-bottom-color: var(--primary-color); }
-    
-    .upload-area {
-        border: 2px dashed #3f3f4e;
-        border-radius: 8px;
-        padding: 3rem 2rem;
-        text-align: center;
-        cursor: pointer;
-        transition: all 0.2s;
-    }
-    .upload-area:hover { border-color: var(--primary-color); background: rgba(33,150,243,0.05); }
-    .upload-placeholder { color: var(--text-muted); }
-    
-    /* Image Grid for Browser */
-    .image-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-        gap: 10px;
-        max-height: 300px;
-        overflow-y: auto;
-        padding: 10px;
-    }
-    .image-item {
-        position: relative;
-        aspect-ratio: 1;
-        border-radius: 4px;
-        overflow: hidden;
-        cursor: pointer;
-        border: 2px solid transparent;
-    }
-    .image-item img { width: 100%; height: 100%; object-fit: cover; }
-    .image-item:hover { border-color: var(--primary-color); }
-    .image-item.selected { border-color: var(--success-color); box-shadow: 0 0 0 2px var(--success-color); }
 
-    /* --- MARKDOWN EDITOR (OLD FUNCTIONALITY) --- */
-    .editor-controls {
-        display: flex;
-        gap: 0.5rem;
-        align-items: center;
-        flex-wrap: wrap;
-        margin-bottom: 0.5rem;
-        background: #2d2d3b;
-        padding: 0.5rem;
-        border-radius: 6px 6px 0 0;
+    .editor-stats-badge strong {
+        color: var(--primary-dark-color-ml);
+        font-family: var(--font-mono);
     }
-    .toolbar-btn {
+
+    .autosave-indicator {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 12px;
+        padding: 4px 10px;
+        border-radius: var(--radius-full);
+        background: var(--light-color-ml);
+        border: 1px solid var(--border-color);
+        transition: all 0.2s ease;
+    }
+
+    .autosave-indicator.has-changes {
+        background: var(--yellow-lt);
+        border-color: rgba(217, 119, 6, 0.3);
+        color: var(--yellow);
+    }
+
+    .autosave-indicator.saved {
+        background: var(--green-lt);
+        border-color: rgba(22, 163, 74, 0.3);
+        color: var(--green);
+    }
+
+    .autosave-pulse {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: var(--success);
+        box-shadow: 0 0 6px rgba(22, 163, 74, 0.6);
+        transition: all 0.2s ease;
+    }
+
+    .autosave-indicator.has-changes .autosave-pulse {
+        background: var(--warning);
+        box-shadow: 0 0 6px rgba(217, 119, 6, 0.6);
+    }
+
+    .changed-fields-badge {
+        font-weight: 600;
+        font-size: 11.5px;
+    }
+
+    /* Editor Grid Layout */
+    .editor-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 360px;
+        gap: 1.5rem;
+        align-items: start;
+    }
+
+    /* Main Writing Panel */
+    .writing-card {
+        background: rgba(255, 255, 255, 0.92);
+        border: 1px solid rgba(255, 255, 255, 0.95);
+        border-radius: var(--radius-lg);
+        box-shadow: 0 14px 38px rgba(15, 23, 42, 0.05);
+        backdrop-filter: blur(14px);
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .title-input-wrap {
+        padding: 1.25rem 1.5rem;
+        border-bottom: 1px solid var(--border-color);
+        background: #ffffff;
+    }
+
+    .title-input {
+        width: 100%;
+        font-family: var(--font-headings);
+        font-size: 1.6rem;
+        font-weight: 700;
+        color: var(--dark-color-ml);
+        border: none;
+        outline: none;
+        background: transparent;
+        line-height: 1.3;
+    }
+
+    .title-input::placeholder {
+        color: var(--text-disabled);
+        font-weight: 600;
+    }
+
+    /* Formatting Toolbar */
+    .writing-toolbar {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        padding: 8px 14px;
+        background: rgba(244, 247, 243, 0.8);
+        border-bottom: 1px solid var(--border-color);
+        flex-wrap: wrap;
+    }
+
+    .tool-action-btn {
         background: transparent;
         border: 1px solid transparent;
-        color: var(--text-light);
-        padding: 0.4rem;
-        border-radius: 4px;
-        cursor: pointer;
-        min-width: 32px;
+        color: var(--text-secondary);
+        width: 32px;
         height: 32px;
-        display: flex; justify-content: center; align-items: center;
-    }
-    .toolbar-btn:hover { background: rgba(255,255,255,0.1); }
-    
-    #editorContainer textarea {
-        border-top-left-radius: 0;
-        border-top-right-radius: 0;
-        font-family: 'Fira Code', monospace;
-    }
-
-    #markdownPreview {
-        background-color: var(--darker);
-        border: 1px solid #2d2d3b;
-        border-radius: 6px;
-        padding: 2rem;
-        min-height: 400px;
-        display: none;
-        overflow-y: auto;
-    }
-    /* Split View Logic */
-    .split-view { display: flex; gap: 1rem; }
-    .split-view #editorContainer { flex: 1; }
-    .split-view #markdownPreview { flex: 1; display: block; margin-top: 0; height: 100%; }
-
-    /* --- AI HYBRID SYSTEM STYLES (NEW) --- */
-    
-    /* 1. Input Groups for AI Buttons */
-    .input-group {
-        position: relative;
-        display: flex;
-        width: 100%;
-        align-items: stretch;
-    }
-    .input-group .form-control {
-        border-top-right-radius: 0;
-        border-bottom-right-radius: 0;
-        flex: 1;
-    }
-    
-    /* AI Trigger Button */
-    .btn-ai {
-        background: var(--ai-gradient);
-        border: none;
-        color: white;
-        padding: 0 1.2rem;
-        border-top-right-radius: 6px;
-        border-bottom-right-radius: 6px;
+        border-radius: var(--radius-sm);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
         cursor: pointer;
-        font-size: 0.9rem;
+        font-size: 13px;
         font-weight: 600;
+        transition: all 0.15s ease;
+    }
+
+    .tool-action-btn:hover {
+        background: var(--primary-light-color-ml);
+        color: var(--primary-dark-color-ml);
+        border-color: rgba(15, 118, 110, 0.2);
+    }
+
+    .tool-divider {
+        width: 1px;
+        height: 20px;
+        background: var(--border-color);
+        margin: 0 4px;
+    }
+
+    .editor-view-tabs {
+        margin-left: auto;
+        display: flex;
+        gap: 4px;
+        background: var(--light-color-ml);
+        padding: 2px;
+        border-radius: var(--radius-sm);
+        border: 1px solid var(--border-color);
+    }
+
+    .view-tab-btn {
+        padding: 3px 10px;
+        font-size: 11.5px;
+        font-weight: 600;
+        border-radius: var(--radius-sm);
+        border: none;
+        background: transparent;
+        color: var(--text-muted);
+        cursor: pointer;
+        transition: all 0.15s ease;
+    }
+
+    .view-tab-btn.active {
+        background: #ffffff;
+        color: var(--primary-dark-color-ml);
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+    }
+
+    /* Textarea & Preview Areas */
+    .editor-body-panes {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        min-height: 600px;
+        background: #ffffff;
+    }
+
+    .editor-body-panes.write-only {
+        grid-template-columns: 1fr;
+    }
+
+    .editor-body-panes.preview-only {
+        grid-template-columns: 1fr;
+    }
+
+    .editor-body-panes.write-only #editorPreview { display: none; }
+    .editor-body-panes.preview-only #postContent { display: none; }
+
+    .editor-textarea-field {
+        width: 100%;
+        height: 100%;
+        min-height: 600px;
+        background: #ffffff;
+        border: none;
+        border-right: 1px solid var(--border-color);
+        padding: 1.5rem;
+        color: var(--dark-color-ml);
+        font-family: var(--font-mono);
+        font-size: 13.5px;
+        line-height: 1.75;
+        resize: none;
+        outline: none;
+    }
+
+    .editor-preview-field {
+        padding: 1.5rem;
+        background: rgba(250, 252, 249, 0.85);
+        overflow-y: auto;
+        color: var(--dark-color-ml);
+        font-size: 14px;
+        line-height: 1.8;
+    }
+
+    .editor-preview-field h1, .editor-preview-field h2, .editor-preview-field h3 {
+        font-family: var(--font-headings);
+        color: var(--primary-dark-color-ml);
+        margin-top: 1.25rem;
+        margin-bottom: 0.6rem;
+    }
+
+    .editor-preview-field p { margin-bottom: 1rem; }
+
+    .editor-preview-field code {
+        background: var(--primary-light-color-ml);
+        color: var(--primary-dark-color-ml);
+        padding: 2px 6px;
+        border-radius: 4px;
+        font-family: var(--font-mono);
+        font-size: 12px;
+    }
+
+    .editor-preview-field pre {
+        background: var(--dark-color-ml);
+        color: #e6f3ef;
+        padding: 1.1rem;
+        border-radius: var(--radius);
+        overflow-x: auto;
+        margin-bottom: 1.25rem;
+        font-family: var(--font-mono);
+        font-size: 12.5px;
+    }
+
+    .editor-preview-field img {
+        max-width: 100%;
+        border-radius: var(--radius);
+        margin: 1rem 0;
+        box-shadow: var(--shadow-sm);
+    }
+
+    /* Meta Sidebar Panels */
+    .editor-sidebar-column {
+        display: flex;
+        flex-direction: column;
+        gap: 1.25rem;
+    }
+
+    .meta-panel {
+        background: rgba(255, 255, 255, 0.88);
+        border: 1px solid rgba(255, 255, 255, 0.95);
+        border-radius: var(--radius-lg);
+        box-shadow: 0 8px 24px rgba(15, 23, 42, 0.04);
+        backdrop-filter: blur(12px);
+        overflow: hidden;
+    }
+
+    .meta-panel-header {
+        padding: 12px 18px;
+        background: rgba(244, 247, 243, 0.65);
+        border-bottom: 1px solid var(--border-color);
         display: flex;
         align-items: center;
-        gap: 0.6rem;
-        white-space: nowrap;
-        transition: all 0.2s;
-        box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-    }
-    .btn-ai:hover {
-        filter: brightness(1.15);
-        transform: translateY(-1px);
-        box-shadow: 0 4px 8px rgba(99, 102, 241, 0.4);
-    }
-    .btn-ai:active { transform: translateY(0); }
-    .btn-ai:disabled { filter: grayscale(0.8); cursor: wait; }
-    
-    /* Specific styling for standalone AI buttons (Tags/Cats) */
-    .btn-ai.standalone {
-        border-radius: 4px;
-        height: 46px; /* Match input height */
+        justify-content: space-between;
     }
 
-    /* 2. Floating Chat Window */
-    .ai-window {
-        position: fixed;
-        bottom: 30px;
-        right: 30px;
-        width: 400px;
-        height: 600px;
-        background-color: var(--dark);
-        border: 1px solid #3f3f4e;
-        border-radius: 12px;
-        box-shadow: 0 20px 50px rgba(0,0,0,0.7);
-        display: none;
-        flex-direction: column;
-        z-index: 9999;
-        resize: both; /* Allow user resizing */
-        overflow: hidden;
-        min-width: 320px;
-        min-height: 400px;
-        backdrop-filter: blur(10px);
-    }
-
-    .ai-window.active {
+    .meta-panel-title {
+        font-family: var(--font-headings);
+        font-size: 13px;
+        font-weight: 700;
+        color: var(--dark-color-ml);
         display: flex;
-        animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        align-items: center;
+        gap: 6px;
     }
 
-    @keyframes slideUp {
-        from { transform: translateY(40px); opacity: 0; }
-        to { transform: translateY(0); opacity: 1; }
+    .meta-panel-body {
+        padding: 16px 18px;
     }
 
-    .ai-header {
-        padding: 1rem;
-        background: var(--ai-gradient);
-        color: white;
+    /* Cover Image Picker Element */
+    .cover-dropzone {
+        border: 2px dashed var(--border-color);
+        border-radius: var(--radius);
+        background: rgba(244, 247, 243, 0.5);
+        padding: 20px;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.15s ease;
+    }
+
+    .cover-dropzone:hover {
+        border-color: var(--primary-color-ml);
+        background: var(--primary-light-color-ml);
+    }
+
+    .cover-preview-card {
+        border-radius: var(--radius);
+        overflow: hidden;
+        border: 1px solid var(--border-color);
+        position: relative;
+        background: #ffffff;
+        box-shadow: var(--shadow-sm);
+    }
+
+    .cover-preview-img {
+        width: 100%;
+        height: 160px;
+        object-fit: cover;
+        display: block;
+    }
+
+    .cover-preview-overlay {
+        position: absolute;
+        bottom: 0; left: 0; right: 0;
+        padding: 8px 12px;
+        background: linear-gradient(transparent, rgba(15, 42, 42, 0.85));
         display: flex;
         justify-content: space-between;
         align-items: center;
-        cursor: grab;
-        flex-shrink: 0;
-        user-select: none;
     }
-    .ai-header:active { cursor: grabbing; }
 
-    .ai-body {
-        flex: 1;
-        overflow-y: auto;
-        padding: 1rem;
-        background: var(--darker);
+    /* SERP Google Card */
+    .serp-card-light {
+        background: #ffffff;
+        border: 1px solid var(--border-color);
+        border-radius: var(--radius);
+        padding: 12px 14px;
+        box-shadow: var(--shadow-sm);
+        font-family: Arial, sans-serif;
+    }
+    .serp-site { font-size: 11px; color: #202124; display: flex; align-items: center; gap: 4px; }
+    .serp-link { color: #1a0dab; font-size: 14px; font-weight: 500; margin: 3px 0; line-height: 1.3; }
+    .serp-snippet { color: #4d5156; font-size: 12px; line-height: 1.4; }
+
+    /* Tag chips */
+    .tag-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        background: var(--primary-light-color-ml);
+        color: var(--primary-dark-color-ml);
+        padding: 3px 10px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 600;
+        border: 1px solid rgba(15, 118, 110, 0.18);
+    }
+    .tag-chip button {
+        background: transparent;
+        border: none;
+        color: inherit;
+        cursor: pointer;
+        font-size: 14px;
+        line-height: 1;
+        padding: 0;
+    }
+
+    @media (max-width: 1024px) {
+        .editor-grid { grid-template-columns: 1fr; }
+        .editor-body-panes { grid-template-columns: 1fr; }
+    }
+
+    /* ── Change Review Modal ───────────────────────────────────── */
+    .review-backdrop {
+        position: fixed; inset: 0;
+        background: rgba(15, 26, 26, 0.55);
+        backdrop-filter: blur(4px);
+        z-index: 1200;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        padding: 1.5rem;
+    }
+    .review-backdrop.open { display: flex; }
+
+    .review-modal {
+        background: #ffffff;
+        border-radius: var(--radius-lg);
+        box-shadow: 0 24px 64px rgba(15, 118, 110, 0.18), 0 4px 16px rgba(0,0,0,0.08);
+        width: 100%;
+        max-width: 680px;
+        max-height: 85vh;
         display: flex;
         flex-direction: column;
-        gap: 1rem;
-        scroll-behavior: smooth;
+        overflow: hidden;
+        border: 1px solid var(--border-color);
+        animation: reviewSlideIn 0.22s ease;
+    }
+    @keyframes reviewSlideIn {
+        from { opacity: 0; transform: translateY(-18px) scale(0.97); }
+        to   { opacity: 1; transform: translateY(0)   scale(1); }
     }
 
-    .ai-footer {
-        padding: 1rem;
-        background: var(--dark);
-        border-top: 1px solid #2d2d3b;
-        flex-shrink: 0;
-        display: flex;
-        gap: 0.8rem;
-        align-items: flex-end;
-    }
-
-    /* Auto-expanding textarea */
-    .ai-input {
-        width: 100%;
-        background: #2d2d3b;
-        border: 1px solid transparent;
-        border-radius: 8px;
-        color: var(--text-light);
-        padding: 0.8rem;
-        font-family: inherit;
-        resize: none; /* Auto-handled by JS */
-        min-height: 44px;
-        max-height: 150px;
-        font-size: 0.95rem;
-        line-height: 1.4;
-        transition: border-color 0.2s;
-    }
-    .ai-input:focus { outline: none; border-color: #8b5cf6; background: #323242; }
-
-    /* Chat Bubbles */
-    .ai-msg {
-        padding: 0.8rem 1rem;
-        border-radius: 10px;
-        font-size: 0.95rem;
-        line-height: 1.6;
-        max-width: 90%;
-        word-wrap: break-word;
-        position: relative;
-        animation: fadeIn 0.2s ease;
-    }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
-
-    .ai-msg.user {
-        align-self: flex-end;
-        background: #4f46e5;
-        color: white;
-        border-bottom-right-radius: 2px;
-    }
-
-    .ai-msg.bot {
-        align-self: flex-start;
-        background: #2d2d3b;
-        border: 1px solid #3f3f4e;
-        color: var(--text-light);
-        border-bottom-left-radius: 2px;
-    }
-
-    /* Apply Button inside Chat */
-    .ai-apply-btn {
-        margin-top: 0.8rem;
-        padding: 0.5rem 1rem;
-        background: rgba(16, 185, 129, 0.2);
-        border: 1px solid #10b981;
-        border-radius: 6px;
-        color: #10b981;
-        font-size: 0.85rem;
-        font-weight: 600;
-        cursor: pointer;
+    .review-header {
         display: flex;
         align-items: center;
-        gap: 0.5rem;
-        width: 100%;
-        justify-content: center;
-        transition: all 0.2s;
+        justify-content: space-between;
+        padding: 1rem 1.4rem;
+        border-bottom: 1px solid var(--border-color);
+        background: var(--light-color-ml);
     }
-    .ai-apply-btn:hover { background: #10b981; color: white; }
-
-    /* Action Buttons */
-    .action-buttons {
+    .review-header-title {
         display: flex;
-        gap: 1rem;
+        align-items: center;
+        gap: 8px;
+        font-family: var(--font-headings);
+        font-weight: 700;
+        font-size: 15px;
+        color: var(--dark-color-ml);
+    }
+    .review-header-title i { color: var(--warning-color-ml); }
+    .review-badge {
+        font-size: 11px;
+        font-weight: 700;
+        background: rgba(217,119,6,0.12);
+        color: #b45309;
+        border: 1px solid rgba(217,119,6,0.25);
+        border-radius: var(--radius-full);
+        padding: 2px 9px;
+    }
+
+    .review-body {
+        flex: 1;
+        overflow-y: auto;
+        padding: 1rem 1.4rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+
+    .review-field-row {
+        border: 1px solid var(--border-color);
+        border-radius: var(--radius);
+        overflow: hidden;
+        font-size: 13px;
+    }
+    .review-field-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 6px 12px;
+        background: var(--light-color-ml);
+        border-bottom: 1px solid var(--border-color);
+    }
+    .review-field-name {
+        font-weight: 700;
+        color: var(--primary-dark-color-ml);
+        font-family: var(--font-headings);
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+    }
+    .revert-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        font-size: 11px;
+        font-weight: 600;
+        color: #b45309;
+        background: rgba(217,119,6,0.1);
+        border: 1px solid rgba(217,119,6,0.25);
+        border-radius: var(--radius-full);
+        padding: 2px 10px;
+        cursor: pointer;
+        transition: background 0.15s;
+    }
+    .revert-btn:hover { background: rgba(217,119,6,0.2); }
+
+    .review-diff {
+        padding: 9px 12px;
+        font-family: var(--font-mono);
+        font-size: 11.5px;
+        line-height: 1.7;
+        white-space: pre-wrap;
+        word-break: break-word;
+        max-height: 160px;
+        overflow-y: auto;
+        background: #f8fafc;
+        border-top: 1px solid var(--border-color);
+        color: var(--dark-color-ml);
+    }
+    /* Inline char-level highlights (git --word-diff style) */
+    .d-del {
+        background: #fecaca;
+        color: #7f1d1d;
+        border-radius: 3px;
+        padding: 0 2px;
+        text-decoration: line-through;
+        text-decoration-color: rgba(127,29,29,0.5);
+    }
+    .d-ins {
+        background: #bbf7d0;
+        color: #14532d;
+        border-radius: 3px;
+        padding: 0 2px;
+        font-weight: 600;
+    }
+    .review-diff-label {
+        font-size: 10px;
+        font-weight: 700;
+        opacity: 0.55;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        margin-bottom: 5px;
+        display: block;
+        font-family: var(--font-body);
+    }
+
+    .review-footer {
+        display: flex;
+        align-items: center;
         justify-content: flex-end;
-        margin-top: 3rem;
-        padding-top: 1.5rem;
-        border-top: 1px solid #2d2d3b;
+        gap: 8px;
+        padding: 0.9rem 1.4rem;
+        border-top: 1px solid var(--border-color);
+        background: var(--light-color-ml);
     }
-    .btn {
-        padding: 0.8rem 2rem;
-        font-size: 1rem;
-        font-weight: 600;
-        border-radius: 6px;
-        cursor: pointer;
-        transition: all 0.2s;
-    }
-    .btn-secondary { background: transparent; border: 1px solid #3f3f4e; color: #a1a1aa; }
-    .btn-secondary:hover { border-color: var(--text-light); color: var(--text-light); }
-    .btn-primary { background: var(--primary-color); border: none; color: white; }
-    .btn-primary:hover { filter: brightness(1.1); }
-
-    /* Notifications */
-    .notification {
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        background: var(--success-color);
-        color: white;
-        padding: 1rem 1.5rem;
-        border-radius: 6px;
-        z-index: 10000;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-        animation: slideIn 0.3s ease;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        font-weight: 500;
-    }
-    .notification.error { background: var(--danger-color); }
 </style>
 {{/section}}
 
-<div class="content-card">
-    <form class="edit-post-form" id="editPostForm">
-        
-        <!-- Header -->
-        <div class="form-header">
-            <h1>{{#if post}}Edit Post{{else}}Create New Post{{/if}}</h1>
-            <div class="status-controls">
-                <select name="status" class="form-control" style="width: auto; min-width: 150px;">
-                    <option value="draft" {{#if (eq post.status 'draft' )}}selected{{/if}}>Draft</option>
-                    <option value="published" {{#if (eq post.status 'published' )}}selected{{/if}}>Published</option>
-                    <option value="private" {{#if (eq post.status 'private' )}}selected{{/if}}>Private</option>
-                </select>
-            </div>
-        </div>
+<form id="postEditorForm">
+    <input type="hidden" id="postId" value="{{#unless isNew}}{{post.id}}{{/unless}}">
 
-        <!-- 1. TITLE FIELD (With Chat AI) -->
-        <div class="form-group">
-            <label class="form-label" for="title">Post Title</label>
-            <div class="input-group">
-                <input type="text" class="form-control" id="title" name="title" value="{{post.title}}" placeholder="Enter an engaging title..." required>
-                <!-- Triggers Chat Window -->
-                <button type="button" class="btn-ai" onclick="openAiChat('title')">
-                    <i class="fas fa-magic"></i> AI Title
+    <div class="editor-wrapper">
+        <!-- Top Bar with Actions -->
+        <div class="editor-header">
+            <div class="editor-header-left">
+                <a href="/dashboard/posts" class="btn btn-outline btn-sm">
+                    <i class="fas fa-arrow-left"></i> All Posts
+                </a>
+                <div class="autosave-indicator saved" id="autosaveIndicator" title="Changes status">
+                    <span class="autosave-pulse"></span>
+                    <span id="autosaveLabel" class="changed-fields-badge">No changes</span>
+                </div>
+            </div>
+
+            <div class="editor-stats-badge">
+                <span><i class="fas fa-font" style="margin-right: 3px;"></i> <strong id="wordCount">0</strong> words</span>
+                <span>&bull;</span>
+                <span><i class="fas fa-clock" style="margin-right: 3px;"></i> <strong id="readingTime">1</strong> min read</span>
+                <span>&bull;</span>
+                <span><i class="fas fa-keyboard" style="margin-right: 3px;"></i> <strong id="charCount">0</strong> chars</span>
+            </div>
+
+            <div style="display: flex; align-items: center; gap: 8px;">
+                <button type="button" class="btn btn-ai btn-sm" id="openAiDrawerBtn">
+                    <i class="fas fa-magic"></i> AI Copilot
+                </button>
+                <button type="submit" class="btn btn-primary" id="savePostBtn">
+                    <i class="fas fa-paper-plane"></i> {{#if isNew}}Publish Post{{else}}Update Post{{/if}}
                 </button>
             </div>
         </div>
 
-        <!-- 2. EXCERPT FIELD (With Chat AI) -->
-        <div class="form-group">
-            <label class="form-label" for="excerpt">Short Excerpt (SEO)</label>
-            <div class="input-group">
-                <textarea class="form-control" id="excerpt" name="excerpt" rows="3" placeholder="A brief summary for search engines...">{{post.excerpt}}</textarea>
-                <!-- Triggers Chat Window -->
-                <button type="button" class="btn-ai" onclick="openAiChat('excerpt')" style="height: auto;">
-                    <i class="fas fa-magic"></i> AI Excerpt
-                </button>
-            </div>
-        </div>
-
-        <!-- 3. IMAGE SYSTEM (Restored Old Functionality) -->
-        <div class="form-group">
-            <label class="form-label">Featured Image</label>
-            <div class="preview-image-container">
-                {{#if post.preview_image}}
-                <div class="current-preview mb-3">
-                    <img src="{{post.preview_image}}" alt="Current preview" class="preview-image" id="mainPreviewImg">
-                </div>
-                {{/if}}
-                
-                <!-- Tabs -->
-                <div class="upload-tabs">
-                    <button type="button" class="tab-btn active" data-tab="url" onclick="switchImageTab('url')"><i class="fas fa-link"></i> Image URL</button>
-                    <button type="button" class="tab-btn" data-tab="upload" onclick="switchImageTab('upload')"><i class="fas fa-upload"></i> Upload File</button>
-                    <button type="button" class="tab-btn" data-tab="browse" onclick="switchImageTab('browse')"><i class="fas fa-images"></i> Browse Gallery</button>
+        <!-- Main Workspace Grid -->
+        <div class="editor-grid">
+            <!-- LEFT: Writing Workspace -->
+            <div class="writing-card">
+                <!-- Title Field -->
+                <div class="title-input-wrap">
+                    <input type="text" id="postTitle" class="title-input" placeholder="Enter article title here..." value="{{post.title}}" required autocomplete="off">
                 </div>
 
-                <!-- URL Tab -->
-                <div id="urlTab" class="tab-content active">
-                    <input type="url" id="previewImage" name="preview_image" class="form-control" value="{{post.preview_image}}" onchange="previewImageUrl(this)" placeholder="https://example.com/image.jpg">
-                    <small style="color:#6c757d; display:block; margin-top:0.5rem;">Paste an external URL or use the upload tab.</small>
-                </div>
-
-                <!-- Upload Tab -->
-                <div id="uploadTab" class="tab-content" style="display: none;">
-                    <div class="upload-area" onclick="document.getElementById('imageUpload').click()" id="dropZone">
-                        <input type="file" id="imageUpload" name="image" accept="image/*" style="display: none;" onchange="handleImageUpload(this)">
-                        <div class="upload-placeholder">
-                            <i class="fas fa-cloud-upload-alt fa-3x" style="margin-bottom: 1rem; color: var(--primary-color);"></i>
-                            <p>Click or Drag image here to upload</p>
-                            <small>Max 10MB (JPG, PNG, WEBP)</small>
-                        </div>
-                        <div id="uploadProgress" class="upload-progress" style="display: none; margin-top: 1rem;">
-                            <div class="progress-bar" style="height: 4px; background: var(--primary-color); width: 0%;"></div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Browse Tab -->
-                <div id="browseTab" class="tab-content" style="display: none;">
-                    <div class="image-browser">
-                        <div class="browser-header">
-                            <input type="text" id="imageSearch" placeholder="Search gallery..." class="search-input" onkeyup="filterImages(this.value)">
-                            <button type="button" class="btn btn-secondary" onclick="loadBucketImages(true)" style="padding: 0.4rem 0.8rem;"><i class="fas fa-sync"></i></button>
-                        </div>
-                        <div id="imageGrid" class="image-grid">
-                            <!-- Populated via JS -->
-                            <div style="text-align:center; padding: 2rem; color: #666;">Click refresh to load images</div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Live Preview Container -->
-                <div id="imagePreview" class="mt-3" style="display: none;">
-                    <img src="" class="preview-image">
-                </div>
-            </div>
-        </div>
-
-        <!-- 4. MARKDOWN EDITOR (With Chat AI + Old Toolbar) -->
-        <div class="form-group">
-            <label class="form-label" for="content">Post Content (Markdown)</label>
-            
-            <div class="editor-controls">
-                <!-- Standard Toolbar -->
-                <button type="button" class="toolbar-btn" title="Bold" onclick="insertMarkdown('**', '**')"><i class="fas fa-bold"></i></button>
-                <button type="button" class="toolbar-btn" title="Italic" onclick="insertMarkdown('*', '*')"><i class="fas fa-italic"></i></button>
-                <button type="button" class="toolbar-btn" title="H2" onclick="insertMarkdown('## ', '')"><i class="fas fa-heading"></i></button>
-                <button type="button" class="toolbar-btn" title="Link" onclick="insertLink()"><i class="fas fa-link"></i></button>
-                <button type="button" class="toolbar-btn" title="Code Block" onclick="insertCodeBlock()"><i class="fas fa-code"></i></button>
-                <button type="button" class="toolbar-btn" title="List" onclick="insertMarkdown('- ', '')"><i class="fas fa-list-ul"></i></button>
-                
-                <!-- Split View Toggle -->
-                <button type="button" class="toolbar-btn" title="Split Preview" onclick="toggleSplitView()" style="margin-left: 10px; border-left: 1px solid #444;">
-                    <i class="fas fa-columns"></i>
-                </button>
-
-                <!-- AI Writer Button -->
-                <button type="button" class="btn-ai" onclick="openAiChat('content')" style="border-radius:4px; margin-left: auto; padding: 0.4rem 1rem;">
-                    <i class="fas fa-robot"></i> AI Writer
-                </button>
-            </div>
-
-            <div style="position: relative;">
-                <!-- Main Editor Area -->
-                <div id="editorWrapper">
-                    <div id="editorContainer">
-                        <textarea class="form-control" id="content" name="content" rows="20" style="font-family: 'Fira Code', monospace; line-height: 1.6;">{{#if post.content_markdown}}{{post.content_markdown}}{{else}}{{post.content}}{{/if}}</textarea>
-                    </div>
-                    <!-- Live Preview Area -->
-                    <div id="markdownPreview" class="markdown-content"></div>
-                </div>
-            </div>
-            <small style="color: #6c757d; margin-top: 0.5rem; display: block;">
-                Supports standard Markdown. Use Ctrl+B for Bold, Ctrl+I for Italic.
-            </small>
-        </div>
-
-        <!-- 5. CATEGORIES (Auto Action) -->
-        <div class="form-group">
-            <label class="form-label">Categories <span style="color: var(--danger-color);">*</span></label>
-            <div class="category-management">
-                <!-- Visual Chips Container -->
-                <div class="category-input" id="categoryContainer">
-                    {{#each post.categoryIds}}
-                    <span class="category" data-category-id="{{this}}">
-                        {{#getCategory ../categories this}}{{/getCategory}}
-                        <button type="button" class="remove-category">&times;</button>
-                    </span>
-                    {{/each}}
-                </div>
-                
-                <!-- Search & Select & AI -->
-                <div class="category-selector">
-                    <input type="text" id="categorySearch" class="form-control" placeholder="Search or select category...">
-                    
-                    <!-- Hidden select for data reference -->
-                    <select id="categorySelect" class="form-control" style="display: none;">
-                        <option value="">Select...</option>
-                        {{#each categories}}<option value="{{id}}">{{name}}</option>{{/each}}
-                    </select>
-                    
-                    <!-- Manual Add Button -->
-                    <button type="button" id="manualAddCategory" class="btn btn-secondary" style="margin-left: 10px;">Add</button>
-
-                    <!-- DIRECT AI ACTION BUTTON -->
-                    <button type="button" class="btn-ai standalone" onclick="triggerAutoAction('categories')" style="margin-left: 10px;">
-                        <i class="fas fa-project-diagram"></i> Auto-Classify
+                <!-- Markdown Formatting Toolbar with MBKBucket Image Picker -->
+                <div class="writing-toolbar">
+                    <button type="button" class="tool-action-btn" data-action="h1" title="Heading 1">H1</button>
+                    <button type="button" class="tool-action-btn" data-action="h2" title="Heading 2">H2</button>
+                    <button type="button" class="tool-action-btn" data-action="h3" title="Heading 3">H3</button>
+                    <div class="tool-divider"></div>
+                    <button type="button" class="tool-action-btn" data-action="bold" title="Bold (Ctrl+B)"><i class="fas fa-bold"></i></button>
+                    <button type="button" class="tool-action-btn" data-action="italic" title="Italic (Ctrl+I)"><i class="fas fa-italic"></i></button>
+                    <button type="button" class="tool-action-btn" data-action="strike" title="Strikethrough"><i class="fas fa-strikethrough"></i></button>
+                    <div class="tool-divider"></div>
+                    <button type="button" class="tool-action-btn" data-action="quote" title="Quote"><i class="fas fa-quote-left"></i></button>
+                    <button type="button" class="tool-action-btn" data-action="code" title="Code Block"><i class="fas fa-code"></i></button>
+                    <button type="button" class="tool-action-btn" data-action="link" title="Link"><i class="fas fa-link"></i></button>
+                    <!-- MBKBucket Media Gallery Trigger -->
+                    <button type="button" class="tool-action-btn" id="insertBucketImageBtn" title="Insert Media from MBKBucket" style="color: var(--primary-color-ml); font-weight: 700;">
+                        <i class="fas fa-photo-video"></i>
                     </button>
-                    
-                    <!-- Search Results Dropdown -->
-                    <div class="search-results" id="categoryResults"></div>
+                    <button type="button" class="tool-action-btn" data-action="table" title="Table"><i class="fas fa-table"></i></button>
+                    <button type="button" class="tool-action-btn" data-action="list" title="Bullet List"><i class="fas fa-list-ul"></i></button>
+
+                    <!-- View Modes -->
+                    <div class="editor-view-tabs">
+                        <button type="button" class="view-tab-btn active" id="viewSplitBtn">Split</button>
+                        <button type="button" class="view-tab-btn" id="viewWriteBtn">Write</button>
+                        <button type="button" class="view-tab-btn" id="viewPreviewBtn">Preview</button>
+                    </div>
+                </div>
+
+                <!-- Editor Panes -->
+                <div class="editor-body-panes" id="editorPanes">
+                    <textarea id="postContent" class="editor-textarea-field" placeholder="Write your post in Markdown..." required>{{post.content_markdown}}</textarea>
+                    <div id="editorPreview" class="editor-preview-field"></div>
+                </div>
+            </div>
+
+            <!-- RIGHT: Editorial & Metadata Settings -->
+            <div class="editor-sidebar-column">
+                <!-- Cover Image Card with MBKBucket Frontend Helper -->
+                <div class="meta-panel">
+                    <div class="meta-panel-header">
+                        <span class="meta-panel-title"><i class="fas fa-image" style="color: var(--primary-color-ml);"></i> Cover Image</span>
+                        <button type="button" class="btn btn-sm btn-outline" id="pickCoverBucketBtn" title="Select from MBKBucket">
+                            <i class="fas fa-images"></i> Bucket
+                        </button>
+                    </div>
+                    <div class="meta-panel-body">
+                        <input type="hidden" id="postPreviewImage" value="{{post.preview_image}}">
+
+                        <!-- Preview or Empty State -->
+                        <div id="coverImageEmptyState" style="{{#if post.preview_image}}display: none;{{/if}}">
+                            <div class="cover-dropzone" onclick="openCoverGalleryPicker()">
+                                <i class="fas fa-cloud-upload-alt" style="font-size: 2rem; color: var(--primary-color-ml); margin-bottom: 6px; display: block;"></i>
+                                <div style="font-weight: 600; font-size: 13px; color: var(--dark-color-ml);">Choose Cover Image</div>
+                                <div style="font-size: 11.5px; color: var(--text-muted); margin-top: 2px;">Pick from MBKBucket gallery or upload</div>
+                            </div>
+                        </div>
+
+                        <div id="coverImagePreviewState" style="{{#unless post.preview_image}}display: none;{{/unless}}">
+                            <div class="cover-preview-card">
+                                <img id="coverPreviewImgTag" src="{{post.preview_image}}" class="cover-preview-img" alt="Cover">
+                                <div class="cover-preview-overlay">
+                                    <button type="button" class="btn btn-sm btn-outline" style="background: rgba(255,255,255,0.9); padding: 3px 8px;" onclick="openCoverGalleryPicker()">
+                                        <i class="fas fa-exchange-alt"></i> Change
+                                    </button>
+                                    <button type="button" class="btn btn-sm btn-danger" style="padding: 3px 8px;" onclick="clearCoverImage()">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Manual URL option fallback -->
+                        <div style="margin-top: 10px;">
+                            <input type="text" id="manualImageUrlInput" class="form-input" placeholder="Or paste image URL directly..." value="{{post.preview_image}}" style="font-size: 12px; padding: 5px 8px;">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Status & Permalink -->
+                <div class="meta-panel">
+                    <div class="meta-panel-header">
+                        <span class="meta-panel-title"><i class="fas fa-sliders-h" style="color: var(--secondary-color-ml);"></i> Publishing & URL</span>
+                    </div>
+                    <div class="meta-panel-body">
+                        <div class="form-group">
+                            <label class="form-label">Post Status</label>
+                            <select id="postStatus" class="form-select">
+                                <option value="draft" {{#if (eq post.status 'draft')}}selected{{/if}}>Draft (Unpublished)</option>
+                                <option value="published" {{#if (eq post.status 'published')}}selected{{/if}}>Published (Live)</option>
+                                <option value="private" {{#if (eq post.status 'private')}}selected{{/if}}>Private (Admin Only)</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label class="form-label">Custom Slug</label>
+                            <input type="text" id="postSlug" class="form-input" placeholder="my-awesome-post" value="{{post.slug}}">
+                            <span style="font-size: 11px; color: var(--text-muted); margin-top: 4px; display: block;">Leave empty to auto-slugify title</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Categories & Tags -->
+                <div class="meta-panel">
+                    <div class="meta-panel-header">
+                        <span class="meta-panel-title"><i class="fas fa-folder" style="color: var(--primary-color-ml);"></i> Categories & Tags</span>
+                    </div>
+                    <div class="meta-panel-body">
+                        <div class="form-group">
+                            <label class="form-label">Category</label>
+                            <div style="max-height: 130px; overflow-y: auto; padding: 6px 10px; background: var(--light-color-ml); border: 1px solid var(--border-color); border-radius: var(--radius);">
+                                {{#each categories}}
+                                <label style="display: flex; align-items: center; gap: 7px; padding: 3px 0; font-size: 13px; color: var(--dark-color-ml); cursor: pointer;">
+                                    <input type="checkbox" name="postCategories" value="{{this.id}}" {{#if (in this.id ../post.categoryIds)}}checked{{/if}}>
+                                    <span>{{this.name}}</span>
+                                </label>
+                                {{/each}}
+                            </div>
+                        </div>
+
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label class="form-label">Tags</label>
+                            <div style="display: flex; gap: 5px; margin-bottom: 8px;">
+                                <input type="text" id="tagInput" class="form-input" placeholder="Add a tag..." style="font-size: 12.5px;">
+                                <button type="button" class="btn btn-sm btn-secondary" id="addTagBtn"><i class="fas fa-plus"></i></button>
+                            </div>
+                            <div id="tagsChipWrap" style="display: flex; flex-wrap: wrap; gap: 5px;">
+                                {{#each post.tags}}
+                                <span class="tag-chip" data-tag="{{this}}">
+                                    #{{this}}
+                                    <button type="button" onclick="removeTagChip(this)">&times;</button>
+                                </span>
+                                {{/each}}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SEO Excerpt & SERP Simulation -->
+                <div class="meta-panel">
+                    <div class="meta-panel-header">
+                        <span class="meta-panel-title"><i class="fas fa-search" style="color: var(--warning-color-ml);"></i> SEO & Excerpt</span>
+                        <button type="button" class="btn btn-sm btn-outline" onclick="generateAiExcerpt()" title="Generate Excerpt with AI">
+                            <i class="fas fa-magic"></i> AI
+                        </button>
+                    </div>
+                    <div class="meta-panel-body">
+                        <div class="form-group">
+                            <label class="form-label">Meta Excerpt (140–160 chars)</label>
+                            <textarea id="postExcerpt" class="form-textarea" style="min-height: 75px;" placeholder="Summary shown in search engines...">{{post.excerpt}}</textarea>
+                        </div>
+
+                        <div class="serp-card-light">
+                            <div class="serp-site">blog.mbktech.org &rsaquo; post &rsaquo; <span id="serpSlugPreview">{{coalesce post.slug 'post-url'}}</span></div>
+                            <div class="serp-link" id="serpTitlePreview">{{coalesce post.title 'Post Title Preview'}}</div>
+                            <div class="serp-snippet" id="serpDescPreview">{{coalesce post.excerpt 'Excerpt preview in Google Search results...'}}</div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
+    </div>
+</form>
 
-        <!-- 6. TAGS (Auto Action) -->
-        <div class="form-group">
-            <label class="form-label">Tags</label>
-            <div class="tag-management">
-                <!-- Visual Chips Container -->
-                <div class="tag-input" id="tagContainer">
-                    {{#each post.tags}}
-                    <span class="tag">{{this}}<button type="button" class="remove-tag">&times;</button></span>
-                    {{/each}}
-                </div>
-                
-                <!-- Search & Select & AI -->
-                <div class="tag-selector">
-                    <input type="text" id="tagSearch" class="form-control" placeholder="Type tag and press enter...">
-                    
-                    <!-- Manual Add Button -->
-                    <button type="button" id="manualAddTag" class="btn btn-secondary" style="margin-left: 10px;">Add</button>
-
-                    <!-- DIRECT AI ACTION BUTTON -->
-                    <button type="button" class="btn-ai standalone" onclick="triggerAutoAction('tags')" style="margin-left: 10px;">
-                        <i class="fas fa-tags"></i> Auto-Tag
-                    </button>
-                    
-                    <div class="search-results" id="tagResults"></div>
-                </div>
+<!-- ══ CHANGE REVIEW MODAL ══════════════════════════════════════════ -->
+<div class="review-backdrop" id="reviewBackdrop">
+    <div class="review-modal" role="dialog" aria-modal="true" aria-labelledby="reviewModalTitle">
+        <div class="review-header">
+            <div class="review-header-title">
+                <i class="fas fa-clipboard-list"></i>
+                <span id="reviewModalTitle">Review Changes</span>
+                <span class="review-badge" id="reviewChangeBadge">0 changed</span>
             </div>
+            <button type="button" class="toast-close" id="closeReviewModalBtn" aria-label="Close">&times;</button>
         </div>
-
-        <!-- Submit Actions -->
-        <div class="action-buttons">
-            <button type="button" class="btn btn-secondary" onclick="window.history.back()">Cancel</button>
-            <button type="submit" class="btn btn-primary" id="saveBtn">
-                <i class="fas fa-save"></i> {{#if post}}Update Post{{else}}Publish Post{{/if}}
+        <div class="review-body" id="reviewBody">
+            <!-- rows injected by JS -->
+        </div>
+        <div class="review-footer">
+            <button type="button" class="btn btn-outline btn-sm" id="cancelReviewBtn">
+                <i class="fas fa-times"></i> Cancel
+            </button>
+            <button type="button" class="btn btn-primary" id="confirmUpdateBtn">
+                <i class="fas fa-paper-plane"></i> Confirm Update
             </button>
         </div>
-    </form>
+    </div>
 </div>
 
-<!-- ========================================== -->
-<!-- FLOATING AI CHAT WINDOW -->
-<!-- ========================================== -->
-<div class="ai-window" id="aiWindow">
-    <!-- Drag Handle -->
-    <div class="ai-header" id="aiHeader">
-        <span style="display:flex; align-items:center; gap:10px;"><i class="fas fa-robot"></i> AI Assistant</span>
-        <button type="button" id="closeAi" style="background:none; border:none; color:white; cursor:pointer; font-size:1.2rem; padding:0 5px;">&times;</button>
-    </div>
-    
-    <!-- Chat Body -->
-    <div class="ai-body" id="aiBody">
-        <div class="ai-msg bot">
-            <strong>Hello!</strong> I can help you write titles, refine excerpts, or expand your content.<br><br>
-            Click a button in the form to start, or type a request below.
+<!-- GEMINI AI COPILOT DRAWER -->
+<div class="ai-drawer-backdrop" id="aiDrawerBackdrop"></div>
+<div class="ai-drawer" id="aiDrawer">
+    <div style="padding: 1.25rem 1.5rem; border-bottom: 1px solid var(--border-color); display: flex; align-items: center; justify-content: space-between; background: rgba(244, 247, 243, 0.8);">
+        <div style="display: flex; align-items: center; gap: 8px; font-family: var(--font-headings); font-weight: 700; color: var(--primary-dark-color-ml);">
+            <i class="fas fa-magic" style="color: var(--purple);"></i>
+            <span>Gemini AI Copilot</span>
         </div>
+        <button type="button" class="toast-close" id="closeAiDrawerBtn">&times;</button>
     </div>
-    
-    <!-- Footer Input -->
-    <div class="ai-footer">
-        <textarea id="aiInput" class="ai-input" placeholder="Type instructions here..." rows="1"></textarea>
-        <button type="button" id="aiSend" class="btn btn-primary" style="padding:0; width:44px; height:44px; border-radius:50%; display:flex; align-items:center; justify-content:center;">
-            <i class="fas fa-paper-plane"></i>
+    <div style="padding: 1.5rem; overflow-y: auto; flex: 1; display: flex; flex-direction: column; gap: 1rem;">
+        <div class="form-group">
+            <label class="form-label">Action</label>
+            <select id="aiActionSelect" class="form-select">
+                <option value="title">Generate Catchy SEO Title</option>
+                <option value="excerpt">Generate 2-Sentence Excerpt</option>
+                <option value="tags">Suggest Relevant Tags</option>
+                <option value="categories">Classify Category</option>
+                <option value="content">Polish & Expand Content</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label class="form-label">Instructions (Optional)</label>
+            <input type="text" id="aiCustomPrompt" class="form-input" placeholder="e.g. Focus on practical insights...">
+        </div>
+        <button type="button" class="btn btn-ai" id="runAiAssistBtn">
+            <i class="fas fa-bolt"></i> Generate with Gemini
         </button>
+
+        <div id="aiResponseWrap" style="display: none; padding: 1rem; background: #ffffff; border: 1px solid var(--border-color); border-radius: var(--radius); margin-top: 10px;">
+            <div style="font-weight: 700; font-size: 11px; text-transform: uppercase; color: var(--primary-color-ml); margin-bottom: 6px;">Generated Output</div>
+            <div id="aiResultText" style="font-size: 13px; line-height: 1.5; color: var(--dark-color-ml); margin-bottom: 12px; white-space: pre-wrap;"></div>
+            <button type="button" class="btn btn-sm btn-success" id="applyAiResultBtn">
+                <i class="fas fa-check"></i> Apply to Editor
+            </button>
+        </div>
     </div>
 </div>
 
 {{#section 'scripts'}}
+<script src="/mbkbucket/mbkbucket-helper.js"></script>
 <script>
-    (function () {
-        /* ==========================================================================
-           0. ORIGINAL VALUES TRACKING (For Change Detection)
-           ========================================================================== */
-        const isEditMode = window.location.pathname.includes('/edit/');
-        const originalValues = {
-            title: document.getElementById('title')?.value || '',
-            excerpt: document.getElementById('excerpt')?.value || '',
-            content: document.getElementById('content')?.value || '',
-            preview_image: document.getElementById('previewImage')?.value || '',
-            status: document.querySelector('select[name="status"]')?.value || 'draft',
-            tags: [],
-            categories: []
-        };
+    // --- DOM Elements ---
+    const form = document.getElementById('postEditorForm');
+    const titleInput = document.getElementById('postTitle');
+    const contentTextarea = document.getElementById('postContent');
+    const previewPane = document.getElementById('editorPreview');
+    const slugInput = document.getElementById('postSlug');
+    const excerptTextarea = document.getElementById('postExcerpt');
+    const wordCountEl = document.getElementById('wordCount');
+    const readingTimeEl = document.getElementById('readingTime');
+    const charCountEl = document.getElementById('charCount');
+    const coverInput = document.getElementById('postPreviewImage');
+    const manualInput = document.getElementById('manualImageUrlInput');
+    const emptyState = document.getElementById('coverImageEmptyState');
+    const previewState = document.getElementById('coverImagePreviewState');
+    const previewImgTag = document.getElementById('coverPreviewImgTag');
+    const pickCoverBtn = document.getElementById('pickCoverBucketBtn');
+    const tagInput = document.getElementById('tagInput');
+    const addTagBtn = document.getElementById('addTagBtn');
+    const tagsContainer = document.getElementById('tagsChipWrap');
+    const autosaveIndicator = document.getElementById('autosaveIndicator');
+    const autosaveLabel = document.getElementById('autosaveLabel');
 
-        // Capture original tags and categories after DOM is ready
-        document.addEventListener('DOMContentLoaded', () => {
-            originalValues.tags = Array.from(document.querySelectorAll('#tagContainer .tag'))
-                .map(t => t.innerText.replace('×','').trim());
-            originalValues.categories = Array.from(document.querySelectorAll('#categoryContainer .category'))
-                .map(c => c.dataset.categoryId);
-        });
+    // --- Helper Functions for Taxonomy ---
+    function getSelectedTags() {
+        if (!tagsContainer) return [];
+        return Array.from(tagsContainer.querySelectorAll('.tag-chip')).map(el => el.dataset.tag);
+    }
 
-        /* ==========================================================================
-           1. HYBRID AI SYSTEM LOGIC
-           ========================================================================== */
-        let currentAiContext = null; // 'title', 'excerpt', 'content'
+    function getSelectedCategories() {
+        const checked = document.querySelectorAll('input[name="postCategories"]:checked');
+        return Array.from(checked).map(el => parseInt(el.value));
+    }
 
-        // A. OPEN CHAT WINDOW (For Text Fields)
-        window.openAiChat = function(action) {
-            currentAiContext = action;
-            const win = document.getElementById('aiWindow');
-            const input = document.getElementById('aiInput');
-            
-            // 1. Show Window
-            win.classList.add('active');
-            
-            // 2. Pre-fill Prompt based on action
-            let promptText = "";
-            if (action === 'title') {
-                promptText = "Generate title for this post based on the content.";
-            } else if (action === 'excerpt') {
-                promptText = "Summarize this post into a 2to5-sentence SEO excerpt.";
-            } else if (action === 'content') {
-                promptText = "Write an introduction paragraph for this post.";
-            }
-            
-            input.value = promptText;
-            
-            // Auto-resize the textarea
-            input.style.height = 'auto';
-            input.style.height = (input.scrollHeight) + 'px';
-            
-            input.focus();
-        };
+    // --- INITIAL STATE & CHANGE TRACKING INDICATOR ---
+    let initialState = {
+        title: titleInput ? titleInput.value.trim() : '',
+        content: contentTextarea ? contentTextarea.value : '',
+        status: document.getElementById('postStatus') ? document.getElementById('postStatus').value : 'draft',
+        slug: slugInput ? slugInput.value.trim() : '',
+        excerpt: excerptTextarea ? excerptTextarea.value.trim() : '',
+        preview_image: coverInput ? coverInput.value.trim() : '',
+        categories: JSON.stringify(getSelectedCategories().sort()),
+        tags: JSON.stringify(getSelectedTags().sort())
+    };
 
-        // B. DIRECT ACTIONS (For Tags/Categories - No Chat)
-        window.triggerAutoAction = async function(action) {
-            const btn = event.currentTarget;
-            const originalHTML = btn.innerHTML;
-            
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> ...';
-            btn.disabled = true;
+    let isSubmitted = false;
 
-            const context = {
-                content: document.getElementById('content').value,
-                title: document.getElementById('title').value
-            };
+    function getChangedFields() {
+        const changes = [];
+        if (titleInput && titleInput.value.trim() !== initialState.title) changes.push('Title');
+        if (contentTextarea && contentTextarea.value !== initialState.content) changes.push('Content');
+        const currentStatus = document.getElementById('postStatus') ? document.getElementById('postStatus').value : '';
+        if (currentStatus !== initialState.status) changes.push('Status');
+        if (slugInput && slugInput.value.trim() !== initialState.slug) changes.push('Slug');
+        if (excerptTextarea && excerptTextarea.value.trim() !== initialState.excerpt) changes.push('Excerpt');
+        if (coverInput && coverInput.value.trim() !== initialState.preview_image) changes.push('Cover Image');
+        
+        const currentCats = JSON.stringify(getSelectedCategories().sort());
+        if (currentCats !== initialState.categories) changes.push('Categories');
 
-            if(!context.content && !context.title) {
-                showNotification("Please write some content or a title first!", "error");
-                btn.innerHTML = originalHTML;
-                btn.disabled = false;
-                return;
-            }
+        const currentTags = JSON.stringify(getSelectedTags().sort());
+        if (currentTags !== initialState.tags) changes.push('Tags');
 
+        return changes;
+    }
+
+    function updateChangeIndicator() {
+        if (!autosaveIndicator || !autosaveLabel) return;
+        const changes = getChangedFields();
+        if (changes.length > 0) {
+            autosaveIndicator.className = 'autosave-indicator has-changes';
+            autosaveLabel.textContent = `Unsaved (${changes.length}): ${changes.join(', ')}`;
+            autosaveIndicator.title = `Modified fields: ${changes.join(', ')}`;
+        } else {
+            autosaveIndicator.className = 'autosave-indicator saved';
+            autosaveLabel.textContent = 'All changes saved';
+            autosaveIndicator.title = 'No unsaved changes';
+        }
+    }
+
+    window.addEventListener('beforeunload', (e) => {
+        if (!isSubmitted && getChangedFields().length > 0) {
+            e.preventDefault();
+            e.returnValue = '';
+        }
+    });
+
+    // --- REALTIME METRICS & MARKDOWN PREVIEW ---
+    let previewDebounce = null;
+    function updateMetricsAndPreview() {
+        updateChangeIndicator();
+        const text = contentTextarea ? contentTextarea.value || '' : '';
+        const words = text.trim() ? text.trim().split(/\s+/).length : 0;
+        const chars = text.length;
+        const mins = Math.max(1, Math.ceil(words / 200));
+
+        if (wordCountEl) wordCountEl.textContent = words.toLocaleString();
+        if (readingTimeEl) readingTimeEl.textContent = mins;
+        if (charCountEl) charCountEl.textContent = chars.toLocaleString();
+
+        const serpTitle = document.getElementById('serpTitlePreview');
+        const serpSlug = document.getElementById('serpSlugPreview');
+        const serpDesc = document.getElementById('serpDescPreview');
+
+        if (serpTitle) serpTitle.textContent = (titleInput && titleInput.value) || 'Post Title Preview';
+        if (serpSlug) serpSlug.textContent = (slugInput && slugInput.value) || ((titleInput && titleInput.value) ? titleInput.value.toLowerCase().replace(/[^a-z0-9]+/g, '-') : 'post-url');
+        if (serpDesc) serpDesc.textContent = (excerptTextarea && excerptTextarea.value) || 'Excerpt preview in Google Search results...';
+
+        clearTimeout(previewDebounce);
+        previewDebounce = setTimeout(async () => {
+            if (!previewPane) return;
             try {
-                const response = await fetch('/dashboard/api/ai-assist', {
+                const res = await fetch('/dashboard/api/markdown-preview', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ action, context })
+                    body: JSON.stringify({ markdown: text })
                 });
-                const res = await response.json();
+                const data = await res.json();
+                if (data.html) previewPane.innerHTML = data.html;
+            } catch (e) {}
+        }, 150);
+    }
 
-                if (!res.success) throw new Error(res.error);
+    contentTextarea?.addEventListener('input', updateMetricsAndPreview);
+    titleInput?.addEventListener('input', updateMetricsAndPreview);
+    excerptTextarea?.addEventListener('input', updateMetricsAndPreview);
+    slugInput?.addEventListener('input', updateMetricsAndPreview);
+    document.getElementById('postStatus')?.addEventListener('change', updateMetricsAndPreview);
+    document.querySelectorAll('input[name="postCategories"]').forEach(cb => {
+        cb.addEventListener('change', updateMetricsAndPreview);
+    });
+    updateMetricsAndPreview();
 
-                if (action === 'tags') {
-                    // Expecting comma-separated string
-                    const tags = res.data.split(',');
-                    let count = 0;
-                    tags.forEach(t => {
-                        const cleanT = t.trim();
-                        if(cleanT) { addTag(cleanT); count++; }
-                    });
-                    showNotification(`Generated ${count} tags.`);
-                } 
-                else if (action === 'categories') {
-                    // Expecting { categoryIds: [] }
-                    const ids = res.data.categoryIds;
-                    if (ids && ids.length) {
-                        ids.forEach(id => addCategory(id));
-                        showNotification(`Selected ${ids.length} categories.`);
-                    } else {
-                        showNotification("No matching categories found in database.", "error");
-                    }
-                }
-            } catch (e) {
-                showNotification("AI Error: " + e.message, "error");
-            } finally {
-                btn.innerHTML = originalHTML;
-                btn.disabled = false;
-            }
-        };
+    // --- VIEW MODE TABS (Split / Write / Preview) ---
+    const panes = document.getElementById('editorPanes');
+    const splitBtn = document.getElementById('viewSplitBtn');
+    const writeBtn = document.getElementById('viewWriteBtn');
+    const previewBtn = document.getElementById('viewPreviewBtn');
 
-        // C. CHAT LOGIC (Send & Receive)
-        const aiInput = document.getElementById('aiInput');
-        const aiSend = document.getElementById('aiSend');
-        const aiBody = document.getElementById('aiBody');
+    splitBtn?.addEventListener('click', () => {
+        if (panes) panes.className = 'editor-body-panes';
+        splitBtn.classList.add('active');
+        writeBtn?.classList.remove('active');
+        previewBtn?.classList.remove('active');
+    });
 
-        // Auto-expand textarea logic
-        aiInput.addEventListener('input', function() {
-            this.style.height = 'auto';
-            this.style.height = (this.scrollHeight) + 'px';
-        });
+    writeBtn?.addEventListener('click', () => {
+        if (panes) panes.className = 'editor-body-panes write-only';
+        writeBtn.classList.add('active');
+        splitBtn?.classList.remove('active');
+        previewBtn?.classList.remove('active');
+    });
 
-        async function sendChat() {
-            const text = aiInput.value.trim();
-            if(!text) return;
+    previewBtn?.addEventListener('click', () => {
+        if (panes) panes.className = 'editor-body-panes preview-only';
+        previewBtn.classList.add('active');
+        splitBtn?.classList.remove('active');
+        writeBtn?.classList.remove('active');
+    });
 
-            // 1. Add User Message
-            appendChatMsg(text, 'user');
-            aiInput.value = '';
-            aiInput.style.height = '44px'; // Reset height
-            
-            const loaderId = appendLoader();
-
-            // 2. Prepare Context (Current state of form)
-            const context = {
-                aiInput: document.getElementById('aiInput').value,
-                excerpt: document.getElementById('excerpt').value,
-                content: document.getElementById('content').value.substring(0, 3000), // Limit size for API token safety
-                currentTitle: document.getElementById('title').value,
-                currentExcerpt: document.getElementById('excerpt').value
-            };
-
-            // 3. Send API Request
-            try {
-                const response = await fetch('/dashboard/api/ai-assist', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ 
-                        action: currentAiContext || 'chat', // Use context if set, else generic chat
-                        prompt: text, 
-                        context 
-                    })
-                });
-                const res = await response.json();
-                removeLoader(loaderId);
-
-                if (res.success) {
-                    // If we have a specific context (Title/Excerpt), show Apply button
-                    const showApply = !!currentAiContext;
-                    appendChatMsg(res.data, 'bot', showApply);
-                } else {
-                    appendChatMsg("Error: " + res.error, 'bot');
-                }
-            } catch (e) {
-                removeLoader(loaderId);
-                appendChatMsg("Network Connection Error", 'bot');
-            }
-        }
-
-        aiSend.addEventListener('click', sendChat);
-        aiInput.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
-                sendChat();
-            }
-        });
-
-        // UI Helpers for Chat
-        function appendChatMsg(text, sender, showApply = false) {
-            const div = document.createElement('div');
-            div.className = `ai-msg ${sender}`;
-            
-            // Convert newlines to breaks for display
-            div.innerHTML = text.replace(/\n/g, '<br>');
-
-            if (sender === 'bot' && showApply && currentAiContext) {
-                const btn = document.createElement('button');
-                btn.className = 'ai-apply-btn';
-                let label = "Apply";
-                if(currentAiContext === 'title') label = "Use this Title";
-                if(currentAiContext === 'excerpt') label = "Use this Excerpt";
-                if(currentAiContext === 'content') label = "Replace Content";
-                
-                btn.innerHTML = `<i class="fas fa-check"></i> ${label}`;
-                btn.onclick = () => applyToField(text);
-                
-                div.appendChild(document.createElement('br'));
-                div.appendChild(btn);
-            }
-            aiBody.appendChild(div);
-            // Scroll to bottom
-            aiBody.scrollTop = aiBody.scrollHeight;
-        }
-
-        function applyToField(text) {
-            // Basic cleanup: remove surrounding quotes if AI added them
-            const cleanText = text.replace(/^"|"$/g, '').trim();
-
-            if (currentAiContext === 'title') {
-                document.getElementById('title').value = cleanText;
-            } else if (currentAiContext === 'excerpt') {
-                document.getElementById('excerpt').value = cleanText;
-            } else if (currentAiContext === 'content') {
-                const editor = document.getElementById('content');
-                // Replace content entirely
-                editor.value = cleanText; 
-                // If live preview is active, update it
-                if(document.getElementById('markdownPreview').style.display !== 'none') {
-                    window.handleLivePreview();
-                }
-            }
-            showNotification(`${currentAiContext.toUpperCase()} Updated Successfully!`);
-        }
-
-        function appendLoader() {
-            const id = 'loader-' + Date.now();
-            const div = document.createElement('div');
-            div.id = id;
-            div.className = 'ai-msg bot';
-            div.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> AI is thinking...';
-            aiBody.appendChild(div);
-            aiBody.scrollTop = aiBody.scrollHeight;
-            return id;
-        }
-
-        function removeLoader(id) {
-            const el = document.getElementById(id);
-            if(el) el.remove();
-        }
-
-        // Draggable Window Logic
-        const header = document.getElementById('aiHeader');
-        const win = document.getElementById('aiWindow');
-        let isDragging = false, startX, startY, initialLeft, initialTop;
-
-        header.addEventListener('mousedown', (e) => {
-            if(e.target.id === 'closeAi') return;
-            isDragging = true;
-            startX = e.clientX;
-            startY = e.clientY;
-            const rect = win.getBoundingClientRect();
-            initialLeft = rect.left;
-            initialTop = rect.top;
-            header.style.cursor = 'grabbing';
-        });
-
-        document.addEventListener('mousemove', (e) => {
-            if(!isDragging) return;
-            const dx = e.clientX - startX;
-            const dy = e.clientY - startY;
-            win.style.left = `${initialLeft + dx}px`;
-            win.style.top = `${initialTop + dy}px`;
-            // Reset standard positioning
-            win.style.bottom = 'auto'; 
-            win.style.right = 'auto';
-        });
-
-        document.addEventListener('mouseup', () => { 
-            isDragging=false; 
-            header.style.cursor='move'; 
-        });
-        
-        document.getElementById('closeAi').addEventListener('click', () => {
-            win.classList.remove('active');
-            currentAiContext = null; 
-        });
-
-        /* ==========================================================================
-           2. EXISTING FUNCTIONALITY (RESTORED)
-           ========================================================================== */
-        
-        // --- TAGS LOGIC ---
-        const tagContainer = document.getElementById('tagContainer');
-        const tagSearch = document.getElementById('tagSearch');
-        const tagResults = document.getElementById('tagResults');
-        const manualAddTagBtn = document.getElementById('manualAddTag');
-        
-        // All tags available (from server template)
-        const allTags = Array.from(document.querySelectorAll('#tagSelect option'))
-                             .map(opt => ({name: opt.text, value: opt.value}))
-                             .filter(t => t.value);
-
-        window.addTag = function(text) {
-            if (!text) return;
-            text = text.replace(/['"]+/g, '').trim();
-            if(!text) return;
-            
-            // Prevent duplicates
-            const exists = Array.from(tagContainer.getElementsByClassName('tag')).some(t => t.innerText.replace('×','').trim() === text);
-            if (exists) return;
-            
-            const tag = document.createElement('span');
-            tag.className = 'tag';
-            tag.innerHTML = `${text}<button type="button" class="remove-tag">&times;</button>`;
-            tagContainer.appendChild(tag);
-        };
-
-        // Manual Add Button
-        manualAddTagBtn.addEventListener('click', () => {
-            addTag(tagSearch.value);
-            tagSearch.value = '';
-        });
-        
-        // Search Filter
-        tagSearch.addEventListener('input', (e) => {
-            const val = e.target.value.toLowerCase();
-            tagResults.innerHTML = '';
-            if(!val) { tagResults.classList.remove('show'); return; }
-            
-            const matches = allTags.filter(t => t.name.toLowerCase().includes(val));
-            if(matches.length > 0) {
-                tagResults.classList.add('show');
-                matches.forEach(t => {
-                    const div = document.createElement('div');
-                    div.className = 'search-result-item';
-                    div.innerText = t.name;
-                    div.onclick = () => { addTag(t.name); tagSearch.value=''; tagResults.classList.remove('show'); };
-                    tagResults.appendChild(div);
-                });
-            } else {
-                tagResults.classList.remove('show');
-            }
-        });
-        
-        tagSearch.addEventListener('keypress', (e) => {
-            if(e.key === 'Enter') { e.preventDefault(); manualAddTagBtn.click(); }
-        });
-
-        // --- CATEGORIES LOGIC ---
-        const categoryContainer = document.getElementById('categoryContainer');
-        const categorySearch = document.getElementById('categorySearch');
-        const categoryResults = document.getElementById('categoryResults');
-        const manualAddCatBtn = document.getElementById('manualAddCategory');
-        const categorySelect = document.getElementById('categorySelect');
-        
-        const allCategories = Array.from(categorySelect.options)
-                                   .map(opt => ({name: opt.text, id: parseInt(opt.value)}))
-                                   .filter(c => !isNaN(c.id));
-
-        window.addCategory = function(id) {
-            id = parseInt(id);
-            if (!id) return;
-            
-            // Check existence
-            const exists = Array.from(categoryContainer.getElementsByClassName('category')).some(c => parseInt(c.dataset.categoryId) === id);
-            if(exists) return;
-            
-            // Get name
-            const catObj = allCategories.find(c => c.id === id);
-            if(!catObj) return;
-            
-            const span = document.createElement('span');
-            span.className = 'category';
-            span.dataset.categoryId = id;
-            span.innerHTML = `${catObj.name}<button type="button" class="remove-category">&times;</button>`;
-            categoryContainer.appendChild(span);
-        };
-
-        // Filter Logic
-        categorySearch.addEventListener('input', (e) => {
-            const val = e.target.value.toLowerCase();
-            categoryResults.innerHTML = '';
-            if(!val) { categoryResults.classList.remove('show'); return; }
-            
-            const matches = allCategories.filter(c => c.name.toLowerCase().includes(val));
-            if(matches.length > 0) {
-                categoryResults.classList.add('show');
-                matches.forEach(c => {
-                    const div = document.createElement('div');
-                    div.className = 'search-result-item';
-                    div.innerText = c.name;
-                    div.onclick = () => { addCategory(c.id); categorySearch.value=''; categoryResults.classList.remove('show'); };
-                    categoryResults.appendChild(div);
-                });
-            } else {
-                categoryResults.classList.remove('show');
-            }
-        });
-
-        // Close dropdowns on click outside
-        document.addEventListener('click', (e) => {
-            if(!e.target.closest('.tag-selector')) tagResults.classList.remove('show');
-            if(!e.target.closest('.category-selector')) categoryResults.classList.remove('show');
-        });
-
-        // Remove Handlers
-        tagContainer.addEventListener('click', e => { if(e.target.classList.contains('remove-tag')) e.target.parentElement.remove(); });
-        categoryContainer.addEventListener('click', e => { if(e.target.classList.contains('remove-category')) e.target.parentElement.remove(); });
-
-        // --- IMAGE HANDLING ---
-        window.switchImageTab = (tab) => {
-            document.querySelectorAll('.tab-content').forEach(el => el.style.display = 'none');
-            document.getElementById(tab+'Tab').style.display = 'block';
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-            event.target.classList.add('active');
-            
-            // If browse tab, load images
-            if(tab === 'browse') {
-                window.loadBucketImages();
-            }
-        };
-        
-        window.previewImageUrl = (input) => {
-            const img = document.querySelector('#imagePreview img');
-            if(input.value) {
-                img.src = input.value;
-                document.getElementById('imagePreview').style.display = 'block';
-            }
-        };
-
-        // File Upload
-        window.handleImageUpload = (input) => {
-            const file = input.files[0];
-            if(!file) return;
-            
-            const progress = document.querySelector('#uploadProgress .progress-bar');
-            document.getElementById('uploadProgress').style.display = 'block';
-            
-            const formData = new FormData();
-            formData.append('image', file);
-            
-            const xhr = new XMLHttpRequest();
-            xhr.open('POST', '/dashboard/api/upload-image');
-            
-            xhr.upload.onprogress = (e) => {
-                if(e.lengthComputable) {
-                    const pct = (e.loaded / e.total) * 100;
-                    progress.style.width = pct + '%';
-                }
-            };
-            
-            xhr.onload = () => {
-                if(xhr.status === 200) {
-                    const res = JSON.parse(xhr.responseText);
-                    document.getElementById('previewImage').value = res.url;
-                    previewImageUrl(document.getElementById('previewImage'));
-                    switchImageTab('url');
-                    showNotification("Image Uploaded!");
-                } else {
-                    showNotification("Upload Failed", "error");
-                }
-                document.getElementById('uploadProgress').style.display = 'none';
-            };
-            
-            xhr.send(formData);
-        };
-
-        // R2 Gallery Browser (Mock logic connecting to existing API)
-        window.loadBucketImages = (force = false) => {
-            const grid = document.getElementById('imageGrid');
-            if(!force && grid.children.length > 1) return; // Don't reload if already loaded
-            
-            grid.innerHTML = '<div style="padding:20px; text-align:center;"><i class="fas fa-spinner fa-spin"></i> Loading...</div>';
-            
-            fetch('/dashboard/api/r2/list-images', { method: 'POST' })
-                .then(r => r.json())
-                .then(data => {
-                    grid.innerHTML = '';
-                    if(data.images && data.images.length > 0) {
-                        data.images.forEach(img => {
-                            const div = document.createElement('div');
-                            div.className = 'image-item';
-                            div.innerHTML = `<img src="${img.url}" loading="lazy">`;
-                            div.onclick = () => {
-                                document.getElementById('previewImage').value = img.url;
-                                previewImageUrl(document.getElementById('previewImage'));
-                                switchImageTab('url');
-                            };
-                            grid.appendChild(div);
-                        });
-                    } else {
-                        grid.innerHTML = '<p>No images found.</p>';
-                    }
-                })
-                .catch(e => grid.innerHTML = '<p>Error loading images.</p>');
-        };
-
-        // --- MARKDOWN EDITOR & PREVIEW ---
-        const contentTextarea = document.getElementById('content');
-        
-        window.insertMarkdown = (before, after) => {
+    // --- TOOLBAR ACTIONS ---
+    document.querySelectorAll('.tool-action-btn[data-action]').forEach(btn => {
+        btn.addEventListener('click', () => {
+            if (!contentTextarea) return;
+            const action = btn.dataset.action;
             const start = contentTextarea.selectionStart;
             const end = contentTextarea.selectionEnd;
-            const text = contentTextarea.value.substring(start, end);
-            const replacement = before + text + after;
-            contentTextarea.setRangeText(replacement, start, end, 'end');
-            contentTextarea.focus();
-            window.handleLivePreview();
-        };
-        
-        window.insertLink = () => {
-            const url = prompt("Enter URL:", "https://");
-            if(url) insertMarkdown("[", "]("+url+")");
-        };
-        
-        window.insertCodeBlock = () => {
-            insertMarkdown("\n```javascript\n", "\n```\n");
-        };
-        
-        window.toggleSplitView = () => {
-            const parent = document.getElementById('editorContainer').parentElement.parentElement; // .form-group
-            const preview = document.getElementById('markdownPreview');
-            const wrapper = document.getElementById('editorWrapper');
-            const editorDiv = document.getElementById('editorContainer');
-            
-            if(preview.style.display === 'none') {
-                wrapper.classList.add('split-view');
-                preview.style.display = 'block';
-                window.handleLivePreview();
-            } else {
-                wrapper.classList.remove('split-view');
-                preview.style.display = 'none';
+            const selected = contentTextarea.value.substring(start, end);
+            let replacement = '';
+
+            switch (action) {
+                case 'h1': replacement = `\n# ${selected || 'Heading 1'}\n`; break;
+                case 'h2': replacement = `\n## ${selected || 'Heading 2'}\n`; break;
+                case 'h3': replacement = `\n### ${selected || 'Heading 3'}\n`; break;
+                case 'bold': replacement = `**${selected || 'bold text'}**`; break;
+                case 'italic': replacement = `*${selected || 'italic text'}*`; break;
+                case 'strike': replacement = `~~${selected || 'strikethrough'}~~`; break;
+                case 'quote': replacement = `\n> ${selected || 'Quote text'}\n`; break;
+                case 'code': replacement = `\n\`\`\`javascript\n${selected || '// code here'}\n\`\`\`\n`; break;
+                case 'link': replacement = `[${selected || 'link text'}](https://example.com)`; break;
+                case 'list': replacement = `\n- ${selected || 'List item 1'}\n- List item 2\n`; break;
+                case 'table': replacement = `\n| Header 1 | Header 2 |\n| -------- | -------- |\n| Item 1   | Item 2   |\n`; break;
             }
+
+            contentTextarea.setRangeText(replacement, start, end, 'select');
+            updateMetricsAndPreview();
+        });
+    });
+
+    function resolveBucketImageUrl(item) {
+        if (!item) return '';
+        if (item.key) {
+            return `/images/${item.key.replace(/^\/+/, '')}`;
+        }
+        if (item.url) return item.url;
+        if (item.thumbSrc) return item.thumbSrc;
+        return '';
+    }
+
+    // --- MBKBUCKET FRONTEND HELPER FOR INLINE MEDIA INSERTION ---
+    const insertBucketImageBtn = document.getElementById('insertBucketImageBtn');
+    insertBucketImageBtn?.addEventListener('click', async () => {
+        if (window.MBKBucket && typeof window.MBKBucket.openGallery === 'function') {
+            try {
+                const result = await window.MBKBucket.openGallery({
+                    filter: 'images'
+                });
+                if (!result) return;
+                const items = Array.isArray(result) ? result : [result];
+                if (!items.length || !items[0]) return;
+
+                items.forEach(selectedItem => {
+                    if (!contentTextarea) return;
+                    const start = contentTextarea.selectionStart;
+                    const end = contentTextarea.selectionEnd;
+                    const altText = selectedItem.name || 'image';
+                    const imgUrl = resolveBucketImageUrl(selectedItem);
+                    const markdownImg = `\n![${altText}](${imgUrl})\n`;
+                    contentTextarea.setRangeText(markdownImg, start, end, 'select');
+                });
+                updateMetricsAndPreview();
+                if (window.showToast) {
+                    window.showToast({ type: 'success', title: 'Image Inserted', message: `Added ${items.map(i => i.name).join(', ')}` });
+                }
+            } catch (err) {
+                console.error('Failed to insert image from MBKBucket:', err);
+            }
+        } else {
+            if (window.showToast) window.showToast({ type: 'info', title: 'Media Gallery', message: 'Opening media selector...' });
+        }
+    });
+
+    // --- MBKBUCKET FRONTEND HELPER FOR COVER IMAGE ---
+    window.openCoverGalleryPicker = async function() {
+        if (window.MBKBucket && typeof window.MBKBucket.openGallery === 'function') {
+            try {
+                const result = await window.MBKBucket.openGallery({
+                    filter: 'images',
+                    multiple: false
+                });
+                if (!result) return;
+                const selectedItem = Array.isArray(result) ? result[0] : result;
+                if (selectedItem) {
+                    const imgUrl = resolveBucketImageUrl(selectedItem);
+                    setCoverImage(imgUrl);
+                    if (window.showToast) {
+                        window.showToast({ type: 'success', title: 'Cover Selected', message: selectedItem.name });
+                    }
+                }
+            } catch (err) {
+                console.error('Failed to select cover image from MBKBucket:', err);
+            }
+        }
+    };
+
+    pickCoverBtn?.addEventListener('click', openCoverGalleryPicker);
+
+    function setCoverImage(url, fromManual = false) {
+        if (coverInput) coverInput.value = url;
+        if (manualInput && !fromManual) manualInput.value = url;
+        if (previewImgTag) previewImgTag.src = url;
+        if (emptyState) emptyState.style.display = 'none';
+        if (previewState) previewState.style.display = 'block';
+        updateChangeIndicator();
+    }
+
+    window.clearCoverImage = function(fromManual = false) {
+        if (coverInput) coverInput.value = '';
+        if (manualInput && !fromManual) manualInput.value = '';
+        if (previewImgTag) previewImgTag.src = '';
+        if (emptyState) emptyState.style.display = 'block';
+        if (previewState) previewState.style.display = 'none';
+        updateChangeIndicator();
+    };
+
+    manualInput?.addEventListener('input', () => {
+        const val = manualInput.value.trim();
+        if (val) {
+            setCoverImage(val, true);
+        } else {
+            clearCoverImage(true);
+        }
+    });
+
+    // --- TAGS CHIPS ---
+    function addTag() {
+        if (!tagInput || !tagsContainer) return;
+        const val = tagInput.value.toLowerCase().trim();
+        if (!val) return;
+        const exists = tagsContainer.querySelector(`[data-tag="${val}"]`);
+        if (!exists) {
+            const span = document.createElement('span');
+            span.className = 'tag-chip';
+            span.dataset.tag = val;
+            span.innerHTML = `#${val} <button type="button" onclick="removeTagChip(this)">&times;</button>`;
+            tagsContainer.appendChild(span);
+            updateChangeIndicator();
+        }
+        tagInput.value = '';
+    }
+
+    addTagBtn?.addEventListener('click', addTag);
+    tagInput?.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') { e.preventDefault(); addTag(); }
+    });
+
+    window.removeTagChip = function(btn) {
+        btn.parentElement.remove();
+        updateChangeIndicator();
+    };
+
+    // --- GEMINI AI COPILOT ---
+    const aiDrawerBackdrop = document.getElementById('aiDrawerBackdrop');
+    const aiDrawer = document.getElementById('aiDrawer');
+    const openAiBtn = document.getElementById('openAiDrawerBtn');
+    const closeAiBtn = document.getElementById('closeAiDrawerBtn');
+    const runAiBtn = document.getElementById('runAiAssistBtn');
+    const aiActionSelect = document.getElementById('aiActionSelect');
+    const aiCustomPrompt = document.getElementById('aiCustomPrompt');
+    const aiResponseWrap = document.getElementById('aiResponseWrap');
+    const aiResultText = document.getElementById('aiResultText');
+    const applyAiBtn = document.getElementById('applyAiResultBtn');
+
+    let currentAiResult = null;
+
+    openAiBtn?.addEventListener('click', () => {
+        aiDrawerBackdrop?.classList.add('active');
+        aiDrawer?.classList.add('active');
+    });
+
+    function closeAiDrawer() {
+        aiDrawerBackdrop?.classList.remove('active');
+        aiDrawer?.classList.remove('active');
+    }
+
+    closeAiBtn?.addEventListener('click', closeAiDrawer);
+    aiDrawerBackdrop?.addEventListener('click', closeAiDrawer);
+
+    runAiBtn?.addEventListener('click', async () => {
+        const action = aiActionSelect.value;
+        const prompt = aiCustomPrompt.value;
+        runAiBtn.disabled = true;
+        runAiBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generating...';
+
+        try {
+            const res = await fetch('/dashboard/api/ai-assist', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    action,
+                    prompt,
+                    context: {
+                        title: titleInput ? titleInput.value : '',
+                        content: contentTextarea ? contentTextarea.value : '',
+                        excerpt: excerptTextarea ? excerptTextarea.value : ''
+                    }
+                })
+            });
+            const data = await res.json();
+            if (data.success) {
+                currentAiResult = data.data;
+                aiResultText.textContent = typeof data.data === 'object' ? JSON.stringify(data.data, null, 2) : data.data;
+                aiResponseWrap.style.display = 'block';
+            } else {
+                window.showToast({ type: 'error', title: 'AI Error', message: data.error });
+            }
+        } catch (e) {
+            window.showToast({ type: 'error', title: 'AI Error', message: 'Failed to communicate with Gemini' });
+        } finally {
+            runAiBtn.disabled = false;
+            runAiBtn.innerHTML = '<i class="fas fa-bolt"></i> Generate with Gemini';
+        }
+    });
+
+    applyAiBtn?.addEventListener('click', () => {
+        const action = aiActionSelect.value;
+        if (!currentAiResult) return;
+
+        if (action === 'title' && titleInput) {
+            titleInput.value = currentAiResult;
+            updateMetricsAndPreview();
+        } else if (action === 'excerpt' && excerptTextarea) {
+            excerptTextarea.value = currentAiResult;
+            updateMetricsAndPreview();
+        } else if (action === 'tags' && tagsContainer) {
+            const tags = String(currentAiResult).split(',').map(t => t.trim());
+            tags.forEach(t => {
+                if (!tagsContainer.querySelector(`[data-tag="${t}"]`)) {
+                    const span = document.createElement('span');
+                    span.className = 'tag-chip';
+                    span.dataset.tag = t;
+                    span.innerHTML = `#${t} <button type="button" onclick="removeTagChip(this)">&times;</button>`;
+                    tagsContainer.appendChild(span);
+                }
+            });
+            updateChangeIndicator();
+        } else if (action === 'content' && contentTextarea) {
+            contentTextarea.value = currentAiResult;
+            updateMetricsAndPreview();
+        }
+        window.showToast({ type: 'success', title: 'Applied', message: 'AI result applied to editor' });
+        closeAiDrawer();
+    });
+
+    window.generateAiExcerpt = function() {
+        openAiBtn?.click();
+        if (aiActionSelect) aiActionSelect.value = 'excerpt';
+        runAiBtn?.click();
+    };
+
+    // ── ACTUAL SAVE FUNCTION (called after review confirmation) ──────────
+    async function doSavePost() {
+        const postId = document.getElementById('postId')?.value;
+        const isEdit = Boolean(postId);
+
+        const payload = {
+            title: titleInput ? titleInput.value.trim() : '',
+            slug: slugInput ? slugInput.value.trim() : '',
+            content: contentTextarea ? contentTextarea.value : '',
+            excerpt: excerptTextarea ? excerptTextarea.value.trim() : '',
+            status: document.getElementById('postStatus') ? document.getElementById('postStatus').value : 'draft',
+            preview_image: coverInput ? coverInput.value.trim() : '',
+            categories: getSelectedCategories(),
+            tags: getSelectedTags()
         };
 
-        let previewTimeout;
-        window.handleLivePreview = async () => {
-            const text = contentTextarea.value;
-            // Debounce
-            clearTimeout(previewTimeout);
-            previewTimeout = setTimeout(async () => {
-                try {
-                    const res = await fetch('/dashboard/api/markdown-preview', {
-                        method: 'POST',
-                        headers: {'Content-Type': 'application/json'},
-                        body: JSON.stringify({markdown: text})
-                    });
-                    const data = await res.json();
-                    document.getElementById('markdownPreview').innerHTML = data.html;
-                } catch(e) {}
-            }, 300);
-        };
-        
-        contentTextarea.addEventListener('input', () => {
-            if(document.getElementById('markdownPreview').style.display !== 'none') {
-                window.handleLivePreview();
+        const confirmBtn = document.getElementById('confirmUpdateBtn');
+        const submitBtn  = document.getElementById('savePostBtn');
+        if (confirmBtn) { confirmBtn.disabled = true; confirmBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...'; }
+        if (submitBtn)  { submitBtn.disabled  = true; submitBtn.innerHTML  = '<i class="fas fa-spinner fa-spin"></i> Saving...'; }
+
+        try {
+            const endpoint = isEdit ? `/dashboard/api/posts/${postId}` : '/dashboard/api/posts';
+            const method   = isEdit ? 'PUT' : 'POST';
+
+            const res  = await fetch(endpoint, { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+            const data = await res.json();
+
+            if (data.success) {
+                isSubmitted = true;
+                closeReviewModal();
+                initialState = {
+                    title: payload.title,
+                    content: payload.content,
+                    status: payload.status,
+                    slug: payload.slug,
+                    excerpt: payload.excerpt,
+                    preview_image: payload.preview_image,
+                    categories: JSON.stringify(payload.categories.sort()),
+                    tags: JSON.stringify(payload.tags.sort())
+                };
+                updateChangeIndicator();
+                window.showToast({ type: 'success', title: 'Saved', message: 'Post saved successfully' });
+                setTimeout(() => { window.location.href = '/dashboard/posts'; }, 500);
+            } else {
+                window.showToast({ type: 'error', title: 'Save Failed', message: data.message || data.error });
+                if (confirmBtn) { confirmBtn.disabled = false; confirmBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Confirm Update'; }
+                if (submitBtn)  { submitBtn.disabled  = false; submitBtn.innerHTML  = '<i class="fas fa-paper-plane"></i> Update Post'; }
             }
+        } catch (err) {
+            window.showToast({ type: 'error', title: 'Network Error', message: 'Could not reach server' });
+            if (confirmBtn) { confirmBtn.disabled = false; confirmBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Confirm Update'; }
+            if (submitBtn)  { submitBtn.disabled  = false; submitBtn.innerHTML  = '<i class="fas fa-paper-plane"></i> Update Post'; }
+        }
+    }
+
+    // ── CHANGE REVIEW MODAL ──────────────────────────────────────────────
+    const reviewBackdrop  = document.getElementById('reviewBackdrop');
+    const reviewBody      = document.getElementById('reviewBody');
+    const reviewBadge     = document.getElementById('reviewChangeBadge');
+    const confirmUpdateBtn = document.getElementById('confirmUpdateBtn');
+    const cancelReviewBtn  = document.getElementById('cancelReviewBtn');
+    const closeReviewBtn   = document.getElementById('closeReviewModalBtn');
+
+    // Maps field key → { label, getCurrentValue, revertFn }
+    const fieldMeta = {
+        title: {
+            label: 'Title',
+            get: () => titleInput ? titleInput.value.trim() : '',
+            revert: () => { if (titleInput) { titleInput.value = initialState.title; updateMetricsAndPreview(); } }
+        },
+        content: {
+            label: 'Content',
+            get: () => contentTextarea ? contentTextarea.value : '',
+            revert: () => { if (contentTextarea) { contentTextarea.value = initialState.content; updateMetricsAndPreview(); } }
+        },
+        status: {
+            label: 'Status',
+            get: () => { const el = document.getElementById('postStatus'); return el ? el.value : ''; },
+            revert: () => { const el = document.getElementById('postStatus'); if (el) { el.value = initialState.status; updateChangeIndicator(); } }
+        },
+        slug: {
+            label: 'Slug',
+            get: () => slugInput ? slugInput.value.trim() : '',
+            revert: () => { if (slugInput) { slugInput.value = initialState.slug; updateChangeIndicator(); } }
+        },
+        excerpt: {
+            label: 'Excerpt',
+            get: () => excerptTextarea ? excerptTextarea.value.trim() : '',
+            revert: () => { if (excerptTextarea) { excerptTextarea.value = initialState.excerpt; updateMetricsAndPreview(); } }
+        },
+        preview_image: {
+            label: 'Cover Image',
+            get: () => coverInput ? coverInput.value.trim() : '',
+            revert: () => {
+                if (coverInput) {
+                    coverInput.value = initialState.preview_image;
+                    // sync the visual cover picker
+                    if (initialState.preview_image) {
+                        if (previewImgTag) previewImgTag.src = initialState.preview_image;
+                        if (emptyState)    emptyState.style.display = 'none';
+                        if (previewState)  previewState.style.display = '';
+                    } else {
+                        if (emptyState)   emptyState.style.display = '';
+                        if (previewState) previewState.style.display = 'none';
+                    }
+                    updateChangeIndicator();
+                }
+            }
+        },
+        categories: {
+            label: 'Categories',
+            get: () => JSON.stringify(getSelectedCategories().sort()),
+            revert: () => {
+                const saved = JSON.parse(initialState.categories);
+                document.querySelectorAll('input[name="postCategories"]').forEach(cb => {
+                    cb.checked = saved.includes(parseInt(cb.value));
+                });
+                updateChangeIndicator();
+            }
+        },
+        tags: {
+            label: 'Tags',
+            get: () => JSON.stringify(getSelectedTags().sort()),
+            revert: () => {
+                if (!tagsContainer) return;
+                tagsContainer.querySelectorAll('.tag-chip').forEach(c => c.remove());
+                JSON.parse(initialState.tags).forEach(t => {
+                    const span = document.createElement('span');
+                    span.className = 'tag-chip';
+                    span.dataset.tag = t;
+                    span.innerHTML = `#${t} <button type="button" onclick="removeTagChip(this)">&times;</button>`;
+                    tagsContainer.appendChild(span);
+                });
+                updateChangeIndicator();
+            }
+        }
+    };
+
+    function openReviewModal() {
+        const changes = getChangedFields();
+        if (!reviewBody || !reviewBadge) return;
+
+        reviewBadge.textContent = `${changes.length} changed`;
+        reviewBody.innerHTML = '';
+
+        // Icon map per field
+        const icons = {
+            title: 'fa-heading', content: 'fa-file-alt', status: 'fa-toggle-on',
+            slug: 'fa-link', excerpt: 'fa-align-left', preview_image: 'fa-image',
+            categories: 'fa-folder', tags: 'fa-tags'
+        };
+
+        Object.entries(fieldMeta).forEach(([key, meta]) => {
+            if (!changes.includes(meta.label)) return;
+
+            const icon = icons[key] || 'fa-pen';
+            const row = document.createElement('div');
+            row.className = 'review-field-row';
+            row.id = `reviewRow_${key}`;
+            row.innerHTML = `
+                <div class="review-field-header">
+                    <span class="review-field-name">
+                        <i class="fas ${icon}" style="margin-right:5px;opacity:.6"></i>${meta.label}
+                    </span>
+                    <button type="button" class="revert-btn" data-field="${key}">
+                        <i class="fas fa-undo"></i> Revert
+                    </button>
+                </div>
+                <div class="review-diff" style="color:var(--text-muted);font-family:var(--font-body);font-size:12.5px;">
+                    <i class="fas fa-pen" style="margin-right:6px;color:var(--primary-color-ml);"></i>
+                    <strong>${meta.label}</strong> has been modified
+                </div>`;
+            reviewBody.appendChild(row);
         });
 
-        // --- GENERAL HELPERS ---
-        function showNotification(msg, type='success') {
-            const div = document.createElement('div');
-            div.className = `notification ${type}`;
-            div.innerHTML = `<i class="fas fa-${type==='success'?'check-circle':'exclamation-triangle'}"></i> ${msg}`;
-            document.body.appendChild(div);
-            setTimeout(() => div.remove(), 4000);
-        }
+        // Wire revert buttons
+        reviewBody.querySelectorAll('.revert-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const key = btn.dataset.field;
+                if (fieldMeta[key]) {
+                    fieldMeta[key].revert();
+                    document.getElementById(`reviewRow_${key}`)?.remove();
+                    const remaining = reviewBody.querySelectorAll('.review-field-row').length;
+                    if (reviewBadge) reviewBadge.textContent = `${remaining} changed`;
+                    if (remaining === 0) closeReviewModal();
+                }
+            });
+        });
 
-        /* ==========================================================================
-           FORM VALIDATION & CHANGE TRACKING
-           ========================================================================== */
-        
-        // Validate required fields before submission
-        function validateForm() {
-            const errors = [];
-            
-            const title = document.getElementById('title').value.trim();
-            const content = document.getElementById('content').value.trim();
-            const categories = Array.from(categoryContainer.getElementsByClassName('category'));
-            
-            if (!title) {
-                errors.push('Title is required');
-                document.getElementById('title').style.borderColor = 'var(--danger-color)';
-            } else {
-                document.getElementById('title').style.borderColor = '';
-            }
-            
-            if (!content) {
-                errors.push('Content is required');
-                document.getElementById('content').style.borderColor = 'var(--danger-color)';
-            } else {
-                document.getElementById('content').style.borderColor = '';
-            }
-            
-            if (categories.length === 0) {
-                errors.push('At least one category is required');
-                document.getElementById('categoryContainer').style.borderColor = 'var(--danger-color)';
-            } else {
-                document.getElementById('categoryContainer').style.borderColor = '';
-            }
-            
-            return errors;
-        }
+        if (reviewBackdrop) reviewBackdrop.classList.add('open');
+    }
 
-        // Detect changes between original and current values
-        function getChangedFields() {
-            const changes = [];
-            
-            const currentTitle = document.getElementById('title').value;
-            const currentExcerpt = document.getElementById('excerpt').value;
-            const currentContent = document.getElementById('content').value;
-            const currentImage = document.getElementById('previewImage').value;
-            const currentStatus = form.querySelector('select[name="status"]').value;
-            const currentTags = Array.from(tagContainer.getElementsByClassName('tag')).map(t => t.innerText.replace('×','').trim());
-            const currentCategories = Array.from(categoryContainer.getElementsByClassName('category')).map(c => c.dataset.categoryId);
-            
-            if (currentTitle !== originalValues.title) {
-                changes.push({ field: 'Title', description: `Changed to "${currentTitle}"` });
-            }
-            if (currentExcerpt !== originalValues.excerpt) {
-                changes.push({ field: 'Excerpt', description: currentExcerpt ? 'Updated' : 'Cleared' });
-            }
-            if (currentContent !== originalValues.content) {
-                const oldWords = originalValues.content.trim().split(/\s+/).filter(w => w).length;
-                const newWords = currentContent.trim().split(/\s+/).filter(w => w).length;
-                const diff = newWords - oldWords;
-                const diffText = diff > 0 ? `+${diff} words` : diff < 0 ? `${diff} words` : 'Modified';
-                changes.push({ field: 'Content', description: `${newWords} words (${diffText})` });
-            }
-            if (currentImage !== originalValues.preview_image) {
-                changes.push({ field: 'Featured Image', description: currentImage ? 'Changed' : 'Removed' });
-            }
-            if (currentStatus !== originalValues.status) {
-                changes.push({ field: 'Status', description: `${originalValues.status} → ${currentStatus}` });
-            }
-            
-            // Compare tags
-            const addedTags = currentTags.filter(t => !originalValues.tags.includes(t));
-            const removedTags = originalValues.tags.filter(t => !currentTags.includes(t));
-            if (addedTags.length || removedTags.length) {
-                let desc = [];
-                if (addedTags.length) desc.push(`+${addedTags.join(', ')}`);
-                if (removedTags.length) desc.push(`-${removedTags.join(', ')}`);
-                changes.push({ field: 'Tags', description: desc.join(' | ') });
-            }
-            
-            // Compare categories - get names for display
-            const getCatName = (id) => {
-                const opt = categorySelect.querySelector(`option[value="${id}"]`);
-                return opt ? opt.text : `ID:${id}`;
-            };
-            const addedCats = currentCategories.filter(c => !originalValues.categories.includes(c));
-            const removedCats = originalValues.categories.filter(c => !currentCategories.includes(c));
-            if (addedCats.length || removedCats.length) {
-                let desc = [];
-                if (addedCats.length) desc.push(`+${addedCats.map(getCatName).join(', ')}`);
-                if (removedCats.length) desc.push(`-${removedCats.map(getCatName).join(', ')}`);
-                changes.push({ field: 'Categories', description: desc.join(' | ') });
-            }
-            
-            return changes;
-        }
+    function closeReviewModal() {
+        if (reviewBackdrop) reviewBackdrop.classList.remove('open');
+        const confirmBtn = document.getElementById('confirmUpdateBtn');
+        if (confirmBtn) { confirmBtn.disabled = false; confirmBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Confirm Update'; }
+        const submitBtn = document.getElementById('savePostBtn');
+        if (submitBtn)  { submitBtn.disabled  = false; submitBtn.innerHTML  = '<i class="fas fa-paper-plane"></i> Update Post'; }
+    }
 
-        // Show changes summary modal
-        function showChangesSummary(changes, onConfirm) {
-            // Create modal overlay
-            const overlay = document.createElement('div');
-            overlay.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.7);z-index:10000;display:flex;align-items:center;justify-content:center;';
-            
-            let changesHtml = changes.map(c => `
-                <div style="display:flex;align-items:center;gap:12px;padding:0.75rem 1rem;background:#2d2d3b;border-radius:6px;margin-bottom:0.5rem;">
-                    <i class="fas fa-pen" style="color:var(--primary-color);"></i>
-                    <span style="color:var(--text-light);font-weight:500;min-width:120px;">${c.field}</span>
-                    <span style="color:#4ade80;">${c.description}</span>
-                </div>
-            `).join('');
-            
-            overlay.innerHTML = `
-                <div style="background:var(--dark);border-radius:12px;padding:2rem;max-width:500px;width:90%;max-height:80vh;overflow-y:auto;box-shadow:0 20px 50px rgba(0,0,0,0.5);">
-                    <h2 style="margin:0 0 1.5rem;color:var(--text-light);display:flex;align-items:center;gap:10px;">
-                        <i class="fas fa-check-circle" style="color:var(--success-color);"></i> 
-                        Confirm Changes
-                    </h2>
-                    <p style="color:#a1a1aa;margin-bottom:1rem;font-size:0.9rem;">${changes.length} field${changes.length > 1 ? 's' : ''} will be updated:</p>
-                    <div style="margin-bottom:1.5rem;">${changesHtml}</div>
-                    <div style="display:flex;gap:1rem;justify-content:flex-end;">
-                        <button type="button" id="cancelChanges" style="padding:0.75rem 1.5rem;background:transparent;border:1px solid #3f3f4e;color:#a1a1aa;border-radius:6px;cursor:pointer;">Cancel</button>
-                        <button type="button" id="confirmChanges" style="padding:0.75rem 1.5rem;background:var(--primary-color);border:none;color:white;border-radius:6px;cursor:pointer;font-weight:600;">
-                            <i class="fas fa-save"></i> Confirm & Save
-                        </button>
-                    </div>
-                </div>
-            `;
-            
-            document.body.appendChild(overlay);
-            
-            document.getElementById('cancelChanges').onclick = () => {
-                overlay.remove();
-            };
-            
-            document.getElementById('confirmChanges').onclick = () => {
-                overlay.remove();
-                onConfirm();
-            };
-            
-            overlay.onclick = (e) => {
-                if (e.target === overlay) overlay.remove();
-            };
-        }
+    if (cancelReviewBtn)  cancelReviewBtn.addEventListener('click',  closeReviewModal);
+    if (closeReviewBtn)   closeReviewBtn.addEventListener('click',   closeReviewModal);
+    if (confirmUpdateBtn) confirmUpdateBtn.addEventListener('click', doSavePost);
+    reviewBackdrop?.addEventListener('click', (e) => { if (e.target === reviewBackdrop) closeReviewModal(); });
 
-        // --- SUBMIT FORM ---
-        const form = document.getElementById('editPostForm');
-        form.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            
-            // 1. VALIDATE REQUIRED FIELDS
-            const validationErrors = validateForm();
-            if (validationErrors.length > 0) {
-                showNotification('Please fix: ' + validationErrors.join(', '), 'error');
+    // ── FORM SUBMISSION — intercept for edit, direct save for new ────────
+    form?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const postId = document.getElementById('postId')?.value;
+        const isEdit = Boolean(postId);
+
+        if (isEdit) {
+            // Show review modal if there are changes; warn if nothing changed
+            const changes = getChangedFields();
+            if (changes.length === 0) {
+                window.showToast({ type: 'info', title: 'No Changes', message: 'Nothing has been modified.' });
                 return;
             }
-            
-            const btn = document.getElementById('saveBtn');
-            const originalText = btn.innerHTML;
-            
-            // 2. CHECK FOR CHANGES (Edit Mode Only)
-            if (isEditMode) {
-                const changes = getChangedFields();
-                if (changes.length === 0) {
-                    showNotification('No changes detected', 'error');
-                    return;
-                }
-                
-                // Show changes summary and wait for confirmation
-                showChangesSummary(changes, () => submitForm(btn, originalText));
-            } else {
-                // New post - submit directly
-                submitForm(btn, originalText);
-            }
-        });
-
-        // Actual form submission
-        async function submitForm(btn, originalText) {
-            btn.disabled = true;
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
-            
-            // Gather Data
-            const formData = new FormData();
-            formData.append('title', document.getElementById('title').value);
-            formData.append('excerpt', document.getElementById('excerpt').value);
-            formData.append('content', document.getElementById('content').value);
-            formData.append('preview_image', document.getElementById('previewImage').value);
-            formData.append('status', form.querySelector('select[name="status"]').value);
-
-            const tags = Array.from(tagContainer.getElementsByClassName('tag')).map(t => t.innerText.replace('×','').trim());
-            const cats = Array.from(categoryContainer.getElementsByClassName('category')).map(c => c.dataset.categoryId);
-
-            formData.append('tags', JSON.stringify(tags));
-            formData.append('categories', JSON.stringify(cats));
-
-            try {
-                // Determine if editing or creating
-                let url = '/dashboard/api/posts';
-                let method = 'POST';
-                // Try to extract post ID from URL if editing
-                const match = window.location.pathname.match(/\/dashboard\/posts\/edit\/(\d+)/);
-                if (match && match[1]) {
-                    url = `/dashboard/api/posts/${match[1]}`;
-                    method = 'PUT';
-                }
-
-                const res = await fetch(url, {
-                    method: method,
-                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                    body: new URLSearchParams(formData)
-                });
-
-                const data = await res.json();
-                if(data.success) {
-                    showNotification("Post Saved Successfully!");
-                    setTimeout(() => window.location.href = '/dashboard/posts', 1000);
-                } else {
-                    showNotification("Save Failed: " + (data.error || data.message), "error");
-                    btn.disabled = false;
-                    btn.innerHTML = originalText;
-                }
-            } catch(e) {
-                showNotification("Network Error on Save", "error");
-                btn.disabled = false;
-                btn.innerHTML = originalText;
-            }
+            openReviewModal();
+        } else {
+            // New post — save directly
+            await doSavePost();
         }
-
-    })();
+    });
 </script>
 {{/section}}

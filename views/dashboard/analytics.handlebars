@@ -1,0 +1,152 @@
+{{#section 'styles'}}
+<title>Analytics & Traffic Insights - MBK Admin</title>
+<style>
+    .progress-bar-bg {
+        width: 100%;
+        height: 6px;
+        background: var(--bg-base);
+        border-radius: var(--radius-full);
+        overflow: hidden;
+        margin-top: 0.5rem;
+    }
+    .progress-bar-fill {
+        height: 100%;
+        border-radius: var(--radius-full);
+        background: linear-gradient(90deg, var(--primary), var(--accent-cyan));
+    }
+</style>
+{{/section}}
+
+<!-- Header -->
+<div class="page-header">
+    <div>
+        <h1 class="page-title">Analytics & Insights</h1>
+        <p class="page-subtitle">Track readership engagement, highest performing posts, and content performance trends.</p>
+    </div>
+</div>
+
+<!-- Metrics Cards -->
+<div class="stats-grid">
+    <div class="stat-card cyan">
+        <div class="stat-header">
+            <span class="stat-title">Total Views</span>
+            <div class="stat-icon-wrap cyan"><i class="fas fa-chart-line"></i></div>
+        </div>
+        <div class="stat-value">{{formatNumber overview.total_views}}</div>
+        <div class="stat-footer"><span>Across all published posts</span></div>
+    </div>
+
+    <div class="stat-card emerald">
+        <div class="stat-header">
+            <span class="stat-title">Avg. Views / Post</span>
+            <div class="stat-icon-wrap emerald"><i class="fas fa-calculator"></i></div>
+        </div>
+        <div class="stat-value">{{formatNumber overview.avg_views}}</div>
+        <div class="stat-footer"><span>Average readership density</span></div>
+    </div>
+
+    <div class="stat-card purple">
+        <div class="stat-header">
+            <span class="stat-title">Total Comments</span>
+            <div class="stat-icon-wrap purple"><i class="fas fa-comments"></i></div>
+        </div>
+        <div class="stat-value">{{formatNumber overview.total_comments}}</div>
+        <div class="stat-footer"><span>Community discussions</span></div>
+    </div>
+
+    <div class="stat-card amber">
+        <div class="stat-header">
+            <span class="stat-title">Total Articles</span>
+            <div class="stat-icon-wrap amber"><i class="fas fa-newspaper"></i></div>
+        </div>
+        <div class="stat-value">{{formatNumber overview.total_posts}}</div>
+        <div class="stat-footer"><span>Published & drafts</span></div>
+    </div>
+</div>
+
+<!-- Layout: Top Posts Leaderboard & Categories Breakdown -->
+<div class="dashboard-layout-grid">
+    <!-- Top Performing Posts -->
+    <div class="card-panel">
+        <div class="card-header">
+            <div class="card-title">
+                <i class="fas fa-trophy" style="color: var(--accent-amber);"></i>
+                <span>Top Performing Posts</span>
+            </div>
+        </div>
+        <div class="card-body" style="padding: 1.25rem;">
+            {{#if topPosts.length}}
+            <div style="display: flex; flex-direction: column; gap: 1.25rem;">
+                {{#each topPosts}}
+                <div style="display: flex; flex-direction: column;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; gap: 1rem;">
+                        <a href="/post/{{this.slug}}" target="_blank" style="font-weight: 600; color: var(--text-primary); font-size: 0.95rem;">
+                            {{this.title}}
+                        </a>
+                        <div style="display: flex; align-items: center; gap: 0.75rem; flex-shrink: 0;">
+                            <span style="font-size: 0.8rem; color: var(--text-muted);">
+                                <i class="fas fa-comments"></i> {{this.comment_count}}
+                            </span>
+                            <span style="font-family: var(--font-mono); color: var(--accent-cyan); font-weight: 700; font-size: 0.95rem;">
+                                <i class="fas fa-eye" style="font-size: 0.8rem;"></i> {{formatNumber this.views}}
+                            </span>
+                        </div>
+                    </div>
+                    <div class="progress-bar-bg">
+                        <div class="progress-bar-fill" style="width: {{this.percentage}}%;"></div>
+                    </div>
+                </div>
+                {{/each}}
+            </div>
+            {{else}}
+            <p style="color: var(--text-muted); text-align: center; padding: 2rem;">No posts data available.</p>
+            {{/if}}
+        </div>
+    </div>
+
+    <!-- Category Distribution & Status Overview -->
+    <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+        <!-- Category Distribution -->
+        <div class="card-panel">
+            <div class="card-header">
+                <div class="card-title">
+                    <i class="fas fa-pie-chart" style="color: var(--primary);"></i>
+                    <span>Category Share</span>
+                </div>
+            </div>
+            <div class="card-body">
+                <div style="display: flex; flex-direction: column; gap: 0.85rem;">
+                    {{#each categoryDistribution}}
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <span style="font-weight: 600; color: var(--text-secondary);">{{this.name}}</span>
+                        <div style="display: flex; gap: 0.5rem; align-items: center;">
+                            <span class="badge badge-category">{{this.count}} Posts</span>
+                            <span style="font-size: 0.8rem; color: var(--text-muted); font-family: var(--font-mono);">{{formatNumber this.views}} views</span>
+                        </div>
+                    </div>
+                    {{/each}}
+                </div>
+            </div>
+        </div>
+
+        <!-- Post Status Breakdown -->
+        <div class="card-panel">
+            <div class="card-header">
+                <div class="card-title">
+                    <i class="fas fa-tasks" style="color: var(--accent-emerald);"></i>
+                    <span>Content Status</span>
+                </div>
+            </div>
+            <div class="card-body">
+                <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+                    {{#each statusDistribution}}
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <span class="badge badge-{{this.status}}">{{this.status}}</span>
+                        <strong style="color: var(--text-primary); font-family: var(--font-mono);">{{this.count}}</strong>
+                    </div>
+                    {{/each}}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,21 +1,6 @@
 // Setup file for Jest tests
 import { jest } from '@jest/globals';
 
-// Mock multer
-jest.mock('multer', () => {
-    const multerMock = jest.fn(() => ({
-        none: () => (req, res, next) => next(),
-        single: () => (req, res, next) => next(),
-        array: () => (req, res, next) => next()
-    }));
-    
-    // Add diskStorage method to the mock
-    multerMock.diskStorage = jest.fn(() => ({}));
-    multerMock.memoryStorage = jest.fn(() => ({}));
-    
-    return multerMock;
-});
-
 // Create mockable objects with jest.fn
 export const mockPoolQuery = jest.fn();
 export const mockClientRelease = jest.fn();
@@ -34,7 +19,7 @@ export const mockPool = {
     connect: mockPoolConnect
 };
 
-jest.mock('../routes/pool.js', () => ({
+jest.mock('../src/config/db.js', () => ({
     pool: {
         query: mockPoolQuery,
         connect: mockPoolConnect

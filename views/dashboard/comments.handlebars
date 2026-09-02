@@ -1,385 +1,317 @@
 {{#section 'styles'}}
-<title>Dashboard - Comments</title>
+<title>Comments Moderation - MBK Admin</title>
 <style>
-    .comment-stats {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-        gap: 1.5rem;
-        margin-bottom: 2rem;
-    }
-
-    .comment-header {
+    .comment-card-item {
+        background: var(--bg-surface);
+        border: 1px solid var(--border-subtle);
+        border-radius: var(--radius-lg);
+        padding: 1.5rem;
         display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 1.5rem;
+        flex-direction: column;
         gap: 1rem;
+        transition: var(--transition);
+        position: relative;
     }
-
-    .comment-content {
-        max-width: 300px;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
+    .comment-card-item:hover {
+        border-color: var(--border-hover);
+        box-shadow: var(--shadow-md);
     }
-
-    /* Mobile Responsive */
-    @media (max-width: 1024px) {
-        .comment-stats {
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-        }
+    .comment-card-item.pending-border {
+        border-left: 4px solid var(--warning);
     }
-
-    @media (max-width: 768px) {
-        .comment-stats {
-            grid-template-columns: repeat(2, 1fr);
-            gap: 1rem;
-        }
-
-        .comment-header {
-            flex-direction: column;
-            align-items: stretch;
-        }
-
-        .comment-header .btn {
-            width: 100%;
-        }
-
-        .comment-content {
-            max-width: 150px;
-            font-size: 0.85rem;
-        }
-
-        .btn {
-            padding: 0.5rem 0.75rem;
-            font-size: 0.85rem;
-        }
+    .comment-reply-box {
+        display: none;
+        margin-top: 1rem;
+        padding-top: 1rem;
+        border-top: 1px solid var(--border-subtle);
     }
-
-    @media (max-width: 480px) {
-        .comment-stats {
-            grid-template-columns: 1fr;
-            gap: 0.75rem;
-        }
-
-        .comment-header {
-            gap: 0.5rem;
-        }
-
-        .comment-header .btn {
-            font-size: 0.7rem;
-            padding: 0.4rem 0.6rem;
-        }
-
-        .comment-content {
-            max-width: 100px;
-            font-size: 0.7rem;
-        }
-
-        .btn {
-            font-size: 0.65rem;
-            padding: 0.35rem 0.5rem;
-        }
+    .comment-reply-box.active {
+        display: block;
     }
 </style>
 {{/section}}
 
-<div class="content-header">
-    <h1 class="content-title">Comments Management</h1>
-</div>
-
-<div class="comment-stats">
-    <div class="stat-card">
-        <div class="stat-icon" style="background: rgba(33, 150, 243, 0.1); color: var(--info-color);">
-            <i class="fas fa-comments"></i>
-        </div>
-        <div class="stat-info">
-            <h3>Total Comments</h3>
-            <div class="value">{{totalComments}}</div>
-        </div>
-    </div>
-    <div class="stat-card">
-        <div class="stat-icon" style="background: rgba(76, 175, 80, 0.1); color: var(--success-color);">
-            <i class="fas fa-check-circle"></i>
-        </div>
-        <div class="stat-info">
-            <h3>Approved</h3>
-            <div class="value">{{approvedComments}}</div>
-        </div>
-    </div>
-    <div class="stat-card">
-        <div class="stat-icon" style="background: rgba(255, 152, 0, 0.1); color: var(--warning-color);">
-            <i class="fas fa-clock"></i>
-        </div>
-        <div class="stat-info">
-            <h3>Pending</h3>
-            <div class="value">{{pendingComments}}</div>
-        </div>
+<!-- Header -->
+<div class="page-header">
+    <div>
+        <h1 class="page-title">Comments Moderation</h1>
+        <p class="page-subtitle">Moderate reader feedback, approve discussions, and reply directly as admin.</p>
     </div>
 </div>
 
-<div class="card">
-    <div class="filters-container">
-        <div class="search-box">
-            <i class="fas fa-search search-icon"></i>
-            <input type="text" class="search-input" placeholder="Search comments..." id="searchComments">
+<!-- Status Filter Tabs -->
+<div class="filter-tabs">
+    <a href="/dashboard/comments?status=all" class="filter-tab {{#if (eq filters.status 'all')}}active{{/if}}">
+        <i class="fas fa-inbox"></i> All Comments <span class="nav-badge">{{stats.total_comments}}</span>
+    </a>
+    <a href="/dashboard/comments?status=pending" class="filter-tab {{#if (eq filters.status 'pending')}}active{{/if}}">
+        <i class="fas fa-clock" style="color: var(--warning);"></i> Pending Moderation
+        {{#if (gt stats.pending_comments 0)}}
+        <span class="nav-badge pending">{{stats.pending_comments}}</span>
+        {{/if}}
+    </a>
+    <a href="/dashboard/comments?status=approved" class="filter-tab {{#if (eq filters.status 'approved')}}active{{/if}}">
+        <i class="fas fa-check-circle" style="color: var(--success);"></i> Approved <span class="nav-badge">{{stats.approved_comments}}</span>
+    </a>
+</div>
+
+<!-- Toolbar & Bulk Moderation -->
+<div class="filter-toolbar">
+    <form action="/dashboard/comments" method="GET" style="display: flex; gap: 0.75rem; flex: 1; max-width: 450px;">
+        <input type="hidden" name="status" value="{{filters.status}}">
+        <div class="search-input-wrap" style="max-width: 100%;">
+            <i class="fas fa-search"></i>
+            <input type="text" name="search" class="form-input" placeholder="Search comments by author or text..." value="{{filters.search}}">
+        </div>
+        {{#if filters.search}}
+        <a href="/dashboard/comments?status={{filters.status}}" class="btn btn-secondary" title="Clear"><i class="fas fa-times"></i></a>
+        {{/if}}
+    </form>
+
+    <div style="display: flex; gap: 0.5rem;">
+        <button type="button" class="btn btn-sm btn-secondary" onclick="selectAllComments(true)">Select All</button>
+        <button type="button" class="btn btn-sm btn-outline" onclick="selectAllComments(false)">Deselect</button>
+    </div>
+</div>
+
+<!-- Bulk Bar -->
+<div class="bulk-bar" id="commentsBulkBar">
+    <span style="font-weight: 700; color: var(--text-primary);"><span id="commentSelectedCount">0</span> selected</span>
+    <div style="display: flex; gap: 0.5rem; margin-left: auto;">
+        <button class="btn btn-sm btn-success" onclick="bulkModerate('approve')">
+            <i class="fas fa-check"></i> Approve
+        </button>
+        <button class="btn btn-sm btn-secondary" onclick="bulkModerate('unapprove')">
+            <i class="fas fa-pause"></i> Mark Pending
+        </button>
+        <button class="btn btn-sm btn-danger" onclick="bulkModerate('delete')">
+            <i class="fas fa-trash"></i> Delete
+        </button>
+    </div>
+</div>
+
+<!-- Comments List -->
+<div style="display: flex; flex-direction: column; gap: 1.25rem;">
+    {{#if comments.length}}
+    {{#each comments}}
+    <div class="comment-card-item {{#unless this.is_approved}}pending-border{{/unless}}" id="commentCard-{{this.id}}">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; flex-wrap: wrap;">
+            <div style="display: flex; align-items: center; gap: 0.85rem;">
+                <input type="checkbox" class="comment-checkbox" value="{{this.id}}" onchange="updateCommentBulkBar()">
+                <div class="user-avatar" style="width: 38px; height: 38px; font-size: 1rem;">
+                    {{firstLetter (coalesce this.UserName 'Anonymous')}}
+                </div>
+                <div>
+                    <div style="font-weight: 700; font-size: 0.95rem; color: var(--text-primary);">
+                        {{coalesce this.UserName 'Anonymous'}}
+                    </div>
+                    <div style="font-size: 0.75rem; color: var(--text-faint);">
+                        {{timeAgo this.created_at}} &bull; {{formatDateShort this.created_at}}
+                    </div>
+                </div>
+            </div>
+
+            <div style="display: flex; align-items: center; gap: 0.75rem;">
+                {{#if this.is_approved}}
+                <span class="badge badge-published">Approved</span>
+                {{else}}
+                <span class="badge badge-draft">Pending Review</span>
+                {{/if}}
+
+                <div style="display: flex; gap: 0.35rem;">
+                    {{#if this.is_approved}}
+                    <button onclick="moderateComment({{this.id}}, 'unapprove')" class="btn btn-sm btn-secondary" title="Mark Pending">
+                        <i class="fas fa-eye-slash"></i>
+                    </button>
+                    {{else}}
+                    <button onclick="moderateComment({{this.id}}, 'approve')" class="btn btn-sm btn-success" title="Approve Comment">
+                        <i class="fas fa-check"></i> Approve
+                    </button>
+                    {{/if}}
+                    <button onclick="toggleReplyBox({{this.id}})" class="btn btn-sm btn-secondary" title="Reply">
+                        <i class="fas fa-reply"></i>
+                    </button>
+                    <button onclick="deleteComment({{this.id}})" class="btn btn-sm btn-danger" title="Delete">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            </div>
         </div>
 
-        <div class="filter-options">
-            <div class="filter-group">
-                <label>Status:</label>
-                <select id="statusFilter" class="form-select">
-                    <option value="all">All Status</option>
-                    <option value="approved">Approved</option>
-                    <option value="pending">Pending</option>
-                </select>
+        <!-- Comment Text -->
+        <div style="padding: 1rem; background: var(--bg-base); border-radius: var(--radius-md); border: 1px solid var(--border-subtle); color: var(--text-secondary); font-size: 0.95rem; line-height: 1.6;">
+            {{this.content}}
+        </div>
+
+        <!-- Post Reference -->
+        <div style="display: flex; align-items: center; justify-content: space-between; font-size: 0.8rem; color: var(--text-muted);">
+            <div>
+                <i class="fas fa-file-alt" style="margin-right: 0.35rem;"></i>
+                Post: <a href="/post/{{this.post_slug}}" target="_blank" style="color: var(--primary); font-weight: 600;">{{this.post_title}}</a>
             </div>
-            <div class="filter-group">
-                <label>Sort by:</label>
-                <select id="sortFilter" class="form-select">
-                    <option value="date-desc">Date (Newest)</option>
-                    <option value="date-asc">Date (Oldest)</option>
-                    <option value="author">Author Name</option>
-                    <option value="post">Post Title</option>
-                </select>
+        </div>
+
+        <!-- Admin Quick Reply Box -->
+        <div class="comment-reply-box" id="replyBox-{{this.id}}">
+            <div style="display: flex; gap: 0.75rem;">
+                <textarea id="replyText-{{this.id}}" class="form-textarea" style="min-height: 60px;" placeholder="Write official admin reply..."></textarea>
+                <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                    <button type="button" class="btn btn-sm btn-primary" onclick="submitReply({{this.id}})">
+                        <i class="fas fa-paper-plane"></i> Send
+                    </button>
+                    <button type="button" class="btn btn-sm btn-secondary" onclick="toggleReplyBox({{this.id}})">
+                        Cancel
+                    </button>
+                </div>
             </div>
         </div>
     </div>
+    {{/each}}
+    {{else}}
+    <div class="card-panel" style="text-align: center; padding: 3rem; color: var(--text-muted);">
+        <i class="fas fa-comments" style="font-size: 3rem; display: block; margin-bottom: 1rem; opacity: 0.4;"></i>
+        No comments found in this view.
+    </div>
+    {{/if}}
+</div>
 
-    <div class="table-container">
-        {{#if comments}}
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Comment Details</th>
-                    <th>Author</th>
-                    <th>Post</th>
-                    <th>Date</th>
-                    <th>Status</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                {{#each comments}}
-                <tr>
-                    <td>
-                        <div class="comment-content">{{content}}</div>
-                    </td>
-                    <td>
-                        <div style="font-weight: 500;">{{UserName}}</div>
-                    </td>
-                    <td>
-                        <a href="/post/{{post_slug}}" target="_blank"
-                            style="color: var(--primary-color); text-decoration: none;">
-                            {{post_title}}
-                        </a>
-                    </td>
-                    <td>{{formatDate created_at}}</td>
-                    <td>
-                        <span class="status-badge {{#if is_approved}}status-approved{{else}}status-pending{{/if}}">
-                            {{#if is_approved}}Approved{{else}}Pending{{/if}}
-                        </span>
-                    </td>
-                    <td>
-                        <div class="action-buttons">
-                            {{#if is_approved}}
-                            <button onclick="moderateComment({{id}}, 'unapprove')" class="btn btn-sm btn-warning"
-                                title="Unapprove">
-                                <i class="fas fa-times"></i>
-                            </button>
-                            {{else}}
-                            <button onclick="moderateComment({{id}}, 'approve')" class="btn btn-sm btn-success"
-                                title="Approve">
-                                <i class="fas fa-check"></i>
-                            </button>
-                            {{/if}}
-                            <button onclick="deleteComment({{id}})" class="btn btn-sm btn-danger" title="Delete">
-                                <i class="fas fa-trash"></i>
-                            </button>
-                        </div>
-                    </td>
-                </tr>
-                {{/each}}
-            </tbody>
-        </table>
-        {{else}}
-        <div style="text-align: center; padding: 3rem;">
-            <div style="margin-bottom: 1rem;">
-                <i class="fas fa-comments" style="font-size: 3rem; color: #ddd;"></i>
-            </div>
-            <h3 style="color: #666; margin-bottom: 1rem;">No comments found</h3>
-            <p style="color: #888;">Comments will appear here once users start engaging with your posts.</p>
-        </div>
+<!-- Pagination -->
+{{#if (gt pagination.totalPages 1)}}
+<div style="display: flex; justify-content: space-between; align-items: center; margin-top: 2rem;">
+    <span style="color: var(--text-muted); font-size: 0.85rem;">
+        Showing page <strong>{{pagination.page}}</strong> of <strong>{{pagination.totalPages}}</strong>
+    </span>
+    <div style="display: flex; gap: 0.5rem;">
+        {{#if pagination.hasPrev}}
+        <a href="/dashboard/comments?status={{filters.status}}&search={{filters.search}}&page={{pagination.prevPage}}" class="btn btn-secondary btn-sm">&larr; Previous</a>
+        {{/if}}
+        {{#if pagination.hasNext}}
+        <a href="/dashboard/comments?status={{filters.status}}&search={{filters.search}}&page={{pagination.nextPage}}" class="btn btn-secondary btn-sm">Next &rarr;</a>
         {{/if}}
     </div>
 </div>
+{{/if}}
 
+{{#section 'scripts'}}
 <script>
-    // Filter and sort functionality
-    function filterAndSortComments() {
-        const searchText = document.getElementById('searchComments').value.toLowerCase();
-        const statusFilter = document.getElementById('statusFilter').value;
-        const sortFilter = document.getElementById('sortFilter').value;
-        const tbody = document.querySelector('tbody');
-        const rows = Array.from(tbody.querySelectorAll('tr'));
+    const bulkBar = document.getElementById('commentsBulkBar');
+    const countEl = document.getElementById('commentSelectedCount');
 
-        // Apply filters
-        rows.forEach(row => {
-            const content = row.querySelector('.comment-content').textContent.toLowerCase();
-            const author = row.querySelector('td:nth-child(2)').textContent.toLowerCase();
-            const post = row.querySelector('td:nth-child(3)').textContent.toLowerCase();
-            const status = row.querySelector('.status-badge').textContent.toLowerCase();
-
-            const matchesSearch = content.includes(searchText) || author.includes(searchText) || post.includes(searchText);
-            const matchesStatus = statusFilter === 'all' || status === statusFilter.toLowerCase();
-
-            row.style.display = matchesSearch && matchesStatus ? '' : 'none';
-        });
-
-        // Sort visible rows
-        const visibleRows = rows.filter(row => row.style.display !== 'none');
-        visibleRows.sort((a, b) => {
-            switch (sortFilter) {
-                case 'date-desc':
-                case 'date-asc': {
-                    const aDate = new Date(a.querySelector('td:nth-child(4)').textContent);
-                    const bDate = new Date(b.querySelector('td:nth-child(4)').textContent);
-                    return sortFilter === 'date-desc' ? bDate - aDate : aDate - bDate;
-                }
-                case 'author': {
-                    const aAuthor = a.querySelector('td:nth-child(2)').textContent.toLowerCase();
-                    const bAuthor = b.querySelector('td:nth-child(2)').textContent.toLowerCase();
-                    return aAuthor.localeCompare(bAuthor);
-                }
-                case 'post': {
-                    const aPost = a.querySelector('td:nth-child(3)').textContent.toLowerCase();
-                    const bPost = b.querySelector('td:nth-child(3)').textContent.toLowerCase();
-                    return aPost.localeCompare(bPost);
-                }
-                default:
-                    return 0;
-            }
-        });
-
-        // Update the DOM
-        visibleRows.forEach(row => tbody.appendChild(row));
-    }
-
-    // Add event listeners for all filter controls
-    document.getElementById('searchComments').addEventListener('input', filterAndSortComments);
-    document.getElementById('statusFilter').addEventListener('change', filterAndSortComments);
-    document.getElementById('sortFilter').addEventListener('change', filterAndSortComments);
-
-    // Helper functions for notifications
-    function showNotification(message, type = 'success') {
-        const existing = document.querySelector('.notification');
-        if (existing) existing.remove();
-        
-        const notification = document.createElement('div');
-        notification.className = `notification notification-${type}`;
-        notification.style.cssText = `
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: ${type === 'success' ? '#28a745' : '#dc3545'};
-            color: white;
-            padding: 1rem 1.5rem;
-            border-radius: 6px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-            z-index: 10000;
-            animation: slideIn 0.3s ease;
-            max-width: 400px;
-            font-weight: 500;
-        `;
-        notification.innerHTML = `
-            <div style="display: flex; align-items: center; gap: 0.5rem;">
-                <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-triangle'}"></i>
-                <span>${message}</span>
-                <button onclick="this.parentElement.parentElement.remove()" style="background: none; border: none; color: white; margin-left: auto; cursor: pointer; font-size: 1.2rem;">&times;</button>
-            </div>
-        `;
-        
-        if (!document.querySelector('#notification-styles')) {
-            const style = document.createElement('style');
-            style.id = 'notification-styles';
-            style.textContent = `@keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }`;
-            document.head.appendChild(style);
-        }
-        
-        document.body.appendChild(notification);
-        setTimeout(() => {
-            if (notification.parentElement) {
-                notification.style.animation = 'slideIn 0.3s ease reverse';
-                setTimeout(() => notification.remove(), 300);
-            }
-        }, 5000);
-    }
-
-    function setLoading(button, isLoading) {
-        const originalHTML = button.dataset.originalHTML || button.innerHTML;
-        if (!button.dataset.originalHTML) {
-            button.dataset.originalHTML = originalHTML;
-        }
-        
-        if (isLoading) {
-            button.disabled = true;
-            button.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+    window.updateCommentBulkBar = function() {
+        const checked = document.querySelectorAll('.comment-checkbox:checked');
+        if (checked.length > 0) {
+            bulkBar.classList.add('active');
+            countEl.textContent = checked.length;
         } else {
-            button.disabled = false;
-            button.innerHTML = originalHTML;
+            bulkBar.classList.remove('active');
         }
+    };
+
+    window.selectAllComments = function(select) {
+        document.querySelectorAll('.comment-checkbox').forEach(cb => cb.checked = select);
+        updateCommentBulkBar();
+    };
+
+    function getSelectedCommentIds() {
+        return Array.from(document.querySelectorAll('.comment-checkbox:checked')).map(cb => parseInt(cb.value));
     }
 
-    async function moderateComment(id, action) {
-        const actionBtn = event.target.closest('button');
-        setLoading(actionBtn, true);
-
+    window.moderateComment = async function(id, action) {
         try {
-            const response = await fetch(`/dashboard/api/comments/${id}/${action}`, {
-                method: 'PUT'
-            });
-
-            const data = await response.json();
+            const res = await fetch(`/dashboard/api/comments/${id}/${action}`, { method: 'PUT' });
+            const data = await res.json();
             if (data.success) {
-                showNotification(`Comment ${action}d successfully!`);
-                setTimeout(() => window.location.reload(), 1500);
+                window.showToast({ type: 'success', title: 'Moderated', message: data.message });
+                setTimeout(() => window.location.reload(), 500);
             } else {
-                showNotification(data.error || `Failed to ${action} comment`, 'error');
+                window.showToast({ type: 'error', title: 'Error', message: data.message });
             }
-        } catch (err) {
-            console.error(err);
-            showNotification('Network error occurred. Please try again.', 'error');
-        } finally {
-            setLoading(actionBtn, false);
+        } catch (e) {
+            window.showToast({ type: 'error', title: 'Error', message: 'Failed to update comment' });
         }
-    }
+    };
 
-    async function deleteComment(id) {
-        if (!confirm('Are you sure you want to delete this comment? This action cannot be undone.')) {
+    window.deleteComment = function(id) {
+        window.showConfirm({
+            title: 'Delete Comment',
+            message: 'Are you sure you want to permanently delete this comment?',
+            confirmText: 'Delete',
+            isDestructive: true,
+            onConfirm: async () => {
+                try {
+                    const res = await fetch(`/dashboard/api/comments/${id}`, { method: 'DELETE' });
+                    const data = await res.json();
+                    if (data.success) {
+                        window.showToast({ type: 'success', title: 'Deleted', message: 'Comment removed' });
+                        document.getElementById(`commentCard-${id}`)?.remove();
+                    } else {
+                        window.showToast({ type: 'error', title: 'Error', message: data.message });
+                    }
+                } catch (e) {
+                    window.showToast({ type: 'error', title: 'Error', message: 'Failed to delete comment' });
+                }
+            }
+        });
+    };
+
+    window.bulkModerate = function(action) {
+        const ids = getSelectedCommentIds();
+        if (ids.length === 0) return;
+
+        window.showConfirm({
+            title: `Bulk ${action.toUpperCase()}`,
+            message: `Apply ${action} to ${ids.length} selected comment(s)?`,
+            isDestructive: action === 'delete',
+            onConfirm: async () => {
+                try {
+                    const res = await fetch('/dashboard/api/comments/bulk', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ action, commentIds: ids })
+                    });
+                    const data = await res.json();
+                    if (data.success) {
+                        window.showToast({ type: 'success', title: 'Updated', message: data.message });
+                        setTimeout(() => window.location.reload(), 500);
+                    } else {
+                        window.showToast({ type: 'error', title: 'Error', message: data.message });
+                    }
+                } catch (e) {
+                    window.showToast({ type: 'error', title: 'Error', message: 'Failed to execute bulk action' });
+                }
+            }
+        });
+    };
+
+    window.toggleReplyBox = function(id) {
+        const box = document.getElementById(`replyBox-${id}`);
+        box?.classList.toggle('active');
+    };
+
+    window.submitReply = async function(id) {
+        const text = document.getElementById(`replyText-${id}`)?.value.trim();
+        if (!text) {
+            window.showToast({ type: 'error', title: 'Empty Reply', message: 'Please write a message first.' });
             return;
         }
 
-        const deleteBtn = event.target.closest('button');
-        setLoading(deleteBtn, true);
-
         try {
-            const response = await fetch(`/dashboard/api/comments/${id}`, {
-                method: 'DELETE'
+            const res = await fetch(`/dashboard/api/comments/${id}/reply`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ content: text })
             });
-
-            const data = await response.json();
+            const data = await res.json();
             if (data.success) {
-                showNotification('Comment deleted successfully!');
-                setTimeout(() => window.location.reload(), 1500);
+                window.showToast({ type: 'success', title: 'Reply Sent', message: 'Your reply has been published.' });
+                toggleReplyBox(id);
+                setTimeout(() => window.location.reload(), 600);
             } else {
-                showNotification(data.error || 'Failed to delete comment', 'error');
+                window.showToast({ type: 'error', title: 'Error', message: data.message });
             }
-        } catch (err) {
-            console.error(err);
-            showNotification('Network error occurred. Please try again.', 'error');
-        } finally {
-            setLoading(deleteBtn, false);
+        } catch (e) {
+            window.showToast({ type: 'error', title: 'Error', message: 'Failed to post reply' });
         }
-    }
+    };
 </script>
-</div>
+{{/section}}

@@ -1,0 +1,161 @@
+{{#section 'styles'}}
+<title>Settings & System Diagnostics - MBK Admin</title>
+<style>
+    .diagnostic-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+    }
+    .diagnostic-item {
+        background: var(--bg-base);
+        border: 1px solid var(--border-subtle);
+        border-radius: var(--radius-md);
+        padding: 1rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+    }
+</style>
+{{/section}}
+
+<!-- Header -->
+<div class="page-header">
+    <div>
+        <h1 class="page-title">Settings & System</h1>
+        <p class="page-subtitle">Configure blog properties, check Cloudflare R2 storage health, and download backups.</p>
+    </div>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 2rem;">
+    <!-- System Diagnostics Card -->
+    <div class="card-panel">
+        <div class="card-header">
+            <div class="card-title">
+                <i class="fas fa-heartbeat" style="color: var(--accent-emerald);"></i>
+                <span>System Health & Diagnostics</span>
+            </div>
+            <span class="badge badge-published">Healthy</span>
+        </div>
+        <div class="card-body">
+            <div class="diagnostic-grid">
+                <div class="diagnostic-item">
+                    <span style="font-size: 0.75rem; color: var(--text-faint); text-transform: uppercase; font-weight: 700;">Node.js Runtime</span>
+                    <strong style="color: var(--text-primary); font-family: var(--font-mono);">{{system.nodeVersion}} ({{system.platform}})</strong>
+                </div>
+                <div class="diagnostic-item">
+                    <span style="font-size: 0.75rem; color: var(--text-faint); text-transform: uppercase; font-weight: 700;">Memory Usage</span>
+                    <strong style="color: var(--accent-cyan); font-family: var(--font-mono);">{{system.memoryUsageMB}} MB RSS</strong>
+                </div>
+                <div class="diagnostic-item">
+                    <span style="font-size: 0.75rem; color: var(--text-faint); text-transform: uppercase; font-weight: 700;">Database Engine</span>
+                    <strong style="color: var(--success); font-family: var(--font-mono);">Neon PostgreSQL (Online)</strong>
+                </div>
+                <div class="diagnostic-item">
+                    <span style="font-size: 0.75rem; color: var(--text-faint); text-transform: uppercase; font-weight: 700;">Media Storage</span>
+                    <strong style="color: var(--primary); font-family: var(--font-mono);">Cloudflare R2</strong>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- General & SEO Settings Form -->
+    <div class="card-panel">
+        <div class="card-header">
+            <div class="card-title">
+                <i class="fas fa-sliders-h" style="color: var(--primary);"></i>
+                <span>General & SEO Configuration</span>
+            </div>
+        </div>
+        <div class="card-body">
+            <form id="settingsForm">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+                    <div class="form-group">
+                        <label class="form-label">Blog Title</label>
+                        <input type="text" name="blog_title" class="form-input" value="{{coalesce settings.blog_title 'MBK Blog'}}" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Site Tagline</label>
+                        <input type="text" name="blog_tagline" class="form-input" value="{{coalesce settings.blog_tagline 'Tech & Coding Insights'}}">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Global Meta Description</label>
+                    <textarea name="meta_description" class="form-textarea" style="min-height: 80px;" placeholder="Default SEO description for search engines...">{{settings.meta_description}}</textarea>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+                    <div class="form-group">
+                        <label class="form-label">Posts Per Page</label>
+                        <input type="number" name="posts_per_page" class="form-input" value="{{coalesce settings.posts_per_page 10}}" min="1" max="100">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Default Post Status</label>
+                        <select name="default_status" class="form-select">
+                            <option value="draft" {{#if (eq settings.default_status 'draft')}}selected{{/if}}>Draft</option>
+                            <option value="published" {{#if (eq settings.default_status 'published')}}selected{{/if}}>Published</option>
+                            <option value="private" {{#if (eq settings.default_status 'private')}}selected{{/if}}>Private</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div style="display: flex; justify-content: flex-end; margin-top: 1rem;">
+                    <button type="submit" class="btn btn-primary" id="saveSettingsBtn">
+                        <i class="fas fa-save"></i> Save Settings
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Data Backup & Export -->
+    <div class="card-panel">
+        <div class="card-header">
+            <div class="card-title">
+                <i class="fas fa-database" style="color: var(--accent-purple);"></i>
+                <span>Complete Backup & Data Export</span>
+            </div>
+        </div>
+        <div class="card-body">
+            <p style="color: var(--text-secondary); margin-bottom: 1.25rem; line-height: 1.6;">
+                Export all posts, categories, tags, comments, relationship associations, and activity logs into a portable JSON backup file.
+            </p>
+            <a href="/dashboard/api/download-all-data" class="btn btn-secondary">
+                <i class="fas fa-download"></i> Download Full JSON Backup
+            </a>
+        </div>
+    </div>
+</div>
+
+{{#section 'scripts'}}
+<script>
+    document.getElementById('settingsForm')?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const formData = new FormData(e.target);
+        const data = Object.fromEntries(formData.entries());
+
+        const btn = document.getElementById('saveSettingsBtn');
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+
+        try {
+            const res = await fetch('/dashboard/api/settings', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+            const resData = await res.json();
+            if (resData.success) {
+                window.showToast({ type: 'success', title: 'Saved', message: 'Settings updated successfully' });
+            } else {
+                window.showToast({ type: 'error', title: 'Error', message: resData.message });
+            }
+        } catch (err) {
+            window.showToast({ type: 'error', title: 'Error', message: 'Failed to save settings' });
+        } finally {
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-save"></i> Save Settings';
+        }
+    });
+</script>
+{{/section}}

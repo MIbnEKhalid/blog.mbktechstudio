@@ -1,495 +1,586 @@
 {{#section 'styles'}}
-<title>Dashboard - Posts</title>
+<title>Posts Management - MBK Admin</title>
 <style>
-    .posts-header {
+    .filter-tabs {
+        display: flex;
+        gap: 0.5rem;
+        border-bottom: 1px solid var(--border-subtle);
+        margin-bottom: 1.5rem;
+        overflow-x: auto;
+    }
+    .filter-tab {
+        padding: 0.75rem 1rem;
+        color: var(--text-muted);
+        font-weight: 600;
+        font-size: 0.9rem;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        border-bottom: 2px solid transparent;
+        transition: var(--transition);
+        white-space: nowrap;
+    }
+    .filter-tab:hover {
+        color: var(--text-primary);
+    }
+    .filter-tab.active {
+        color: var(--primary);
+        border-bottom-color: var(--primary);
+    }
+    .filter-toolbar {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        margin-bottom: 2rem;
         gap: 1rem;
+        margin-bottom: 1.5rem;
+        flex-wrap: wrap;
     }
-
-    .search-box {
-        display: flex;
-        gap: 1rem;
+    .search-input-wrap {
+        position: relative;
+        flex: 1;
+        min-width: 260px;
+        max-width: 400px;
+    }
+    .search-input-wrap i {
+        position: absolute;
+        left: 0.85rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--text-faint);
+    }
+    .search-input-wrap input {
+        padding-left: 2.25rem;
+    }
+    .bulk-bar {
+        display: none;
         align-items: center;
+        gap: 1rem;
+        padding: 0.75rem 1.25rem;
+        background: var(--bg-elevated);
+        border: 1px solid var(--border-medium);
+        border-radius: var(--radius-md);
+        margin-bottom: 1rem;
+        animation: toastSlideIn 0.2s ease;
     }
-
-    .post-preview-img {
-        width: 80px;
-        height: 60px;
+    .bulk-bar.active {
+        display: flex;
+    }
+    .post-thumb {
+        width: 48px;
+        height: 36px;
+        border-radius: var(--radius-sm);
         object-fit: cover;
-        border-radius: 4px;
-        border: 1px solid var(--dark);
+        background: var(--bg-base);
+        border: 1px solid var(--border-subtle);
     }
-
-    .post-preview-placeholder {
-        width: 80px;
-        height: 60px;
+    .post-thumb-placeholder {
+        width: 48px;
+        height: 36px;
+        border-radius: var(--radius-sm);
+        background: var(--bg-base);
+        border: 1px solid var(--border-subtle);
         display: flex;
         align-items: center;
         justify-content: center;
-        background-color: var(--darker);
-        border-radius: 4px;
-        border: 1px solid var(--dark);
+        color: var(--text-faint);
+        font-size: 0.9rem;
     }
-
-    .post-preview-placeholder i {
-        font-size: 1.5rem;
-        color: var(--text-light);
-        opacity: 0.5;
-    }
-
-    .post-stats {
-        display: grid;
-        grid-template-columns: repeat(4, 1fr);
+    /* Grid view */
+    .posts-card-grid {
+        display: none;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
         gap: 1.5rem;
         margin-bottom: 2rem;
     }
-
-    .stat-card {
-        background: rgba(255, 255, 255, 0.05);
-        padding: 1.5rem;
-        border-radius: 8px;
-        box-shadow: 0 4px 20px rgba(33, 150, 243, 0.15);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        backdrop-filter: blur(5px);
-        transition: all 0.3s cubic-bezier(.4, 0, .2, 1);
+    .posts-card-grid.active {
+        display: grid;
     }
-
-    .stat-card:hover {
+    .post-card-item {
+        background: var(--bg-surface);
+        border: 1px solid var(--border-subtle);
+        border-radius: var(--radius-lg);
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        transition: var(--transition);
+    }
+    .post-card-item:hover {
+        border-color: var(--border-hover);
         transform: translateY(-2px);
-        box-shadow: 0 6px 24px rgba(33, 150, 243, 0.2);
-        background: rgba(255, 255, 255, 0.08);
+        box-shadow: var(--shadow-md);
     }
-
-    .stat-card h3 {
-        margin: 0;
-        font-size: 0.875rem;
-        color: var(--text-light);
+    .post-card-cover {
+        height: 160px;
+        width: 100%;
+        object-fit: cover;
+        background: var(--bg-base);
     }
-
-    .stat-card .value {
-        font-size: 1.5rem;
-        font-weight: 600;
-        margin-top: 0.5rem;
-        color: var(--light);
+    .post-card-body {
+        padding: 1.25rem;
+        display: flex;
+        flex-direction: column;
+        flex: 1;
     }
-
-    /* Mobile Responsive */
-    @media (max-width: 1024px) {
-        .post-stats {
-            grid-template-columns: repeat(2, 1fr);
-            gap: 1rem;
-        }
+    /* Quick Edit Modal */
+    .quick-edit-modal-backdrop {
+        position: fixed;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background: rgba(0,0,0,0.75);
+        backdrop-filter: blur(8px);
+        z-index: 999;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        padding: 1rem;
     }
-
-    @media (max-width: 768px) {
-        .posts-header {
-            flex-direction: column;
-            align-items: stretch;
-        }
-
-        .posts-header .btn {
-            width: 100%;
-        }
-
-        .post-stats {
-            grid-template-columns: repeat(2, 1fr);
-            gap: 1rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .stat-card {
-            padding: 1rem;
-        }
-
-        .stat-card h3 {
-            font-size: 0.8rem;
-        }
-
-        .stat-card .value {
-            font-size: 1.25rem;
-        }
-
-        .search-box {
-            flex-direction: column;
-            align-items: stretch;
-        }
-
-        .post-preview-img,
-        .post-preview-placeholder {
-            width: 60px;
-            height: 45px;
-        }
-
-        .post-preview-placeholder i {
-            font-size: 1.2rem;
-        }
+    .quick-edit-modal-backdrop.active {
+        display: flex;
     }
-
-    @media (max-width: 480px) {
-        .post-stats {
-            grid-template-columns: 1fr;
-            gap: 0.75rem;
-        }
-
-        .stat-card {
-            padding: 0.75rem;
-        }
-
-        .stat-card h3 {
-            font-size: 0.75rem;
-        }
-
-        .stat-card .value {
-            font-size: 1rem;
-        }
-
-        .post-preview-img,
-        .post-preview-placeholder {
-            width: 45px;
-            height: 35px;
-        }
-
-        .post-preview-placeholder i {
-            font-size: 0.9rem;
-        }
+    .quick-edit-modal {
+        width: 520px;
+        max-width: 95vw;
+        background: var(--bg-surface);
+        border: 1px solid var(--border-medium);
+        border-radius: var(--radius-lg);
+        padding: 1.75rem;
+        box-shadow: var(--shadow-lg);
+        animation: cmdPop 0.15s ease-out;
     }
 </style>
 {{/section}}
 
-<div class="content-header">
-    <h1 class="content-title">Posts Management</h1>
-    <a href="/dashboard/posts/create" class="btn btn-primary">
-        <i class="fas fa-plus"></i> Create New Post
+<!-- Header -->
+<div class="page-header">
+    <div>
+        <h1 class="page-title">Posts Management</h1>
+        <p class="page-subtitle">Publish, draft, schedule, organize and bulk edit your blog content.</p>
+    </div>
+    <div class="header-actions">
+        <a href="/dashboard/posts/create" class="btn btn-primary">
+            <i class="fas fa-plus"></i> Write New Post
+        </a>
+    </div>
+</div>
+
+<!-- Filter Tabs -->
+<div class="filter-tabs">
+    <a href="/dashboard/posts?status=all" class="filter-tab {{#if (eq filters.status 'all')}}active{{/if}}">
+        <i class="fas fa-layer-group"></i> All Posts <span class="nav-badge">{{stats.total_posts}}</span>
+    </a>
+    <a href="/dashboard/posts?status=published" class="filter-tab {{#if (eq filters.status 'published')}}active{{/if}}">
+        <i class="fas fa-check-circle" style="color: var(--success);"></i> Published <span class="nav-badge">{{stats.published_posts}}</span>
+    </a>
+    <a href="/dashboard/posts?status=draft" class="filter-tab {{#if (eq filters.status 'draft')}}active{{/if}}">
+        <i class="fas fa-file-alt" style="color: var(--warning);"></i> Drafts <span class="nav-badge">{{stats.draft_posts}}</span>
+    </a>
+    <a href="/dashboard/posts?status=private" class="filter-tab {{#if (eq filters.status 'private')}}active{{/if}}">
+        <i class="fas fa-lock" style="color: var(--danger);"></i> Private <span class="nav-badge">{{stats.private_posts}}</span>
     </a>
 </div>
 
-<div class="stats-grid">
-    <div class="stat-card">
-        <div class="stat-icon" style="background: rgba(33, 150, 243, 0.2); color: var(--primary);">
-            <i class="fas fa-newspaper"></i>
+<!-- Toolbar -->
+<div class="filter-toolbar">
+    <form action="/dashboard/posts" method="GET" style="display: flex; gap: 0.75rem; flex: 1; flex-wrap: wrap;">
+        <input type="hidden" name="status" value="{{filters.status}}">
+        <div class="search-input-wrap">
+            <i class="fas fa-search"></i>
+            <input type="text" name="search" class="form-input" placeholder="Search by title or excerpt..." value="{{filters.search}}">
         </div>
-        <div class="stat-info">
-            <h3>Total Posts</h3>
-            <div class="value">{{totalPosts}}</div>
-        </div>
-    </div>
-    <div class="stat-card">
-        <div class="stat-icon" style="background: rgba(67, 233, 123, 0.2); color: var(--success);">
-            <i class="fas fa-check-circle"></i>
-        </div>
-        <div class="stat-info">
-            <h3>Published</h3>
-            <div class="value">{{publishedPosts}}</div>
-        </div>
-    </div>
-    <div class="stat-card">
-        <div class="stat-icon" style="background: rgba(255, 209, 102, 0.2); color: var(--warning);">
-            <i class="fas fa-edit"></i>
-        </div>
-        <div class="stat-info">
-            <h3>Drafts</h3>
-            <div class="value">{{draftPosts}}</div>
-        </div>
-    </div>
-    <div class="stat-card">
-        <div class="stat-icon" style="background: rgba(0, 184, 148, 0.2); color: var(--accent);">
-            <i class="fas fa-folder"></i>
-        </div>
-        <div class="stat-info">
-            <h3>Categories</h3>
-            <div class="value">{{totalCategories}}</div>
-        </div>
+
+        <select name="category" class="form-select" style="max-width: 180px;" onchange="this.form.submit()">
+            <option value="all">All Categories</option>
+            {{#each categories}}
+            <option value="{{this.id}}" {{#if (eq ../filters.category (jsonStringify this.id))}}selected{{/if}}>{{this.name}}</option>
+            {{/each}}
+        </select>
+
+        <select name="sort" class="form-select" style="max-width: 180px;" onchange="this.form.submit()">
+            <option value="newest" {{#if (eq filters.sort 'newest')}}selected{{/if}}>Newest First</option>
+            <option value="oldest" {{#if (eq filters.sort 'oldest')}}selected{{/if}}>Oldest First</option>
+            <option value="views_desc" {{#if (eq filters.sort 'views_desc')}}selected{{/if}}>Most Viewed</option>
+            <option value="title_asc" {{#if (eq filters.sort 'title_asc')}}selected{{/if}}>Title (A-Z)</option>
+        </select>
+
+        {{#if filters.search}}
+        <a href="/dashboard/posts?status={{filters.status}}" class="btn btn-secondary" title="Clear Search">
+            <i class="fas fa-times"></i>
+        </a>
+        {{/if}}
+    </form>
+
+    <div style="display: flex; gap: 0.5rem;">
+        <button class="btn btn-icon btn-secondary active" id="viewTableBtn" title="Table View">
+            <i class="fas fa-list"></i>
+        </button>
+        <button class="btn btn-icon btn-secondary" id="viewGridBtn" title="Grid View">
+            <i class="fas fa-th-large"></i>
+        </button>
     </div>
 </div>
 
-<div class="card">
-    <div class="filters-container">
-        <div class="search-box">
-            <i class="fas fa-search search-icon"></i>
-            <input type="text" class="search-input" placeholder="Search posts..." id="searchPosts">
-        </div>
+<!-- Bulk Actions Floating Bar -->
+<div class="bulk-bar" id="bulkActionsBar">
+    <span style="font-weight: 700; color: var(--text-primary);"><span id="selectedCount">0</span> selected</span>
+    <div style="display: flex; gap: 0.5rem; margin-left: auto;">
+        <button class="btn btn-sm btn-secondary" onclick="executeBulkAction('publish')">
+            <i class="fas fa-check"></i> Set Published
+        </button>
+        <button class="btn btn-sm btn-secondary" onclick="executeBulkAction('draft')">
+            <i class="fas fa-file"></i> Set Draft
+        </button>
+        <button class="btn btn-sm btn-danger" onclick="executeBulkAction('delete')">
+            <i class="fas fa-trash"></i> Delete Selected
+        </button>
+    </div>
+</div>
 
-        <div class="filter-options">
-            <div class="filter-group">
-                <label>Status:</label>
-                <select id="statusFilter" class="form-select">
-                    <option value="all">All Status</option>
+<!-- Table View -->
+<div class="card-panel" id="postsTableWrap">
+    <div class="table-responsive">
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th style="width: 40px;"><input type="checkbox" id="selectAllCheckbox" title="Select All"></th>
+                    <th style="width: 60px;">Image</th>
+                    <th>Post Title</th>
+                    <th>Categories</th>
+                    <th>Status</th>
+                    <th>Author</th>
+                    <th>Views</th>
+                    <th>Date</th>
+                    <th style="text-align: right;">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#if posts.length}}
+                {{#each posts}}
+                <tr id="postRow-{{this.id}}">
+                    <td>
+                        <input type="checkbox" class="post-row-checkbox" value="{{this.id}}">
+                    </td>
+                    <td>
+                        {{#if this.preview_image}}
+                        <img src="{{this.preview_image}}" class="post-thumb" alt="Thumb" onerror="this.style.display='none'">
+                        {{else}}
+                        <div class="post-thumb-placeholder"><i class="fas fa-image"></i></div>
+                        {{/if}}
+                    </td>
+                    <td>
+                        <a href="/dashboard/posts/edit/{{this.id}}" style="font-weight: 600; color: var(--text-primary); font-size: 0.95rem;">
+                            {{this.title}}
+                        </a>
+                        <div style="font-size: 0.75rem; color: var(--text-faint); margin-top: 0.15rem; font-family: var(--font-mono);">
+                            /post/{{this.slug}}
+                        </div>
+                    </td>
+                    <td>
+                        <span class="badge badge-category">{{coalesce this.categories 'Uncategorized'}}</span>
+                    </td>
+                    <td>
+                        <span class="badge badge-{{this.status}}">{{this.status}}</span>
+                    </td>
+                    <td style="color: var(--text-secondary); font-size: 0.85rem;">
+                        {{coalesce this.author_name 'Admin'}}
+                    </td>
+                    <td>
+                        <span style="font-family: var(--font-mono); color: var(--accent-cyan); font-weight: 600;">
+                            {{formatNumber this.views}}
+                        </span>
+                    </td>
+                    <td style="color: var(--text-muted); font-size: 0.8rem;">
+                        {{formatDateShort this.created_at}}
+                    </td>
+                    <td style="text-align: right; white-space: nowrap;">
+                        <button onclick="openQuickEdit({{jsonStringify this}})" class="btn btn-sm btn-secondary" title="Quick Edit">
+                            <i class="fas fa-bolt"></i>
+                        </button>
+                        <a href="/dashboard/posts/edit/{{this.id}}" class="btn btn-sm btn-secondary" title="Full Editor">
+                            <i class="fas fa-edit"></i>
+                        </a>
+                        <button onclick="duplicatePost({{this.id}})" class="btn btn-sm btn-secondary" title="Duplicate Post">
+                            <i class="fas fa-copy"></i>
+                        </button>
+                        <a href="/post/{{this.slug}}" target="_blank" class="btn btn-sm btn-secondary" title="View Public Post">
+                            <i class="fas fa-external-link-alt"></i>
+                        </a>
+                        <button onclick="deletePost({{this.id}}, '{{this.title}}')" class="btn btn-sm btn-danger" title="Delete Post">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+                {{/each}}
+                {{else}}
+                <tr>
+                    <td colspan="9" style="text-align: center; padding: 3rem; color: var(--text-muted);">
+                        <i class="fas fa-folder-open" style="font-size: 2.5rem; display: block; margin-bottom: 0.75rem; opacity: 0.4;"></i>
+                        No posts found matching the criteria.
+                    </td>
+                </tr>
+                {{/if}}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Grid View (Optional Switch) -->
+<div class="posts-card-grid" id="postsGridWrap">
+    {{#each posts}}
+    <div class="post-card-item">
+        {{#if this.preview_image}}
+        <img src="{{this.preview_image}}" class="post-card-cover" alt="Cover">
+        {{else}}
+        <div class="post-card-cover" style="display: flex; align-items: center; justify-content: center; color: var(--text-faint);">
+            <i class="fas fa-image" style="font-size: 2rem;"></i>
+        </div>
+        {{/if}}
+        <div class="post-card-body">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                <span class="badge badge-category">{{coalesce this.categories 'Uncategorized'}}</span>
+                <span class="badge badge-{{this.status}}">{{this.status}}</span>
+            </div>
+            <a href="/dashboard/posts/edit/{{this.id}}" style="font-weight: 700; color: var(--text-primary); font-size: 1.05rem; margin-bottom: 0.5rem;">
+                {{this.title}}
+            </a>
+            <p style="font-size: 0.85rem; color: var(--text-muted); line-height: 1.4; flex: 1;">
+                {{truncate (coalesce this.excerpt this.content_markdown) 90}}
+            </p>
+            <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-subtle); padding-top: 0.75rem; margin-top: 0.75rem;">
+                <span style="font-size: 0.8rem; color: var(--text-faint);">{{formatDateShort this.created_at}}</span>
+                <div style="display: flex; gap: 0.35rem;">
+                    <a href="/dashboard/posts/edit/{{this.id}}" class="btn btn-sm btn-secondary"><i class="fas fa-edit"></i></a>
+                    <button onclick="deletePost({{this.id}}, '{{this.title}}')" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></button>
+                </div>
+            </div>
+        </div>
+    </div>
+    {{/each}}
+</div>
+
+<!-- Pagination -->
+{{#if (gt pagination.totalPages 1)}}
+<div style="display: flex; justify-content: space-between; align-items: center; margin-top: 2rem;">
+    <span style="color: var(--text-muted); font-size: 0.85rem;">
+        Showing page <strong>{{pagination.page}}</strong> of <strong>{{pagination.totalPages}}</strong> ({{pagination.totalPosts}} total)
+    </span>
+    <div style="display: flex; gap: 0.5rem;">
+        {{#if pagination.hasPrev}}
+        <a href="/dashboard/posts?status={{filters.status}}&category={{filters.category}}&sort={{filters.sort}}&search={{filters.search}}&page={{pagination.prevPage}}" class="btn btn-secondary btn-sm">
+            &larr; Previous
+        </a>
+        {{/if}}
+        {{#if pagination.hasNext}}
+        <a href="/dashboard/posts?status={{filters.status}}&category={{filters.category}}&sort={{filters.sort}}&search={{filters.search}}&page={{pagination.nextPage}}" class="btn btn-secondary btn-sm">
+            Next &rarr;
+        </a>
+        {{/if}}
+    </div>
+</div>
+{{/if}}
+
+<!-- Quick Edit Modal -->
+<div class="quick-edit-modal-backdrop" id="quickEditBackdrop">
+    <div class="quick-edit-modal">
+        <h3 style="font-size: 1.25rem; font-weight: 700; color: var(--text-primary); margin-bottom: 1.25rem;">
+            <i class="fas fa-bolt" style="color: var(--accent-amber); margin-right: 0.5rem;"></i> Quick Edit Post
+        </h3>
+        <form id="quickEditForm">
+            <input type="hidden" id="quickEditId">
+            <div class="form-group">
+                <label class="form-label">Title</label>
+                <input type="text" id="quickEditTitle" class="form-input" required>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Custom Slug</label>
+                <input type="text" id="quickEditSlug" class="form-input" required>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Status</label>
+                <select id="quickEditStatus" class="form-select">
                     <option value="published">Published</option>
                     <option value="draft">Draft</option>
                     <option value="private">Private</option>
                 </select>
             </div>
-            <div class="filter-group">
-                <label>Category:</label>
-                <select id="categoryFilter" class="form-select">
-                    <option value="all">All Categories</option>
+            <div class="form-group">
+                <label class="form-label">Category</label>
+                <select id="quickEditCategory" class="form-select">
+                    <option value="">No change</option>
                     {{#each categories}}
-                    <option value="{{this.name}}">{{this.name}}</option>
+                    <option value="{{this.id}}">{{this.name}}</option>
                     {{/each}}
                 </select>
             </div>
-            <div class="filter-group">
-                <label>Sort by:</label>
-                <select id="sortFilter" class="form-select">
-                    <option value="date-desc">Date (Newest)</option>
-                    <option value="date-asc">Date (Oldest)</option>
-                    <option value="views-desc">Views (Most)</option>
-                    <option value="views-asc">Views (Least)</option>
-                    <option value="title">Title</option>
-                </select>
+            <div style="display: flex; gap: 0.75rem; justify-content: flex-end; margin-top: 1.5rem;">
+                <button type="button" class="btn btn-secondary" onclick="closeQuickEdit()">Cancel</button>
+                <button type="submit" class="btn btn-primary">Save Changes</button>
             </div>
-        </div>
-    </div>
-
-    <div class="table-container">
-        {{#if posts}}
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Preview</th>
-                    <th>Post Details</th>
-                    <th>Category</th>
-                    <th>Created</th>
-                    <th>Author</th>
-                    <th>Views</th>
-                    <th>Status</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                {{#each posts}}
-                <tr data-created-at="{{created_at}}" data-views="{{views}}">
-                    <td style="width: 100px;">
-                        {{#if preview_image}}
-                        <img src="{{preview_image}}" alt="Preview" class="post-preview-img">
-                        {{else}}
-                        <div class="post-preview-placeholder">
-                            <i class="fas fa-image"></i>
-                        </div>
-                        {{/if}}
-                    </td>
-                    <td style="min-width: 300px;">
-                        <div style="font-weight: 500; color: var(--light);">{{title}}</div>
-                        <div style="font-size: 0.875rem; color: var(--text-light); margin-top: 0.25rem;">{{#if excerpt}}{{truncate
-                            (stripMarkdown excerpt) 120}}{{else}}{{truncate (stripMarkdown content_markdown)
-                            120}}{{/if}}</div>
-                    </td>
-                    <td>
-                        <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
-                            {{#if categories}}
-                            {{#each (split categories ',') as |category|}}
-                            <span
-                                style="background: rgba(0, 184, 148, 0.2); color: var(--accent); padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.875rem; font-weight: 500;">
-                                {{trim category}}
-                            </span>
-                            {{/each}}
-                            {{else}}
-                            <span style="color: var(--text-light); font-style: italic; font-size: 0.875rem;">No category</span>
-                            {{/if}}
-                        </div>
-                    </td>
-                    <td>
-                        <div style="font-size: 0.875rem; color: var(--text);">{{formatDate created_at}}</div>
-                    </td>
-                    <td>
-                        <div style="font-size: 0.875rem; color: var(--text);">{{author_name}}</div>
-                    </td>
-                    <td>
-                        <div style="font-size: 0.875rem; color: var(--text);">{{views}}</div>
-                    </td>
-                    <td>
-                        <span
-                            class="status-badge {{#if (eq status 'published')}}status-published{{else if (eq status 'draft')}}status-draft{{else}}status-private{{/if}}">
-                            <i
-                                class="fas {{#if (eq status 'published')}}fa-check-circle{{else if (eq status 'draft')}}fa-clock{{else}}fa-lock{{/if}} mr-1"></i>
-                            {{#if (eq status 'published')}}Published{{else if (eq status
-                            'draft')}}Draft{{else}}Private{{/if}}
-                        </span>
-                    </td>
-                    <td>
-                        <div class="action-buttons">
-                            <a href="/post/{{slug}}" class="btn btn-sm btn-primary" target="_blank" title="View">
-                                <i class="fas fa-eye"></i>
-                            </a>
-                            <a href="/dashboard/posts/edit/{{id}}" class="btn btn-sm btn-primary" title="Edit">
-                                <i class="fas fa-edit"></i>
-                            </a>
-                            <button onclick="deletePost({{id}})" class="btn btn-sm btn-danger" title="Delete">
-                                <i class="fas fa-trash"></i>
-                            </button>
-                        </div>
-                    </td>
-                </tr>
-                {{/each}}
-            </tbody>
-        </table>
-        {{else}}
-        <div style="text-align: center; padding: 3rem;">
-            <div style="margin-bottom: 1rem;">
-                <i class="fas fa-newspaper" style="font-size: 3rem; color: var(--text-light); opacity: 0.5;"></i>
-            </div>
-            <h3 style="color: var(--light); margin-bottom: 1rem;">No posts found</h3>
-            <p style="color: var(--text-light); margin-bottom: 2rem;">Create your first post to get started!</p>
-            <a href="/dashboard/posts/create" class="btn btn-primary">
-                <i class="fas fa-plus"></i> Create New Post
-            </a>
-        </div>
-        {{/if}}
+        </form>
     </div>
 </div>
 
+{{#section 'scripts'}}
 <script>
-    // Filter and sort functionality
-    function filterAndSortPosts() {
-        const searchText = document.getElementById('searchPosts').value.toLowerCase();
-        const statusFilter = document.getElementById('statusFilter').value;
-        const categoryFilter = document.getElementById('categoryFilter').value;
-        const sortFilter = document.getElementById('sortFilter').value;
-        const tbody = document.querySelector('tbody');
-        const rows = Array.from(tbody.querySelectorAll('tr'));
+    // View switcher (Table / Grid)
+    const viewTableBtn = document.getElementById('viewTableBtn');
+    const viewGridBtn = document.getElementById('viewGridBtn');
+    const tableWrap = document.getElementById('postsTableWrap');
+    const gridWrap = document.getElementById('postsGridWrap');
 
-        // Apply filters
-        rows.forEach(row => {
-            const title = row.querySelector('td:nth-child(2)').textContent.toLowerCase();
-            const categories = Array.from(row.querySelector('td:nth-child(3)').querySelectorAll('span'))
-                .map(span => span.textContent.trim().toLowerCase());
-            const status = row.querySelector('.status-badge').textContent.trim().toLowerCase();
+    viewTableBtn?.addEventListener('click', () => {
+        viewTableBtn.classList.add('active');
+        viewGridBtn.classList.remove('active');
+        tableWrap.style.display = 'block';
+        gridWrap.classList.remove('active');
+    });
 
-            const matchesSearch = title.includes(searchText) || categories.some(cat => cat.includes(searchText));
-            const matchesStatus = statusFilter === 'all' || status.includes(statusFilter.toLowerCase());
-            const matchesCategory = categoryFilter === 'all' ||
-                categories.some(cat => cat === categoryFilter.toLowerCase());
+    viewGridBtn?.addEventListener('click', () => {
+        viewGridBtn.classList.add('active');
+        viewTableBtn.classList.remove('active');
+        tableWrap.style.display = 'none';
+        gridWrap.classList.add('active');
+    });
 
-            row.style.display = matchesSearch && matchesStatus && matchesCategory ? '' : 'none';
-        });
+    // Bulk selection logic
+    const selectAll = document.getElementById('selectAllCheckbox');
+    const rowCheckboxes = document.querySelectorAll('.post-row-checkbox');
+    const bulkBar = document.getElementById('bulkActionsBar');
+    const selectedCount = document.getElementById('selectedCount');
 
-        // Sort visible rows
-        const visibleRows = rows.filter(row => row.style.display !== 'none');
-        const hiddenRows = rows.filter(row => row.style.display === 'none');
-        
-        visibleRows.sort((a, b) => {
-            switch (sortFilter) {
-                case 'date-desc':
-                case 'date-asc': {
-                    const aDate = new Date(a.getAttribute('data-created-at'));
-                    const bDate = new Date(b.getAttribute('data-created-at'));
-                    return sortFilter === 'date-desc' ? bDate - aDate : aDate - bDate;
-                }
-                case 'views-desc':
-                case 'views-asc': {
-                    const aViews = parseInt(a.getAttribute('data-views'), 10);
-                    const bViews = parseInt(b.getAttribute('data-views'), 10);
-                    return sortFilter === 'views-desc' ? bViews - aViews : aViews - bViews;
-                }
-                case 'title': {
-                    const aTitle = a.querySelector('td:nth-child(2) div:first-child').textContent.trim().toLowerCase();
-                    const bTitle = b.querySelector('td:nth-child(2) div:first-child').textContent.trim().toLowerCase();
-                    return aTitle.localeCompare(bTitle);
-                }
-                default:
-                    return 0;
-            }
-        });
-
-        // Clear tbody and append sorted visible rows first, then hidden rows
-        tbody.innerHTML = '';
-        visibleRows.forEach(row => tbody.appendChild(row));
-        hiddenRows.forEach(row => tbody.appendChild(row));
-    }
-
-    // Add event listeners for all filter controls
-    document.getElementById('searchPosts').addEventListener('input', filterAndSortPosts);
-    document.getElementById('statusFilter').addEventListener('change', filterAndSortPosts);
-    document.getElementById('categoryFilter').addEventListener('change', filterAndSortPosts);
-    document.getElementById('sortFilter').addEventListener('change', filterAndSortPosts);
-
-    // Helper functions for notifications
-    function showNotification(message, type = 'success') {
-        const existing = document.querySelector('.notification');
-        if (existing) existing.remove();
-        
-        const notification = document.createElement('div');
-        notification.className = `notification notification-${type}`;
-        notification.style.cssText = `
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: ${type === 'success' ? '#28a745' : '#dc3545'};
-            color: white;
-            padding: 1rem 1.5rem;
-            border-radius: 6px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-            z-index: 10000;
-            animation: slideIn 0.3s ease;
-            max-width: 400px;
-            font-weight: 500;
-        `;
-        notification.innerHTML = `
-            <div style="display: flex; align-items: center; gap: 0.5rem;">
-                <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-triangle'}"></i>
-                <span>${message}</span>
-                <button onclick="this.parentElement.parentElement.remove()" style="background: none; border: none; color: white; margin-left: auto; cursor: pointer; font-size: 1.2rem;">&times;</button>
-            </div>
-        `;
-        
-        if (!document.querySelector('#notification-styles')) {
-            const style = document.createElement('style');
-            style.id = 'notification-styles';
-            style.textContent = `@keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }`;
-            document.head.appendChild(style);
-        }
-        
-        document.body.appendChild(notification);
-        setTimeout(() => {
-            if (notification.parentElement) {
-                notification.style.animation = 'slideIn 0.3s ease reverse';
-                setTimeout(() => notification.remove(), 300);
-            }
-        }, 5000);
-    }
-
-    function setLoading(button, isLoading) {
-        const originalHTML = button.dataset.originalHTML || button.innerHTML;
-        if (!button.dataset.originalHTML) {
-            button.dataset.originalHTML = originalHTML;
-        }
-        
-        if (isLoading) {
-            button.disabled = true;
-            button.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+    function updateBulkBar() {
+        const checked = document.querySelectorAll('.post-row-checkbox:checked');
+        if (checked.length > 0) {
+            bulkBar.classList.add('active');
+            selectedCount.textContent = checked.length;
         } else {
-            button.disabled = false;
-            button.innerHTML = originalHTML;
+            bulkBar.classList.remove('active');
         }
     }
 
-    function deletePost(id) {
-        if (confirm('Are you sure you want to delete this post? This action cannot be undone.')) {
-            const deleteBtn = event.target.closest('button');
-            setLoading(deleteBtn, true);
+    selectAll?.addEventListener('change', (e) => {
+        rowCheckboxes.forEach(cb => cb.checked = e.target.checked);
+        updateBulkBar();
+    });
 
-            fetch(`/dashboard/api/posts/${id}`, {
-                method: 'DELETE'
-            })
-                .then(response => response.json())
-                .then(data => {
+    rowCheckboxes.forEach(cb => {
+        cb.addEventListener('change', updateBulkBar);
+    });
+
+    function getSelectedIds() {
+        const checked = document.querySelectorAll('.post-row-checkbox:checked');
+        return Array.from(checked).map(cb => parseInt(cb.value));
+    }
+
+    async function executeBulkAction(action) {
+        const ids = getSelectedIds();
+        if (ids.length === 0) return;
+
+        window.showConfirm({
+            title: `Bulk ${action.toUpperCase()}`,
+            message: `Are you sure you want to apply "${action}" to ${ids.length} selected post(s)?`,
+            isDestructive: action === 'delete',
+            onConfirm: async () => {
+                try {
+                    const res = await fetch('/dashboard/api/posts/bulk', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ action, postIds: ids })
+                    });
+                    const data = await res.json();
                     if (data.success) {
-                        showNotification('Post deleted successfully!');
-                        setTimeout(() => window.location.reload(), 1500);
+                        window.showToast({ type: 'success', title: 'Bulk Updated', message: data.message });
+                        setTimeout(() => window.location.reload(), 600);
                     } else {
-                        showNotification(data.error || 'Failed to delete post', 'error');
+                        window.showToast({ type: 'error', title: 'Error', message: data.message });
                     }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    showNotification('Network error occurred. Please try again.', 'error');
-                })
-                .finally(() => {
-                    setLoading(deleteBtn, false);
-                });
+                } catch (e) {
+                    window.showToast({ type: 'error', title: 'Error', message: 'Failed to perform bulk action' });
+                }
+            }
+        });
+    }
+
+    // Delete single post
+    function deletePost(id, title) {
+        window.showConfirm({
+            title: 'Delete Post',
+            message: `Are you sure you want to delete "${title}"? This action cannot be undone.`,
+            confirmText: 'Delete Post',
+            isDestructive: true,
+            onConfirm: async () => {
+                try {
+                    const res = await fetch(`/dashboard/api/posts/${id}`, { method: 'DELETE' });
+                    const data = await res.json();
+                    if (data.success) {
+                        window.showToast({ type: 'success', title: 'Deleted', message: data.message });
+                        document.getElementById(`postRow-${id}`)?.remove();
+                        setTimeout(() => window.location.reload(), 500);
+                    } else {
+                        window.showToast({ type: 'error', title: 'Error', message: data.message });
+                    }
+                } catch (e) {
+                    window.showToast({ type: 'error', title: 'Error', message: 'Failed to delete post' });
+                }
+            }
+        });
+    }
+
+    // Duplicate post
+    async function duplicatePost(id) {
+        try {
+            const res = await fetch(`/dashboard/api/posts/${id}/duplicate`, { method: 'POST' });
+            const data = await res.json();
+            if (data.success) {
+                window.showToast({ type: 'success', title: 'Post Duplicated', message: 'Cloned as draft' });
+                setTimeout(() => window.location.reload(), 600);
+            } else {
+                window.showToast({ type: 'error', title: 'Error', message: data.message });
+            }
+        } catch (e) {
+            window.showToast({ type: 'error', title: 'Error', message: 'Failed to duplicate post' });
         }
     }
+
+    // Quick Edit modal
+    const quickModal = document.getElementById('quickEditBackdrop');
+    const quickForm = document.getElementById('quickEditForm');
+
+    window.openQuickEdit = function(post) {
+        document.getElementById('quickEditId').value = post.id;
+        document.getElementById('quickEditTitle').value = post.title;
+        document.getElementById('quickEditSlug').value = post.slug;
+        document.getElementById('quickEditStatus').value = post.status;
+        quickModal.classList.add('active');
+    };
+
+    window.closeQuickEdit = function() {
+        quickModal.classList.remove('active');
+    };
+
+    quickForm?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const id = document.getElementById('quickEditId').value;
+        const title = document.getElementById('quickEditTitle').value;
+        const slug = document.getElementById('quickEditSlug').value;
+        const status = document.getElementById('quickEditStatus').value;
+        const categoryId = document.getElementById('quickEditCategory').value;
+
+        try {
+            const res = await fetch(`/dashboard/api/posts/${id}/quick`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ title, slug, status, categoryId })
+            });
+            const data = await res.json();
+            if (data.success) {
+                window.showToast({ type: 'success', title: 'Updated', message: 'Post updated' });
+                closeQuickEdit();
+                setTimeout(() => window.location.reload(), 500);
+            } else {
+                window.showToast({ type: 'error', title: 'Error', message: data.message });
+            }
+        } catch (err) {
+            window.showToast({ type: 'error', title: 'Error', message: 'Failed to save changes' });
+        }
+    });
 </script>
+{{/section}}

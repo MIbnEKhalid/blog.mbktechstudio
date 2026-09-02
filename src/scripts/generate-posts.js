@@ -1,18 +1,14 @@
-import express from 'express';
-import { pool } from './routes/pool.js';
+import dotenv from 'dotenv';
+dotenv.config();
+
+import { pool } from '../config/db.js';
 import { marked } from 'marked';
 import Prism from 'prismjs';
 import { JSDOM } from 'jsdom';
 import DOMPurify from 'dompurify';
+import { PUBLIC_DIR } from '../config/constants.js';
 import path from 'path';
 import fs from 'fs';
-import { fileURLToPath } from 'url';
-import dotenv from 'dotenv';
-
-dotenv.config();
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
 // Configure marked with syntax highlighting
 marked.setOptions({
@@ -31,8 +27,8 @@ const purify = DOMPurify(window);
 
 async function generatePosts() {
     console.log('Starting static blog post data generation...');
-    const outputDir = path.join(__dirname, 'public', 'posts');
-    
+    const outputDir = path.join(PUBLIC_DIR, 'posts');
+
     if (!fs.existsSync(outputDir)) {
         fs.mkdirSync(outputDir, { recursive: true });
     }
@@ -51,7 +47,7 @@ async function generatePosts() {
             const slug = simplePost.slug;
             console.log(`Generating cached data for: ${slug}`);
 
-            // Fetch detailed post data (same query logic as routes/blog.js)
+            // Fetch detailed post data (same query logic as src/routes/blog.routes.js)
             const postQuery = await pool.query(
                 `SELECT p.*, 
                 STRING_AGG(DISTINCT c.name, ', ') as categories,

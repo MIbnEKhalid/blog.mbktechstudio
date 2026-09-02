@@ -11,9 +11,9 @@ import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
 import mockPoolQueryResults from './mocks/poolQueryResults.js';
 // Use test-specific dashboard routes without mbkauthe import
-import dashboardRouter from '../routes/dashboard.js';
+import dashboardRouter from '../src/routes/dashboard.routes.js';
 // Import the actual pool so we can work with it
-import { pool } from '../routes/pool.js';
+import { pool } from '../src/config/db.js';
 
 // Spy on pool methods to intercept real calls
 jest.spyOn(pool, 'query');
@@ -314,14 +314,14 @@ describe('Dashboard Routes', () => {
 
     describe('Unauthorized Access', () => {
     
-        it('should return 401 for non-logged-in user accessing dashboard', async () => {
+        it('should redirect unauthenticated user accessing dashboard', async () => {
             const response = await request(server).get('/dashboard');
-            expect(response.status).toBe(401);
+            expect(response.status).toBe(302);
         });
 
-        it('should return 401 for non-logged-in user posting to tags', async () => {
+        it('should redirect unauthenticated user posting to tags', async () => {
             const response = await request(server).post('/dashboard/tags');
-            expect(response.status).toBe(401);
+            expect(response.status).toBe(302);
         });
     });
 });

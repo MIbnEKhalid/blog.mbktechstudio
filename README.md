@@ -1,256 +1,211 @@
-# MBK Tech Studio Blog Platform
+# MBK Tech Blog Platform
 
-A modern, secure, and SEO-optimized blogging platform built with Node.js and Express. Features a comprehensive admin dashboard, advanced content management, secure image upload system, and enterprise-grade security implementations.
+A modern, high-performance, and SEO-optimized blogging platform and Content Management System built with Node.js, Express 5 (ES Modules), PostgreSQL, Cloudflare R2/S3 storage, and Google Gemini AI.
 
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
-![Node Version](https://img.shields.io/badge/node-%3E%3D16-green.svg)
+![Node Version](https://img.shields.io/badge/node-%3E%3D18-green.svg)
+![Express Version](https://img.shields.io/badge/express-v5.1.0-blue.svg)
+![AI Powered](https://img.shields.io/badge/AI-Google%20Gemini-orange.svg)
 ![Security](https://img.shields.io/badge/security-enhanced-green.svg)
+
+---
 
 ## 🌟 Key Features
 
-- **🔍 Advanced SEO Optimization**
-  - Automatic sitemap generation (XML)
-  - Built-in robots.txt configuration
-  - Canonical URLs support
-  - Schema.org structured data markup
-  - Meta tags and Open Graph support
-  - Twitter Cards integration
+### 🤖 Google Gemini AI Writing & SEO Assistant
+- **AI-Powered Tag Generator**: Automatically extracts 5–8 high-impact, lowercase SEO tags from content.
+- **Smart Category Classifier**: Matches blog post topics against existing database categories with zero manual effort.
+- **Catchy Title & Excerpt Generator**: Crafts optimized, high-CTR titles (max 60 chars) and meta excerpts (max 160 chars).
+- **Markdown Polisher & Expander**: Automatically formats, refines, and structures markdown drafts with clean headings, code blocks, and lists.
 
-- **📝 Content Management System**
-  - Rich Markdown editor with live preview
-  - Split-view editing mode
-  - Categories and tags organization
-  - Dynamic blog post management
-  - Nested comment system with moderation
-  - Draft, private, and published post states
+### 🔍 Advanced SEO & Metadata Suite
+- **Multi-File XML Sitemaps**: Auto-generated index, post, category, and tag sitemaps (`sitemap.xml`, `sitemap-posts.xml`, `sitemap-categories.xml`, `sitemap-tags.xml`).
+- **Structured Data & Schema.org**: Fully integrated JSON-LD schema markup for articles, authors, and organizations.
+- **Social Sharing**: Open Graph and Twitter Card tags with dynamic image previews and canonical URLs.
+- **Search Engine Friendly**: Fully configured `robots.txt` and crawler management.
 
-- **🖼️ Secure Image Upload System**
-  - Multi-format support (JPEG, PNG, GIF, WebP, SVG)
-  - File signature validation
-  - Secure filename generation with UUID
-  - AWS S3/R2 cloud storage integration
-  - Upload rate limiting (5 uploads/15min)
-  - Real-time upload progress tracking
+### 📝 Rich Content Management & Publishing Engine
+- **Interactive Markdown Editor**: Split-view editing with live preview.
+- **Syntax Highlighting & Sanitization**: Highlighted code blocks via [PrismJS](https://prismjs.com/) and XSS-safe HTML rendering via [DOMPurify](https://github.com/cure53/DOMPurify) and [Marked](https://marked.js.org/).
+- **Post Lifecycle**: Seamless management of `draft`, `private`, and `published` post states.
+- **Nested Comment System**: Multi-level reply threads with administrative approval, moderation, and XSS sanitization.
+- **Taxonomy Management**: Dynamic categorization, tagging, and filtered navigation.
 
-- **🛡️ Enterprise Security & Performance**
-  - Multi-layer authentication system
-  - Role-based access control (SuperAdmin)
-  - Advanced rate limiting protection
-  - File signature validation against MIME spoofing
-  - Path traversal protection
-  - Memory-safe disk storage
-  - GZIP compression
-  - Static asset caching with CDN support
-  - Audit logging for security events
+### 🖼️ Cloud Media & Storage (`mbkbucket`)
+- **Cloudflare R2 & AWS S3 Compatibility**: Direct cloud asset storage and media management.
+- **Multi-Format Support**: Upload JPEG, PNG, GIF, WebP, and SVG files up to 10MB.
+- **Strict File Validation**: Magic number file signature checking against MIME-spoofing attacks.
+- **Collision-Proof Filenames**: UUID-based sanitized storage keys.
+- **Rate-Limited Uploads**: Strict IP-based upload limits to prevent abuse.
 
-- **🎨 User Experience & Interface**
-  - Responsive mobile-first design
-  - Fast page loading with optimizations
-  - Interactive comment system with replies
-  - Advanced search and filtering
-  - Bookmark functionality
-  - Reading time estimation
-  - Dark/light theme support
+### 🛡️ Enterprise Security & Bot Mitigation
+- **Authentication & RBAC (`mbkauthe`)**: Multi-factor authentication (2FA) support, secure cookie sessions, and role validation (`SuperAdmin`).
+- **AI Crawler & Bot Defense**: Custom bot blocker middleware identifying and filtering unwanted scrapers.
+- **Multi-Tiered Rate Limiting**: Dedicated rate limits for general visitors, bots, and the admin dashboard.
+- **HTTP Security Headers**: Secure headers, CORS, and cross-origin resource policy enforcement.
+
+### ⚡ Performance & Caching
+- **PostgreSQL Connection Pooling**: High-throughput database query handling with `pg` connection pool (supports Neon Postgres and standard PostgreSQL).
+- **Static Post Caching**: Build-time post data generator script (`npm run generate-posts`) for ultra-fast response times.
+- **Asset Optimization**: GZIP response compression and immutable browser caching for static assets (`max-age=30d`).
+
+---
+
+## 🛠️ Technology Stack
+
+- **Runtime & Framework**: [Node.js](https://nodejs.org/) (ES Modules), [Express.js 5](https://expressjs.com/)
+- **Database**: [PostgreSQL](https://www.postgresql.org/) / [Neon](https://neon.tech/) with `pg` Pool
+- **Cloud Object Storage**: [Cloudflare R2](https://www.cloudflare.com/products/r2/) / [AWS S3](https://aws.amazon.com/s3/) via `mbkbucket`
+- **Authentication**: `mbkauthe` (Session-based, 2FA enabled, RBAC)
+- **AI Engine**: `@google/generative-ai` ([Gemini 2.5 Flash Lite](https://ai.google.dev/))
+- **Templating**: [Express-Handlebars](https://github.com/express-handlebars/express-handlebars)
+- **Markdown & Code**: Marked, PrismJS, DOMPurify, JSDOM
+- **Testing**: [Jest](https://jestjs.io/) (with ES Module support), [Supertest](https://github.com/ladjs/supertest)
+
+---
 
 ## 📋 Prerequisites
 
-- Node.js (>= 16.x)
-- PostgreSQL database (Neon or local)
-- AWS S3/R2 bucket for image storage
-- npm or yarn package manager
+Before running the application, ensure you have:
+
+- **Node.js**: `v18.x` or higher
+- **PostgreSQL**: Neon DB connection string or a local PostgreSQL instance (>= 14)
+- **Cloudflare R2 / AWS S3 Bucket**: For media uploads
+- **Google Gemini API Key**: For AI writing and categorization tools
+
+---
 
 ## 🚀 Getting Started
 
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/Mibnekhalid/blog.mbktechstudio.git
-   cd blog.mbktechstudio
-   ```
-
-2. **Install dependencies**
-   ```bash
-   npm install
-   ```
-
-3. **Configure environment variables**
-   Create a `.env` file with the following variables:
-   ```env
-   # Database Configuration
-   NEON_POSTGRES=your_postgresql_connection_string
-   
-   # R2/S3 Bucket Configuration (JSON format)
-   R2_Bucket={"ENDPOINT":"your_r2_endpoint","ACCESS_KEY_ID":"your_access_key","SECRET_ACCESS_KEY":"your_secret_key","BUCKET_NAME":"your_bucket_name"}
-   
-   # Server Configuration
-   PORT=3126
-   NODE_ENV=production
-   
-   # Authentication Configuration
-   mbkautheVar={"SESSION_SECRET":"your_session_secret","IS_DEPLOYED":"true"}
-   ```
-
-4. **Set up the database**
-   - Create the required tables using the schema in `docs/db.sql`
-   - Configure your PostgreSQL database connection
-
-5. **Start the application**
-   ```bash
-   # Development mode with auto-reload
-   npm start
-   
-   # Production mode
-   NODE_ENV=production node index.js
-   ```
-   
-   The application will be available at `http://localhost:3126`
-
-## 🔧 Configuration
-
-### Image Upload Settings
-- **Supported formats**: JPEG, PNG, GIF, WebP, SVG
-- **Maximum file size**: 10MB per upload
-- **Rate limiting**: 5 uploads per 15 minutes per IP
-- **Storage**: AWS S3/Cloudflare R2 compatible
-- **Security**: File signature validation, secure UUID naming
-
-### Authentication & Authorization
-- **Admin access**: SuperAdmin role required for dashboard
-- **Session management**: Secure cookie-based sessions
-- **Rate limiting**: 150 requests/2min general, 100 requests/1min dashboard
-
-### Performance Optimizations
-- **Compression**: GZIP enabled for all responses
-- **Caching**: Static assets cached for 7 days
-- **CDN support**: Optimized headers for CDN integration
-
-## 🗺️ SEO Management
-
-### Sitemap Generation
-
-Generate fresh XML sitemaps after content updates:
+### 1. Clone the Repository
 ```bash
-npm run generate-sitemap
+git clone https://github.com/Mibnekhalid/blog.mbktech.git
+cd blogmbktech
 ```
 
-This creates:
-- `sitemap.xml` - Main index
-- `sitemap-posts.xml` - Blog posts
-- `sitemap-categories.xml` - Categories
-- `sitemap-tags.xml` - Tags
+### 2. Install Dependencies
+```bash
+npm install
+```
 
-### Implemented SEO Features
+### 3. Configure Environment Variables
+Create a `.env` file in the root directory (refer to `.env.example`):
 
-- ✅ XML Sitemaps (auto-generated)
-- ✅ robots.txt configuration
-- ✅ Canonical URLs
-- ✅ Meta tags & Open Graph
-- ✅ Schema.org markup
-- ✅ Twitter Cards
-- ✅ Structured data
-- ✅ Static asset caching
-- ✅ GZIP compression
+### 4. Initialize Database Schema
+Execute the SQL schema located in `docs/db.sql` on your PostgreSQL database:
+```bash
+# Example using psql
+psql "<YOUR_POSTGRES_URL>" -f docs/db.sql
+```
+
+### 5. Run the Application
+```bash
+# Development mode with hot-reloading (nodemon)
+npm run dev
+
+# Production mode
+npm start
+```
+
+Access the application in your browser at: `http://localhost:3126`
+
+---
+
+## 📜 Available Scripts
+
+| Command | Description |
+| :--- | :--- |
+| `npm run dev` | Starts the server in development mode with `nodemon` auto-reload. |
+| `npm start` | Starts the server in production mode with standard `node`. |
+| `npm run generate-sitemap` | Generates updated XML sitemaps for posts, categories, and tags. |
+| `npm run generate-posts` | Generates static JSON cache snapshots for published posts in `public/posts/`. |
+| `npm test` | Runs Jest unit and integration tests in ES module mode. |
+| `npm run test:watch` | Runs Jest tests in interactive watch mode. |
+
+---
 
 ## 🏗️ Project Structure
 
 ```
-├── index.js                    # Application entry point & server config
-├── routes/
-│   ├── blog.js                # Public blog routes & image serving
-│   ├── dashboard.js           # Admin dashboard & secure upload API
-│   └── pool.js                # Database & cloud storage utilities
-├── views/                     # Handlebars templates
-│   ├── blog/                  # Public blog templates
-│   ├── dashboard/             # Admin interface templates
-│   ├── layouts/               # Base layouts (main, dashboard)
-│   └── partial/               # Reusable components & SEO partials
-├── public/
-│   ├── Assets/                # Static assets (CSS, JS, images)
-│   ├── robots.txt             # SEO crawler instructions
-│   └── sitemap*.xml           # Auto-generated XML sitemaps
-├── tests/                     # Jest test suites
+blogmbktech/
 ├── docs/
-│   └── db.sql                 # Database schema
-├── generate-sitemap.js        # SEO sitemap generator
-├── jest.config.js             # Test configuration
-└── vercel.json                # Deployment configuration
+│   └── db.sql                      # PostgreSQL database schema & tables
+├── public/
+│   ├── Assets/                     # Static CSS, JS, fonts, and images
+│   ├── posts/                      # Cached post JSON snapshots
+│   ├── robots.txt                  # Web crawler rules
+│   └── sitemap*.xml                # Auto-generated XML sitemaps
+├── src/
+│   ├── config/                     # Constants, DB pools, environment configs
+│   │   ├── constants.js
+│   │   └── db.js
+│   ├── controllers/                # Request handling & business logic
+│   │   ├── ai.controller.js        # Gemini AI assist endpoints
+│   │   ├── blog.controller.js      # Public blog rendering & reading
+│   │   ├── comments.controller.js  # Comment submission & moderation
+│   │   ├── dashboard.controller.js # Admin dashboard & metrics
+│   │   ├── media.controller.js     # Media library & file uploads
+│   │   ├── posts.controller.js     # Post CRUD & publishing
+│   │   └── taxonomy.controller.js  # Categories & tags management
+│   ├── middlewares/                # Custom Express middlewares
+│   │   ├── botBlocker.middleware.js # Scraper & bot detection
+│   │   ├── errorHandler.middleware.js # Global 404 and 500 handlers
+│   │   ├── logging.middleware.js   # Request timing & logging
+│   │   └── rateLimiter.middleware.js # Multi-tiered rate limiters
+│   ├── routes/                     # Application route definitions
+│   │   ├── blog.routes.js          # Public routes (/posts, /tags, /categories, /search)
+│   │   ├── dashboard.routes.js     # Protected admin dashboard routes (/dashboard/*)
+│   │   └── index.js
+│   ├── scripts/                    # CLI utilities
+│   │   ├── generate-posts.js       # Pre-renders post cache JSON files
+│   │   └── generate-sitemap.js     # Sitemaps generator
+│   ├── utils/                      # Helper functions & handlebars helpers
+│   │   └── handlebarsHelpers.js
+│   ├── app.js                      # Express application setup & middleware stack
+│   └── server.js                   # Server entry point (starts listener)
+├── tests/                          # Jest test suites
+├── views/                          # Handlebars templates
+│   ├── blog/                       # Public blog pages
+│   ├── dashboard/                  # Admin dashboard views
+│   ├── layouts/                    # Master layout templates (main, dashboard)
+│   ├── partial/                    # SEO, headers, footers, navigation
+│   └── templates/                  # Notice & email templates
+├── .env.example                    # Template environment variables
+├── package.json
+└── vercel.json                     # Cloud deployment configuration
 ```
+
+---
+
+## 🔐 Security Architecture
+
+- **MIME & Magic-Number Verification**: Every uploaded file is checked at byte-level before upload to cloud storage to prevent executable upload exploits.
+- **Session & 2FA Protection**: Powered by `mbkauthe` with secure cookie options (`SameSite`, `HttpOnly`, `Secure`).
+- **Role-Based Authorization**: Dashboard routes are guarded by `validateSessionAndRole('SuperAdmin')`.
+- **Anti-Scraper Filtering**: Bot blocker middleware monitors headers and applies strict rate-limits to abusive crawlers.
+- **XSS Prevention**: Markdown content is sanitized through `DOMPurify` with a headless DOM before being rendered or stored.
+
+---
 
 ## 🧪 Testing
 
-Run the test suite:
+The codebase includes Jest test suites configured with native ES Module support:
+
 ```bash
 # Run all tests
 npm test
 
-# Run tests in watch mode
+# Run tests in watch mode during development
 npm run test:watch
-
-# Run tests with coverage
-npm test -- --coverage
 ```
 
-## 🔐 Security Features
-
-### Upload Security
-- ✅ File signature validation (magic number checking)
-- ✅ MIME type verification
-- ✅ Secure UUID-based filename generation
-- ✅ Path traversal protection
-- ✅ Authentication & authorization checks
-- ✅ Rate limiting (5 uploads/15min)
-- ✅ File size limits (10MB max)
-- ✅ Temporary file cleanup
-
-### General Security
-- ✅ Role-based access control
-- ✅ Session security with secure cookies
-- ✅ Rate limiting on all endpoints
-- ✅ CORS protection
-- ✅ Content Security Policy headers
-- ✅ Audit logging for admin actions
-
-## 📊 Monitoring & Analytics
-
-### Performance Metrics
-- Request/response timing logging
-- Upload success/failure tracking
-- Rate limit violation monitoring
-- Database connection pooling stats
-
-### Security Auditing
-- Failed authentication attempts
-- Upload security violations
-- Admin action logging with user context
-- IP-based rate limit violations
-
-## 🔄 Development Roadmap
-
-### ✅ Completed
-- [x] Secure image upload system with file validation
-- [x] Multi-format image support (JPEG, PNG, GIF, WebP, SVG)
-- [x] Enterprise-grade security implementation
-- [x] Advanced rate limiting and authentication
-- [x] Memory-safe file handling
-- [x] Comprehensive audit logging
-
-### 🚧 In Progress
-- [ ] Enhanced mobile responsiveness optimization
-- [ ] Advanced comment moderation tools
-- [ ] Bulk operations in admin dashboard
-
-### 📝 Planned Features
-- [ ] Multi-language support (i18n)
-- [ ] Advanced analytics dashboard
-- [ ] Email notification system
-- [ ] Content scheduling functionality
-- [ ] API endpoints for headless CMS usage
-- [ ] Plugin system architecture
-- [ ] Advanced caching strategies (Redis)
-- [ ] Full-text search with Elasticsearch
+---
 
 ## 📄 License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the **MIT License**. See the [LICENSE](LICENSE) file for details.
+
+---
 
 ## 👤 Author
 

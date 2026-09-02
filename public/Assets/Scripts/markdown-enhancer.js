@@ -9,6 +9,13 @@ document.addEventListener('DOMContentLoaded', function () {
 
 // Export function for use in edit-post preview
 window.initializeMarkdownFeatures = function (container) {
+    if (document.querySelector('.post-page-container')) {
+        if (typeof Prism !== 'undefined') {
+            Prism.highlightAllUnder(container);
+        }
+        return;
+    }
+
     // Add copy functionality to code blocks
     addCodeBlockCopyFunctionality(container);
 
